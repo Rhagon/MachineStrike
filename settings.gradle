@@ -1,2 +1,3 @@
-rootProject.name = 'MachineStrike'
+rootProject.name = 'machine-strike'
+include ':core', ':console-client'
 
