@@ -1,16 +1,16 @@
-package machinestrike.client.console;
+package machinestrike.client.console.renderer;
 
 import machinestrike.game.level.Board;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BoardVisualizer {
+public class BoardRenderer {
 
     private final int fieldWidth, fieldHeight;
     private final FieldFormatter formatter;
 
-    public BoardVisualizer(int fieldWidth, int fieldHeight, FieldFormatter formatter) {
+    public BoardRenderer(int fieldWidth, int fieldHeight, FieldFormatter formatter) {
         this.fieldWidth = fieldWidth;
         this.fieldHeight = fieldHeight;
         this.formatter = formatter;

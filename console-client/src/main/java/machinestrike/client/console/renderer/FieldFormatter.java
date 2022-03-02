@@ -1,4 +1,4 @@
-package machinestrike.client.console;
+package machinestrike.client.console.renderer;
 
 import machinestrike.game.level.Field;
 

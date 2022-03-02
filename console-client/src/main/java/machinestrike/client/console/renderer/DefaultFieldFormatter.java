@@ -1,4 +1,4 @@
-package machinestrike.client.console;
+package machinestrike.client.console.renderer;
 
 import machinestrike.game.level.Field;
 import machinestrike.game.machine.Machine;
@@ -7,6 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DefaultFieldFormatter implements FieldFormatter {
+
+    private final char attackArrow = '\u2197',
+    swords = '\u2694',
+    heart = '\u2665';
+    private final String shoe = "\uD83D\uDC5E";
 
     @Override
     public FieldSection formatField(Field field) {
@@ -21,7 +26,7 @@ public class DefaultFieldFormatter implements FieldFormatter {
                     new LineSection("", "" + m.orientation().descriptor(), "")
             );
             bottom = List.of(
-                    new LineSection("\u2197" + m.strength(), "", "\u2665" + m.health())
+                    new LineSection("" + swords + m.strength(), shoe + m.moveRange(), "" + heart + m.health())
             );
         }
         return new FieldSection(header, center, bottom);
