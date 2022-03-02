@@ -1,12 +1,11 @@
 package machinestrike.game.machine.factory;
 
+import machinestrike.game.Orientation;
 import machinestrike.game.Player;
 import machinestrike.game.machine.Armor;
 import machinestrike.game.machine.Machine;
 import machinestrike.game.machine.Melee;
-import machinestrike.game.Orientation;
 
-import java.util.Collections;
 import java.util.Set;
 
 public class DefaultMachineFactory implements MachineFactory {

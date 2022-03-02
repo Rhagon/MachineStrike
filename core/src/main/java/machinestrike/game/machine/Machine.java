@@ -40,14 +40,11 @@ public abstract class Machine {
     private boolean canAttack;
     private boolean overcharged;
 
-    public Machine(@NotNull String name, @NotNull Player player, @Nullable Field field, int victoryPoints, int health, int strength, int moveRange,
+    public Machine(@NotNull String name, @NotNull Player player, int victoryPoints, int health, int strength, int moveRange,
                    int attackRange, @NotNull Orientation orientation, @NotNull Armor armor, @NotNull Set<Trait> traits) {
         this.name = name;
         this.player = player;
-        this.field = field;
-        if(field != null) {
-            Assert.isNull(field.machine());
-        }
+        this.field = null;
         this.victoryPoints = victoryPoints;
         this.health = health;
         this.moveRange = moveRange;

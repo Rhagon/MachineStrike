@@ -7,18 +7,16 @@ import machinestrike.game.Point;
 import machinestrike.game.Trait;
 import machinestrike.game.action.AttackAction;
 import machinestrike.game.level.Board;
-import machinestrike.game.level.Field;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
 
 public class Melee extends Machine {
 
-    public Melee(@NotNull String name, @NotNull Player player, @Nullable Field field, int victoryPoints, int health, int strength, int moveRange,
-                 @NotNull Orientation orientation, @NotNull Armor armor, Set<Trait> traits) {
-        super(name, player, field, victoryPoints, health, strength, moveRange, 1, orientation, armor, traits);
+    public Melee(@NotNull String name, @NotNull Player player, int victoryPoints, int health, int strength,
+                 int moveRange, @NotNull Orientation orientation, @NotNull Armor armor, Set<Trait> traits) {
+        super(name, player, victoryPoints, health, strength, moveRange, 1, orientation, armor, traits);
     }
 
     @Override
