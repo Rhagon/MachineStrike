@@ -13,6 +13,9 @@ import java.util.Set;
 
 public abstract class Machine {
 
+    public static final Trait GROUNDED = Trait.get("unit.grounded"),
+        AIRBORNE = Trait.get("unit.airborne");
+
     @NotNull
     private final String name;
     @NotNull
@@ -26,6 +29,10 @@ public abstract class Machine {
     private final Armor armor;
     @NotNull
     private final HashSet<Trait> traits;
+
+    private boolean moved;
+    private boolean attacked;
+    private boolean overcharged;
 
     public Machine(@NotNull String name, @NotNull Player player, int victoryPoints, int health, int strength, int moveRange,
                    int attackRange, @NotNull Orientation orientation, @NotNull Armor armor, @NotNull Set<Trait> traits) {
@@ -42,6 +49,7 @@ public abstract class Machine {
         Assert.lessOrEqual(0, victoryPoints);
         Assert.less(0, health);
         Assert.less(0, strength);
+        resetActions();
     }
 
     @NotNull
@@ -116,7 +124,7 @@ public abstract class Machine {
         return this;
     }
 
-    public boolean hasTrait(@NotNull Trait trait) {
+    public boolean is(@NotNull Trait trait) {
         return traits.contains(trait);
     }
 
@@ -129,10 +137,39 @@ public abstract class Machine {
     @NotNull
     public abstract String typeName();
 
+    public void resetActions() {
+        moved = false;
+        attacked = false;
+        overcharged = false;
+    }
+
+    public boolean hasMoved() {
+        return moved;
+    }
+
+    public boolean hasAttacked() {
+        return attacked;
+    }
+
+    public boolean wasOvercharged() {
+        return overcharged;
+    }
+
+    public void move() {
+        moved = true;
+    }
+
+    public void attack() {
+        attacked = true;
+    }
+
+    public void overcharge() {
+        overcharged = true;
+    }
+
     @Override
     public String toString() {
         return "[" + descriptor() + orientation.descriptor() + ']';
     }
-
 
 }

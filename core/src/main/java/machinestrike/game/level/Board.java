@@ -1,6 +1,7 @@
 package machinestrike.game.level;
 
 import machinestrike.debug.Assert;
+import machinestrike.game.Point;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -66,18 +67,26 @@ public class Board implements Iterable<Field> {
         return sizeY;
     }
 
+    @NotNull
     public Field field(int posX, int posY) {
         Assert.range(0, posX, sizeX - 1);
         Assert.range(0, posY, sizeY - 1);
         return fields[posX][posY];
     }
 
+    @NotNull
+    public Field field(@NotNull Point point) {
+        return field(point.x(), point.y());
+    }
+
+    @NotNull
     public Board clearMachines() {
         for(Field field : this) {
             field.machine(null);}
         return this;
     }
 
+    @NotNull
     public Board fillTerrain(Terrain terrain) {
         for(Field field : this) {
             field.terrain(terrain).machine(null);

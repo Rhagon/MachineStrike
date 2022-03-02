@@ -7,6 +7,7 @@ import machinestrike.game.machine.Melee;
 import machinestrike.game.Orientation;
 
 import java.util.Collections;
+import java.util.Set;
 
 public class DefaultMachineFactory implements MachineFactory {
 
@@ -23,7 +24,7 @@ public class DefaultMachineFactory implements MachineFactory {
     }
 
     public Machine createBurrower(Player player, Orientation orientation) {
-        return new Melee("Burrower", player, 1, 2, 4, 2, orientation, Armor.defaultArmor, Collections.emptySet());
+        return new Melee("Burrower", player, 1, 4, 2, 2, orientation, Armor.defaultArmor, Set.of(Machine.GROUNDED));
     }
 
     //TODO create factory methods for every missing machine

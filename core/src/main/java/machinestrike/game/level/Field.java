@@ -1,6 +1,7 @@
 package machinestrike.game.level;
 
 import machinestrike.debug.Assert;
+import machinestrike.game.Point;
 import machinestrike.game.machine.Machine;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,6 +29,11 @@ public class Field {
 
     public int posY() {
         return posY;
+    }
+
+    @NotNull
+    public Point position() {
+        return new Point(posX, posY);
     }
 
     @NotNull

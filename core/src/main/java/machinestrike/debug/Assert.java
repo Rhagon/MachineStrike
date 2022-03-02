@@ -1,5 +1,6 @@
 package machinestrike.debug;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiPredicate;
@@ -78,18 +79,37 @@ public class Assert {
         condition(predicate, value, message, level);
     }
 
-    public static <T> void condition(Predicate<T> predicate, T value, @NotNull String message, Level level) {
+    public static <T> void condition(Predicate<T> predicate, T value, @NotNull String message, @NotNull Level level) {
         if(!predicate.test(value)) {
             level.handle(message);
         }
     }
 
-    public static <T, U> void condition(BiPredicate<T, U> predicate, T a, U b, String message) {
+    public static <T, U> void condition(BiPredicate<T, U> predicate, T a, U b, @NotNull String message) {
         condition(predicate, a, b, message, level);
     }
 
-    public static <T, U> void condition(BiPredicate<T, U> predicate, T a, U b, @NotNull String message, Level level) {
+    public static <T, U> void condition(BiPredicate<T, U> predicate, T a, U b, @NotNull String message, @NotNull Level level) {
         if(!predicate.test(a, b)) {
+            level.handle(message);
+        }
+    }
+
+    @Contract("null -> fail")
+    public static <T> void notNullRequired(T t) {
+        notNull(t);
+    }
+
+    public static <T> void notNull(T t) {
+        notNull(t, level);
+    }
+
+    public static <T> void notNull(T t, Level level) {
+        notNull(t, "Failed assertion: object is not null", level);
+    }
+
+    public static <T> void notNull(T t, @NotNull String message, @NotNull Level level) {
+        if (t == null) {
             level.handle(message);
         }
     }

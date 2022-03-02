@@ -33,11 +33,6 @@ public class Trait {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hashCode(this);
-    }
-
-    @Override
     public boolean equals(Object second) {
         return this == second;
     }

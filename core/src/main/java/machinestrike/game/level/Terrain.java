@@ -10,17 +10,18 @@ import java.util.Set;
 
 public class Terrain {
 
+    public static final Trait EXCLUDE_GROUNDED = Trait.get("terrain.exclude_grounded_units"),
+            IMPEDE_MOVEMENT = Trait.get("terrain.impede_movement_on_landing");
+
     @NotNull
     private final String name;
     private final int defaultAttackBonus;
-    private final char descriptor;
     @NotNull
     private final Set<Trait> traits;
 
-    public Terrain(@NotNull String name, int defaultAttackBonus, char descriptor, @NotNull Set<Trait> traits) {
+    public Terrain(@NotNull String name, int defaultAttackBonus, @NotNull Set<Trait> traits) {
         this.name = name;
         this.defaultAttackBonus = defaultAttackBonus;
-        this.descriptor = descriptor;
         this.traits = new HashSet<>(traits);
     }
 
@@ -33,19 +34,16 @@ public class Terrain {
         return defaultAttackBonus;
     }
 
-    public char descriptor() {
-        return descriptor;
-    }
-
     @NotNull
     @UnmodifiableView
     public Set<Trait> traits() {
         return Collections.unmodifiableSet(traits);
     }
 
-    @Override
-    public String toString() {
-        return "" + descriptor;
+    public boolean is(@NotNull Trait trait) {
+        return traits.contains(trait);
     }
+
+
 
 }
