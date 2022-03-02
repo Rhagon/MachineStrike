@@ -1,7 +1,6 @@
 package machinestrike.game.rule.moverule;
 
 import machinestrike.game.Game;
-import machinestrike.game.Point;
 import machinestrike.game.action.MoveAction;
 import machinestrike.game.machine.Machine;
 import org.jetbrains.annotations.NotNull;
@@ -20,14 +19,13 @@ public class ValidMoveRule implements MoveRule{
 
     @Override
     public boolean test(Game game, MoveAction action) {
-        Point boardMax = new Point(game.board().sizeX(), game.board().sizeY());
-        if(!action.destination().inRange(Point.ZERO, boardMax)
-                || !action.origin().inRange(Point.ZERO, boardMax)) {
+        if(!game.board().hasField(action.origin()) || !game.board().hasField(action.destination())) {
             return false;
         }
         Machine machine = game.board().field(action.origin()).machine();
         return machine != null
                 && machine.player() == game.playerOnTurn()
-                && game.board().field(action.destination()).machine() == null;
+                && game.board().field(action.destination()).machine() == null
+                && (!action.sprint() || machine.canAttack());
     }
 }

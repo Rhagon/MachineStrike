@@ -1,10 +1,14 @@
 package machinestrike.game.action;
 
-import machinestrike.game.statemachine.State;
+import machinestrike.game.Game;
+import machinestrike.game.Point;
+import machinestrike.game.rule.RuleViolation;
+import org.jetbrains.annotations.NotNull;
 
-public class AttackAction implements Action {
+public record AttackAction(@NotNull Point origin) implements Action {
+
     @Override
-    public void execute(State state) {
-
+    public void execute(Game game) throws RuleViolation {
+        game.handle(this);
     }
 }

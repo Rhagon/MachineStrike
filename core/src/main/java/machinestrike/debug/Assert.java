@@ -1,5 +1,6 @@
 package machinestrike.debug;
 
+import machinestrike.game.rule.RuleViolation;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,6 +12,10 @@ public class Assert {
     public enum Level {
         ignore((message) -> {}),
         warn(System.err::println),
+        warn_and_explain(x -> {
+            System.err.println(x);
+            new RuleViolation(x).printStackTrace(System.err);
+        }),
         severe((message) -> {throw new AssertionError(message);});
 
         private interface FailHandler {
@@ -65,12 +70,16 @@ public class Assert {
         }
     }
 
-    public static void equal(int a, int b) {
-        equal(a, b, "Failed assertion: " + a + " = " + b, level);
+    public static <T> void equal(T a, T b) {
+        equal(a, b, "Failed assertion: " + a + " \u2261 " + b, level);
     }
 
-    public static void equal(int a, int b, @NotNull String message, @NotNull Level level) {
-        if(a != b) {
+    public static <T> void equal(T a, T b, @NotNull String message, @NotNull Level level) {
+        if(a == null) {
+            if(b != null) {
+                level.handle(message);
+            }
+        } else if(!a.equals(b)) {
             level.handle(message);
         }
     }
@@ -96,7 +105,7 @@ public class Assert {
     }
 
     @Contract("null -> fail")
-    public static <T> void notNullRequired(T t) {
+    public static <T> void requireNotNull(T t) {
         notNull(t);
     }
 
@@ -112,6 +121,31 @@ public class Assert {
         if (t == null) {
             level.handle(message);
         }
+    }
+
+    public static <T> void isNull(T t) {
+        isNull(t, "Failed assertion: object is null", level);
+    }
+
+    public static <T> void isNull(T t, String message, Level level) {
+        if(t != null) {
+            level.handle(message);
+        }
+    }
+
+    @Contract("!null -> fail")
+    public static <T> void requireNull(T t) {
+        isNull(t);
+    }
+
+    public static <T> void same(T t1, T t2, String message, Level level) {
+        if(t1 != t2) {
+            level.handle(message);
+        }
+    }
+
+    public static <T> void same(T t1, T t2) {
+        same(t1, t2, "Assertion failed: " + t1 + " = " + t2, level);
     }
 
 }

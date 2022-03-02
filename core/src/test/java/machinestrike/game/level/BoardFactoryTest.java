@@ -1,9 +1,9 @@
 package machinestrike.game.level;
 
+import machinestrike.game.Orientation;
 import machinestrike.game.Player;
 import machinestrike.game.level.factory.BoardFactory;
 import machinestrike.game.level.factory.DefaultBoardFactory;
-import machinestrike.game.Orientation;
 import machinestrike.game.machine.factory.DefaultMachineFactory;
 
 public class BoardFactoryTest {
