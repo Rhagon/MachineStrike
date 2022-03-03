@@ -1,13 +1,16 @@
 package machinestrike.client.console.input.parser;
 
+import machinestrike.util.ActionUnion;
+import machinestrike.client.console.action.ConsoleActionHandler;
 import machinestrike.game.Orientation;
 import machinestrike.game.Point;
+import machinestrike.game.action.GameActionHandler;
 import machinestrike.game.action.MoveAction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Matcher;
 
-public class MoveActionParser implements ActionParser<MoveAction> {
+public class MoveActionParser implements Parser<ActionUnion<GameActionHandler, ConsoleActionHandler>> {
 
     private static MoveActionParser instance;
 
@@ -23,7 +26,12 @@ public class MoveActionParser implements ActionParser<MoveAction> {
 
     @Override
     @NotNull
-    public MoveAction parse(@NotNull Matcher matcher) {
+    public ActionUnion<GameActionHandler, ConsoleActionHandler> parse(@NotNull Matcher matcher) {
+        return ActionUnion.first(parseToAction(matcher));
+    }
+
+    @NotNull
+    public MoveAction parseToAction(@NotNull Matcher matcher) {
         int oc = matcher.group("oc").toUpperCase().charAt(0) - 'A';
         int or = Integer.parseInt(matcher.group("or")) - 1;
         int dc = matcher.group("dc").toUpperCase().charAt(0) - 'A';

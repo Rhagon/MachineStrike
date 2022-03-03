@@ -1,6 +1,7 @@
 package machinestrike.client.console.input.factory;
 
 import machinestrike.client.console.ConsoleClient;
+import machinestrike.util.ActionUnion;
 import machinestrike.client.console.action.HelpAction;
 import machinestrike.client.console.action.QuitAction;
 import machinestrike.client.console.input.Command;
@@ -33,8 +34,8 @@ public class DefaultCommandListFactory implements CommandListFactory {
     @Override
     public List<Command> createCommandList(ConsoleClient client) {
         return List.of(
-                new Command("quit|q|exit|stop", m -> new QuitAction(client), "quit"),
-                new Command("help|h|\\?", m -> new HelpAction(client), "help"),
+                new Command("quit|q|exit|stop", m -> ActionUnion.second(new QuitAction()), "quit"),
+                new Command("help|h|\\?", m -> ActionUnion.second(new HelpAction()), "help"),
                 new Command(movePattern, MoveActionParser.instance(), "move <field> to <field> [facing <orientation>]"),
                 new Command(sprintPattern, SprintActionParser.instance(), "sprint <field> to <field> [facing <orientation>]"),
                 new Command(attackPattern, AttackActionParser.instance(), "attack with <field>")

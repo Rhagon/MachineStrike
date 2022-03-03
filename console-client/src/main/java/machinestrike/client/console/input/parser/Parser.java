@@ -1,11 +1,10 @@
 package machinestrike.client.console.input.parser;
 
-import machinestrike.game.action.Action;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Matcher;
 
-public interface ActionParser<T extends Action> {
+public interface Parser<T> {
 
     @NotNull
     T parse(@NotNull Matcher matcher);

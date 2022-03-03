@@ -4,13 +4,14 @@ import machinestrike.game.Orientation;
 import machinestrike.game.Player;
 import machinestrike.game.level.factory.BoardFactory;
 import machinestrike.game.level.factory.DefaultBoardFactory;
+import machinestrike.game.level.factory.DefaultTerrainFactory;
 import machinestrike.game.machine.factory.DefaultMachineFactory;
 
 public class BoardFactoryTest {
 
     public static void main(String[] args) {
         BoardFactory factory = DefaultBoardFactory.instance();
-        Board board = factory.createStandardBoard();
+        Board board = factory.createStandardBoard(DefaultTerrainFactory.instance());
         DefaultMachineFactory machineFactory = DefaultMachineFactory.instance();
         board.field(2, 1).machine(machineFactory.createBurrower(Player.BLUE, Orientation.NORTH));
         board.field(2, 6).machine(machineFactory.createBurrower(Player.RED, Orientation.SOUTH));

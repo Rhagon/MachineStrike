@@ -1,18 +1,12 @@
 package machinestrike.client.console.action;
 
-import machinestrike.client.console.ConsoleClient;
-import machinestrike.game.Game;
 import org.jetbrains.annotations.NotNull;
 
-public class HelpAction extends ControlAction {
-
-    public HelpAction(@NotNull ConsoleClient client) {
-        super(client);
-    }
+public class HelpAction implements ConsoleAction {
 
     @Override
-    public void execute(@NotNull Game game) {
-        client().handle(this);
+    public void execute(@NotNull ConsoleActionHandler handler) {
+        handler.handle(this);
     }
 
 }

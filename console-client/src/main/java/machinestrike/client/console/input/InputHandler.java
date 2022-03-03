@@ -1,6 +1,8 @@
 package machinestrike.client.console.input;
 
-import machinestrike.game.action.Action;
+import machinestrike.util.ActionUnion;
+import machinestrike.client.console.action.ConsoleActionHandler;
+import machinestrike.game.action.GameActionHandler;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -10,7 +12,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public final class InputHandler implements Iterable<Action> {
+public final class InputHandler implements Iterable<ActionUnion<GameActionHandler, ConsoleActionHandler>> {
 
     @NotNull
     private final BufferedReader reader;
@@ -45,9 +47,9 @@ public final class InputHandler implements Iterable<Action> {
 
     @NotNull
     @Override
-    public Iterator<Action> iterator() {
+    public Iterator<ActionUnion<GameActionHandler, ConsoleActionHandler>> iterator() {
         return new Iterator<>() {
-            Action buffer = null;
+            ActionUnion<GameActionHandler, ConsoleActionHandler> buffer = null;
             @Override
             public boolean hasNext() {
                 if(!active) {
@@ -59,11 +61,11 @@ public final class InputHandler implements Iterable<Action> {
                 return buffer != null;
             }
             @Override
-            public Action next() {
+            public ActionUnion<GameActionHandler, ConsoleActionHandler> next() {
                 if(buffer == null) {
                     buffer = readAction();
                 }
-                Action a = buffer;
+                ActionUnion<GameActionHandler, ConsoleActionHandler> a = buffer;
                 buffer = null;
                 return a;
             }
@@ -71,7 +73,7 @@ public final class InputHandler implements Iterable<Action> {
     }
 
     @Nullable
-    private Action readAction() {
+    private ActionUnion<GameActionHandler, ConsoleActionHandler> readAction() {
         while(true) {
             String line;
             try {
@@ -83,7 +85,7 @@ public final class InputHandler implements Iterable<Action> {
                 return null;
             }
             for(Command command : commands) {
-                Action action = command.parse(line);
+                ActionUnion<GameActionHandler, ConsoleActionHandler> action = command.parse(line);
                 if(action != null) {
                     return action;
                 }

@@ -3,6 +3,7 @@ package machinestrike.game;
 import machinestrike.debug.Assert;
 import machinestrike.game.action.Action;
 import machinestrike.game.action.AttackAction;
+import machinestrike.game.action.GameActionHandler;
 import machinestrike.game.action.MoveAction;
 import machinestrike.game.level.Board;
 import machinestrike.game.machine.Machine;
@@ -17,7 +18,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Game {
+public class Game implements GameActionHandler {
 
     @NotNull
     private final Board board;
@@ -102,7 +103,7 @@ public class Game {
         checkWinCondition(player);
     }
 
-    public void execute(Action action) throws RuleViolation {
+    public void execute(Action<GameActionHandler> action) throws RuleViolation {
         action.execute(this);
     }
 

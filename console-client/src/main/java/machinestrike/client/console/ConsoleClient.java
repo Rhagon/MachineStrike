@@ -1,5 +1,7 @@
 package machinestrike.client.console;
 
+import machinestrike.util.ActionUnion;
+import machinestrike.client.console.action.ConsoleActionHandler;
 import machinestrike.client.console.action.HelpAction;
 import machinestrike.client.console.action.QuitAction;
 import machinestrike.client.console.input.Command;
@@ -12,6 +14,7 @@ import machinestrike.game.Game;
 import machinestrike.game.Orientation;
 import machinestrike.game.Player;
 import machinestrike.game.action.Action;
+import machinestrike.game.action.GameActionHandler;
 import machinestrike.game.level.Board;
 import machinestrike.game.level.factory.BoardFactory;
 import machinestrike.game.level.factory.DefaultBoardFactory;
@@ -29,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.InputStream;
 import java.io.PrintStream;
 
-public class ConsoleClient {
+public class ConsoleClient implements ConsoleActionHandler {
 
     public static void main(String[] args) {
         new ConsoleClient().run();
@@ -94,9 +97,9 @@ public class ConsoleClient {
         game = new Game(board, Player.BLUE, ruleBook);
         renderer.board(board);
         renderer.render();
-        for(Action action : inputHandler) {
+        for(ActionUnion<GameActionHandler, ConsoleActionHandler> action : inputHandler) {
             try {
-                game.execute(action);
+                action.firstHandler(game).secondHandler(this).execute();
                 renderer.render();
             } catch (RuleViolation e) {
                 output.println(e.getMessage());
@@ -104,11 +107,15 @@ public class ConsoleClient {
         }
     }
 
-    public void handle(QuitAction action) {
+    public void execute(@NotNull Action<ConsoleActionHandler> action) throws RuleViolation {
+        action.execute(this);
+    }
+
+    public void handle(@NotNull QuitAction action) {
         inputHandler.active(false);
     }
 
-    public void handle(HelpAction action) {
+    public void handle(@NotNull HelpAction action) {
         for(Command command : inputHandler.commands()) {
             output.println(command.syntax());
         }
