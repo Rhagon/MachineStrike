@@ -36,7 +36,7 @@ public class Assert {
 
     private static Level level = Level.severe;
 
-    private static void setLevel(Level level) {
+    public static void setLevel(Level level) {
         Assert.level = level;
     }
 

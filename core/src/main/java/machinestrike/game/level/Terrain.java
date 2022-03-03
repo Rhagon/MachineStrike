@@ -15,13 +15,13 @@ public class Terrain {
 
     @NotNull
     private final String name;
-    private final int defaultAttackBonus;
+    private final int strengthModifier;
     @NotNull
     private final Set<Trait> traits;
 
-    public Terrain(@NotNull String name, int defaultAttackBonus, @NotNull Set<Trait> traits) {
+    public Terrain(@NotNull String name, int strengthModifier, @NotNull Set<Trait> traits) {
         this.name = name;
-        this.defaultAttackBonus = defaultAttackBonus;
+        this.strengthModifier = strengthModifier;
         this.traits = new HashSet<>(traits);
     }
 
@@ -30,8 +30,8 @@ public class Terrain {
         return name;
     }
 
-    public int defaultAttackBonus() {
-        return defaultAttackBonus;
+    public int strengthModifier() {
+        return strengthModifier;
     }
 
     @NotNull

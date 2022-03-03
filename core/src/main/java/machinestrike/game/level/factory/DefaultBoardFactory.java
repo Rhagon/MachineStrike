@@ -19,13 +19,8 @@ public class DefaultBoardFactory implements BoardFactory{
 
     @Override
     @NotNull
-    public Board createStandardBoard() {
-        return new Board(8, 8, terrainFactory().createGrassland());
+    public Board createStandardBoard(@NotNull TerrainFactory terrainFactory) {
+        return new Board(8, 8, terrainFactory.createGrassland());
     }
 
-    @Override
-    @NotNull
-    public TerrainFactory terrainFactory() {
-        return DefaultTerrainFactory.instance();
-    }
 }

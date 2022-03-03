@@ -3,7 +3,6 @@ package machinestrike.game;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.Objects;
 
 public class Trait {
 

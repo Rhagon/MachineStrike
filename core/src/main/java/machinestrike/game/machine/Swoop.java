@@ -33,7 +33,7 @@ public class Swoop extends Machine{
     }
 
     @Override
-    public @NotNull List<Point> attackableFields(@NotNull Point from, @NotNull Orientation orientation) {
+    public @NotNull List<Point> assailableFields(@NotNull Point from, @NotNull Orientation orientation) {
         return null;
     }
 }

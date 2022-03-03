@@ -13,7 +13,19 @@ import java.util.function.Predicate;
 
 public class CanReachDestinationRule implements MoveRule {
 
-    private final Pathfinder pathfinder = DijkstraPathfinder.instance();
+    private static CanReachDestinationRule instance;
+
+    public static CanReachDestinationRule instance() {
+        if(instance == null) {
+            instance = new CanReachDestinationRule();
+        }
+        return instance;
+    }
+
+    private static final Pathfinder pathfinder = DijkstraPathfinder.instance();
+
+    private CanReachDestinationRule() {
+    }
 
     @Override
     public @NotNull String errorMessage() {

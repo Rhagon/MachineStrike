@@ -25,7 +25,6 @@ public class Game {
     private Player playerOnTurn;
     @NotNull
     private final RuleBook ruleBook;
-    private final int machinesPerTurn, neededVictoryPoints;
     @NotNull
     private final Set<Machine> usedMachines;
     @NotNull
@@ -33,12 +32,11 @@ public class Game {
     @Nullable
     private Player winner;
 
-    public Game(@NotNull Board board, @NotNull Player playerOnTurn, @NotNull RuleBook ruleBook, int machinesPerTurn, int neededVictoryPoints) {
+    public Game(@NotNull Board board, @NotNull Player playerOnTurn, @NotNull RuleBook ruleBook) {
         this.board = board;
+        board.game(this);
         this.playerOnTurn = playerOnTurn;
         this.ruleBook = ruleBook;
-        this.machinesPerTurn = machinesPerTurn;
-        this.neededVictoryPoints = neededVictoryPoints;
         this.usedMachines = new HashSet<>();
         this.victoryPoints = new HashMap<>();
         victoryPoints.put(Player.BLUE, 0);
@@ -86,16 +84,17 @@ public class Game {
     }
 
     public void checkWinCondition(Player player) {
-        if(victoryPoints.get(player) >= neededVictoryPoints) {
+        if(victoryPoints.get(player) >= ruleBook.requiredVictoryPoints()) {
             winner = player;
         }
     }
 
     public void endTurn() {
         for(Machine machine : usedMachines) {
-            //TODO reset machine and damage for overcharge
             machine.resetActions();
         }
+        usedMachines.clear();
+        playerOnTurn = playerOnTurn.opponent();
     }
 
     public void addVictoryPoints(@NotNull Player player, int points) {

@@ -1,20 +1,28 @@
 package machinestrike.game.rule;
 
+import machinestrike.debug.Assert;
 import machinestrike.game.Game;
 import machinestrike.game.action.AttackAction;
 import machinestrike.game.action.MoveAction;
+import machinestrike.game.level.Field;
 import machinestrike.game.rule.attackrule.AttackRule;
 import machinestrike.game.rule.moverule.MoveRule;
+import machinestrike.game.rule.strengthrule.StrengthRule;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
 
-public record RuleBook(List<MoveRule> moveRules, List<AttackRule> attackRules) {
+public record RuleBook(int machinesPerTurn, int requiredVictoryPoints, List<MoveRule> moveRules,
+                       List<AttackRule> attackRules, List<StrengthRule> strengthRules) {
 
-    public RuleBook(List<MoveRule> moveRules, List<AttackRule> attackRules) {
+    public RuleBook(int machinesPerTurn, int requiredVictoryPoints, List<MoveRule> moveRules,
+                    List<AttackRule> attackRules, List<StrengthRule> strengthRules) {
+        this.machinesPerTurn = machinesPerTurn;
+        this.requiredVictoryPoints = requiredVictoryPoints;
         this.moveRules = Collections.unmodifiableList(moveRules);
-        this.attackRules = attackRules;
+        this.attackRules = Collections.unmodifiableList(attackRules);
+        this.strengthRules = Collections.unmodifiableList(strengthRules);
     }
 
     public boolean testMove(@NotNull Game game, @NotNull MoveAction action) {
@@ -45,6 +53,15 @@ public record RuleBook(List<MoveRule> moveRules, List<AttackRule> attackRules) {
         for(AttackRule rule : attackRules) {
             rule.verify(game, action);
         }
+    }
+
+    public int strengthModifier(@NotNull Field field) {
+        Assert.requireNotNull(field.machine());
+        int modifier = 0;
+        for(StrengthRule rule : strengthRules) {
+            modifier += rule.getModifier(field);
+        }
+        return modifier;
     }
 
 }

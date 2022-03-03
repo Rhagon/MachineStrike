@@ -1,6 +1,9 @@
 package machinestrike.client.console.renderer;
 
 import machinestrike.game.level.Board;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,37 +11,67 @@ import java.util.List;
 public class BoardRenderer {
 
     private final int fieldWidth, fieldHeight;
+    @NotNull
     private final FieldFormatter formatter;
+    @Nullable
+    private Board board;
+    @NotNull
+    private final RenderStream output;
 
-    public BoardRenderer(int fieldWidth, int fieldHeight, FieldFormatter formatter) {
+    public BoardRenderer(@Nullable Board board, @NotNull RenderStream output, int fieldWidth, int fieldHeight,
+                         @NotNull FieldFormatter formatter) {
+        this.board = board;
         this.fieldWidth = fieldWidth;
         this.fieldHeight = fieldHeight;
         this.formatter = formatter;
+        this.output = output;
     }
 
-    public String printBoard(Board board) {
+    @Contract("_ -> this")
+    public BoardRenderer board(@Nullable Board board) {
+        this.board = board;
+        return this;
+    }
+
+    public void render() {
+        if(board == null) {
+            return;
+        }
         StringBuilder builder = new StringBuilder();
-        addHorizontalLine(builder, board.sizeX());
+        renderRowSeparator(builder, board.sizeX());
         for(int y = board.sizeY() - 1; y >= 0; --y) {
             List<String[]> fields = new ArrayList<>();
             for(int x = 0; x < board.sizeX(); ++x) {
-                fields.add(printField(formatter.formatField(board.field(x, y))));
+                fields.add(renderField(formatter.formatField(board.field(x, y))));
             }
-            addRows(builder, fields);
-            addHorizontalLine(builder, board.sizeX());
+            renderFieldRow(builder, fields, y);
+            renderRowSeparator(builder, board.sizeX());
         }
-        return builder.toString();
+        renderColumnDescription(builder, board.sizeX());
+        output.clear();
+        output.print(builder.toString());
     }
 
-    private void addHorizontalLine(StringBuilder builder, int boardWidth) {
-        builder.append("+");
+    private void renderRowSeparator(StringBuilder builder, int boardWidth) {
+        builder.append("  +");
         builder.append(("-".repeat(fieldWidth) + "+").repeat(boardWidth));
         builder.append("\n");
     }
 
-    private void addRows(StringBuilder builder, List<String[]> fields) {
+    private void renderColumnDescription(StringBuilder builder, int columnCount) {
+        builder.append("   ");
+        for(int i = 0; i < columnCount; ++i) {
+            char descriptor = (char) ('A' + i);
+            LineSection section = new LineSection("", "" + descriptor, "");
+            builder.append(renderLine(section));
+            builder.append(" ");
+        }
+        builder.append("\n");
+    }
+
+    private void renderFieldRow(StringBuilder builder, List<String[]> fields, int rowNumber) {
         for(int lineCounter = 0; lineCounter < fieldHeight; ++lineCounter) {
-            builder.append("|");
+            builder.append(lineCounter == fieldHeight/2 ? rowNumber + 1 + " |" : "  |");
             for (String[] array : fields) {
                 builder.append(array[lineCounter]);
                 builder.append("|");
@@ -47,7 +80,7 @@ public class BoardRenderer {
         }
     }
 
-    private String[] printField(FieldSection section) {
+    private String[] renderField(FieldSection section) {
         int centerLines = Math.min(section.center().size(), fieldHeight);
         int borderLines = fieldHeight - centerLines;
         int topLines = Math.min(section.top().size(), borderLines/2);
@@ -57,25 +90,25 @@ public class BoardRenderer {
 
         List<String> lines = new ArrayList<>();
         for(int i = 0; i < topLines; ++i) {
-            lines.add(printLine(section.top().get(i)));
+            lines.add(renderLine(section.top().get(i)));
         }
         String fillerLine = " ".repeat(fieldWidth);
         for(int i = 0; i < topFillerLines; ++i) {
             lines.add(fillerLine);
         }
         for(int i = 0; i < centerLines; ++i) {
-            lines.add(printLine(section.center().get(i)));
+            lines.add(renderLine(section.center().get(i)));
         }
         for(int i = 0; i < bottomFillerLines; ++i) {
             lines.add(fillerLine);
         }
         for(int i = 0; i < bottomLines; ++i) {
-            lines.add(printLine(section.bottom().get(i)));
+            lines.add(renderLine(section.bottom().get(i)));
         }
         return lines.toArray(new String[0]);
     }
 
-    private String printLine(LineSection section) {
+    private String renderLine(LineSection section) {
         int center = Math.min(section.center().length(), fieldWidth);
         int border = fieldWidth - center;
         int left = Math.min(section.left().length(), border/2);

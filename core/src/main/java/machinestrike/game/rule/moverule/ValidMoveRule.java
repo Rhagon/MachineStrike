@@ -12,6 +12,18 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ValidMoveRule implements MoveRule{
 
+    private static ValidMoveRule instance;
+
+    public static ValidMoveRule instance() {
+        if(instance == null) {
+            instance = new ValidMoveRule();
+        }
+        return instance;
+    }
+
+    private ValidMoveRule() {
+    }
+
     @Override
     public @NotNull String errorMessage() {
         return "Illegal move";

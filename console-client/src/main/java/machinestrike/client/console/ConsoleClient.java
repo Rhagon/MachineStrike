@@ -1,56 +1,116 @@
 package machinestrike.client.console;
 
+import machinestrike.client.console.action.HelpAction;
+import machinestrike.client.console.action.QuitAction;
+import machinestrike.client.console.input.Command;
 import machinestrike.client.console.input.InputHandler;
-import machinestrike.client.console.renderer.BoardRenderer;
-import machinestrike.client.console.renderer.DefaultFieldFormatter;
+import machinestrike.client.console.input.factory.CommandListFactory;
+import machinestrike.client.console.input.factory.DefaultCommandListFactory;
+import machinestrike.client.console.renderer.*;
+import machinestrike.debug.Assert;
 import machinestrike.game.Game;
 import machinestrike.game.Orientation;
 import machinestrike.game.Player;
 import machinestrike.game.action.Action;
+import machinestrike.game.level.Board;
+import machinestrike.game.level.factory.BoardFactory;
 import machinestrike.game.level.factory.DefaultBoardFactory;
 import machinestrike.game.level.factory.DefaultTerrainFactory;
+import machinestrike.game.level.factory.TerrainFactory;
 import machinestrike.game.machine.factory.DefaultMachineFactory;
+import machinestrike.game.machine.factory.MachineFactory;
+import machinestrike.game.rule.RuleBook;
 import machinestrike.game.rule.RuleViolation;
 import machinestrike.game.rule.factory.DefaultRuleBookFactory;
+import machinestrike.game.rule.factory.RuleBookFactory;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.InputStream;
 import java.io.PrintStream;
 
 public class ConsoleClient {
 
-    private final DefaultBoardFactory boardFactory = DefaultBoardFactory.instance();
-    private final DefaultMachineFactory machineFactory = DefaultMachineFactory.instance();
-    private final DefaultTerrainFactory tf = DefaultTerrainFactory.instance();
-
     public static void main(String[] args) {
-        new ConsoleClient(System.in, System.out).run();
+        new ConsoleClient().run();
     }
 
-    private final InputStream input;
+    @NotNull
     private final PrintStream output;
+    @NotNull
+    private final InputHandler inputHandler;
+    @NotNull
+    private final BoardFactory boardFactory;
+    @NotNull
+    private final MachineFactory machineFactory;
+    @NotNull
+    private final TerrainFactory terrainFactory;
+    @NotNull
+    private final RuleBookFactory ruleBookFactory;
+    @NotNull
+    private final BoardRenderer renderer;
+    @Nullable
+    private Board board;
+    @Nullable
+    private Game game;
 
-    public ConsoleClient(InputStream input, PrintStream output) {
-        this.input = input;
+    public ConsoleClient() {
+        this(System.in, new RenderPrintStream(System.out), System.out);
+    }
+
+    public ConsoleClient(@NotNull InputStream input, @NotNull RenderStream boardStream, @NotNull PrintStream output) {
+        this(input, boardStream, output, DefaultCommandListFactory.instance(),
+                DefaultBoardFactory.instance(), DefaultMachineFactory.instance(), DefaultTerrainFactory.instance(),
+                DefaultRuleBookFactory.instance(), DefaultFieldFormatter.instance());
+    }
+
+    public ConsoleClient(@NotNull InputStream input, @NotNull RenderStream boardStream, @NotNull PrintStream output,
+                         @NotNull CommandListFactory commandFactory, @NotNull BoardFactory bf, @NotNull MachineFactory mf,
+                         @NotNull TerrainFactory tf, @NotNull RuleBookFactory rf, @NotNull FieldFormatter formatter) {
         this.output = output;
+        this.inputHandler = new InputHandler(input, output, commandFactory.createCommandList(this));
+        this.boardFactory = bf;
+        this.machineFactory = mf;
+        this.terrainFactory = tf;
+        this.ruleBookFactory = rf;
+        this.board = null;
+        this.game = null;
+        this.renderer = new BoardRenderer(null, boardStream, 13, 5, formatter);
+    }
+
+    public void setup() {
+        Assert.requireNotNull(game);
+        game.board().field(1, 2).machine(machineFactory.createBurrower(Player.BLUE, Orientation.NORTH));
+        for(int i = 0; i <= 3; ++i) {
+            game.board().field(3, i).terrain(terrainFactory.createChasm());
+            game.board().field(i, 3).terrain(terrainFactory.createMarsh());
+        }
     }
 
     public void run() {
-        Game game = new Game(boardFactory.createStandardBoard(), Player.BLUE, new DefaultRuleBookFactory().createRuleBook(), 2, 7);
-        game.board().field(1, 2).machine(machineFactory.createBurrower(Player.BLUE, Orientation.NORTH));
-        for(int i = 0; i <= 3; ++i) {
-            game.board().field(3, i).terrain(tf.createChasm());
-            game.board().field(i, 3).terrain(tf.createMarsh());
-        }
-        InputHandler handler = new InputHandler(input);
-        BoardRenderer renderer = new BoardRenderer(13, 5, new DefaultFieldFormatter());
-        System.out.println(renderer.printBoard(game.board()));
-        for(Action action : handler) {
+        board = boardFactory.createStandardBoard(terrainFactory);
+        RuleBook ruleBook = ruleBookFactory.createRuleBook();
+        setup();
+        game = new Game(board, Player.BLUE, ruleBook);
+        renderer.board(board);
+        renderer.render();
+        for(Action action : inputHandler) {
             try {
                 game.execute(action);
-                output.println(renderer.printBoard(game.board()));
+                renderer.render();
             } catch (RuleViolation e) {
                 output.println(e.getMessage());
             }
+        }
+    }
+
+    public void handle(QuitAction action) {
+        inputHandler.active(false);
+    }
+
+    public void handle(HelpAction action) {
+        for(Command command : inputHandler.commands()) {
+            output.println(command.syntax());
         }
     }
 

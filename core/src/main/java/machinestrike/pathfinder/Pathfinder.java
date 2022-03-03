@@ -6,7 +6,6 @@ import machinestrike.game.level.Terrain;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
 import java.util.function.Predicate;
 
 public interface Pathfinder {

@@ -23,7 +23,7 @@ public class DefaultMachineFactory implements MachineFactory {
     }
 
     public Machine createBurrower(Player player, Orientation orientation) {
-        return new Melee("Burrower", player, 1, 4, 2, 2, orientation, Armor.defaultArmor, Set.of(Machine.GROUNDED));
+        return new Melee("Burrower", player, 1, 4, 2, 2, 1, orientation, Armor.defaultArmor, Set.of(Machine.GROUNDED));
     }
 
     //TODO create factory methods for every missing machine

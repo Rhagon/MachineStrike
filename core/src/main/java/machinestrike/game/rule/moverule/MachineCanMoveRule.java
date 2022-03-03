@@ -8,6 +8,18 @@ import org.jetbrains.annotations.NotNull;
 
 public class MachineCanMoveRule implements MoveRule{
 
+    private static MachineCanMoveRule instance;
+
+    public static MachineCanMoveRule instance() {
+        if(instance == null) {
+            instance = new MachineCanMoveRule();
+        }
+        return instance;
+    }
+
+    private MachineCanMoveRule() {
+    }
+
     @Override
     public @NotNull String errorMessage() {
         return "The Machine cannot move.";

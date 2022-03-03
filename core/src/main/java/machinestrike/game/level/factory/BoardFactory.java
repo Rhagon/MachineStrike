@@ -8,14 +8,11 @@ import java.util.Random;
 public interface BoardFactory {
 
     @NotNull
-    Board createStandardBoard();
+    Board createStandardBoard(@NotNull TerrainFactory terrainFactory);
 
     @NotNull
-    default Board createRandomBoard(@NotNull Random random) {
-        return createStandardBoard();
+    default Board createRandomBoard(@NotNull TerrainFactory terrainFactory, @NotNull Random random) {
+        return createStandardBoard(terrainFactory);
     }
-
-    @NotNull
-    TerrainFactory terrainFactory();
 
 }

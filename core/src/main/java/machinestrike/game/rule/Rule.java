@@ -1,9 +1,10 @@
 package machinestrike.game.rule;
 
 import machinestrike.game.Game;
+import machinestrike.game.action.Action;
 import org.jetbrains.annotations.NotNull;
 
-public interface Rule<ActionType> {
+public interface Rule<ActionType extends Action> {
 
     @NotNull String errorMessage();
 

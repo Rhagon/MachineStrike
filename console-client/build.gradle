@@ -1,5 +1,13 @@
 plugins {
-    id 'java'
+    id 'application'
+}
+
+application {
+    mainClass = 'machinestrike.client.console.ConsoleClient'
+}
+
+run {
+    standardInput = System.in
 }
 
 group 'machine-strike'

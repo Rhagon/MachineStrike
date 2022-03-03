@@ -8,10 +8,22 @@ import java.util.List;
 
 public class DefaultFieldFormatter implements FieldFormatter {
 
-    private final char attackArrow = '\u2197',
+    private static DefaultFieldFormatter instance;
+
+    public static DefaultFieldFormatter instance() {
+        if(instance == null) {
+            instance = new DefaultFieldFormatter();
+        }
+        return instance;
+    }
+
+    private static final char attackArrow = '\u2197',
     swords = '\u2694',
     heart = '\u2665';
-    private final String shoe = "\uD83D\uDC5E";
+    private static final String shoe = "\uD83D\uDC5E";
+
+    private DefaultFieldFormatter() {
+    }
 
     @Override
     public FieldSection formatField(Field field) {

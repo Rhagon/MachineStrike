@@ -4,6 +4,7 @@ import machinestrike.debug.Assert;
 import machinestrike.game.*;
 import machinestrike.game.action.AttackAction;
 import machinestrike.game.action.MoveAction;
+import machinestrike.game.level.Board;
 import machinestrike.game.level.Field;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -223,39 +224,58 @@ public abstract class Machine {
         return this;
     }
 
+    public void overcharge() {
+        wasOvercharged(true);
+        damage(2);
+    }
+
     /**
      * Executes a move without verifying it. That has to be done by the caller.
-     * @param action The move that is executed
      */
     public void move(@NotNull MoveAction action) {
         Assert.requireNotNull(field);
         Game game = field.board().game();
         Assert.requireNotNull(game);
         Assert.equal(field.position(), action.origin());
+        field(game.board().field(action.destination()));
+        orientation(action.orientation());
+        game.usedMachine(this);
         if(!canMove) {
-            overcharged = true;
+            overcharge();
         }
         canMove = false;
         if(action.sprint()) {
             canAttack = false;
         }
-        field(game.board().field(action.destination()));
-        orientation(action.orientation());
-        game.usedMachine(this);
     }
 
+    /**
+     * Executes an attack without verifying it. That has to be done by the caller.
+     */
     public abstract void attack(@NotNull AttackAction action);
 
     @Contract(pure = true)
     @NotNull
-    public List<Point> attackableFields() {
+    public List<Point> assailableFields() {
         Assert.requireNotNull(field);
-        return attackableFields(field.position(), orientation);
+        return assailableFields(field.position(), orientation);
     }
 
     @Contract(pure = true)
     @NotNull
-    public abstract List<Point> attackableFields(@NotNull Point from, @NotNull Orientation orientation);
+    public abstract List<Point> assailableFields(@NotNull Point from, @NotNull Orientation orientation);
+
+    @Contract(pure = true)
+    public int calculateCombatPower(@NotNull Orientation orientation) {
+        Assert.requireNotNull(field());
+        Board board = field().board();
+        Game game = board.game();
+        Assert.requireNotNull(game);
+        int basePower = player() == game.playerOnTurn() ? strength : 0;
+        int armorModified = basePower + armor.inDirection(orientation).damageModifier();
+        int terrainModified = armorModified + field().terrain().strengthModifier();
+        return terrainModified + game.ruleBook().strengthModifier(field());
+    }
 
     public void damage(int amount) {
         Assert.requireNotNull(field);
