@@ -3,7 +3,7 @@ package machinestrike.game;
 import machinestrike.debug.Assert;
 import machinestrike.action.Action;
 import machinestrike.game.action.AttackAction;
-import machinestrike.action.GameActionHandler;
+import machinestrike.game.action.GameActionHandler;
 import machinestrike.game.action.MoveAction;
 import machinestrike.game.level.Board;
 import machinestrike.game.machine.Machine;

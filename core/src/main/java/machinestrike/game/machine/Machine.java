@@ -1,6 +1,6 @@
 package machinestrike.game.machine;
 
-import machinestrike.action.GameActionHandler;
+import machinestrike.game.action.GameActionHandler;
 import machinestrike.debug.Assert;
 import machinestrike.game.*;
 import machinestrike.game.action.AttackAction;

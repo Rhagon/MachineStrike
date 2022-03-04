@@ -1,7 +1,5 @@
-package machinestrike.action;
+package machinestrike.game.action;
 
-import machinestrike.game.action.AttackAction;
-import machinestrike.game.action.MoveAction;
 import machinestrike.game.rule.RuleViolation;
 import org.jetbrains.annotations.NotNull;
 
