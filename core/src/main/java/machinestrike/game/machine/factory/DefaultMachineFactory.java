@@ -3,6 +3,7 @@ package machinestrike.game.machine.factory;
 import machinestrike.game.Orientation;
 import machinestrike.game.Player;
 import machinestrike.game.machine.Armor;
+import machinestrike.game.machine.Gunner;
 import machinestrike.game.machine.Machine;
 import machinestrike.game.machine.Melee;
 
@@ -24,6 +25,10 @@ public class DefaultMachineFactory implements MachineFactory {
 
     public Machine createBurrower(Player player, Orientation orientation) {
         return new Melee("Burrower", player, 1, 4, 2, 2, 1, orientation, Armor.defaultArmor, Set.of(Machine.GROUNDED));
+    }
+
+    public Machine createScrapper(Player player, Orientation orientation) {
+        return new Gunner("Scrapper", player, 1, 4, 2, 2, 2, orientation, Armor.defaultArmor, Set.of(Machine.GROUNDED));
     }
 
     //TODO create factory methods for every missing machine

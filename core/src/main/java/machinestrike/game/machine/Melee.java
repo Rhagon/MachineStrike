@@ -4,6 +4,7 @@ import machinestrike.debug.Assert;
 import machinestrike.game.*;
 import machinestrike.game.action.AttackAction;
 import machinestrike.game.level.Board;
+import machinestrike.game.level.Field;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,28 +33,7 @@ public class Melee extends Machine {
 
     @Override
     public void attack(@NotNull AttackAction action) {
-        Assert.requireNotNull(field());
-        Game game = field().board().game();
-        Assert.requireNotNull(game);
-        Assert.equal(field().position(), action.origin());
-        for(Point point : assailableFields()) {
-            Machine machineOnPoint = game.board().field(point).machine();
-            if(machineOnPoint != null && machineOnPoint.player() == player().opponent()) {
-                int damage = Math.max(1, calculateCombatPower(orientation()) - machineOnPoint.calculateCombatPower(orientation().add(Orientation.SOUTH)));
-                if(damage == 1) {
-                    //TODO implement defense break
-                }
-                machineOnPoint.damage(damage);
-                if(damage == 1) {
-                    damage(1);
-                }
-            }
-        }
-        game.usedMachine(this);
-        if(!canAttack()) {
-            overcharge();
-        }
-        canAttack(false);
+        performStandardAttack(this, action.origin());
     }
 
     @Override
@@ -71,5 +51,15 @@ public class Melee extends Machine {
             }
         }
         return fields;
+    }
+
+    @Override
+    public boolean canCurrentlyPerformAttack() {
+        Field f = firstAssailableFieldWithMachine();
+        if(f != null) {
+            Assert.requireNotNull(f.machine());
+            return f.machine().player() == player().opponent();
+        }
+        return false;
     }
 }

@@ -255,15 +255,28 @@ public abstract class Machine {
     public abstract void attack(@NotNull AttackAction action);
 
     @Contract(pure = true)
-    @NotNull
-    public List<Point> assailableFields() {
+    @Nullable
+    public Field firstAssailableFieldWithMachine() {
         Assert.requireNotNull(field);
-        return assailableFields(field.position(), orientation);
+        for(Point point : assailableFields(field.position(), orientation)) {
+            Machine machineOnPoint = field.board().field(point).machine();
+            if(machineOnPoint != null) {
+                return field.board().field(point);
+            }
+        }
+        return null;
     }
 
+    /**
+     * Creates a list of all possible positions that the machine can attack on relative to the passed point and orientation
+     * @param from Relative point
+     * @param orientation Relative position
+     */
     @Contract(pure = true)
     @NotNull
     public abstract List<Point> assailableFields(@NotNull Point from, @NotNull Orientation orientation);
+
+    public abstract boolean canCurrentlyPerformAttack();
 
     @Contract(pure = true)
     public int calculateCombatPower(@NotNull Orientation orientation) {
@@ -274,7 +287,8 @@ public abstract class Machine {
         int basePower = player() == game.playerOnTurn() ? strength : 0;
         int armorModified = basePower + armor.inDirection(orientation).damageModifier();
         int terrainModified = armorModified + field().terrain().strengthModifier();
-        return terrainModified + game.ruleBook().strengthModifier(field());
+        int ruleModified = terrainModified + game.ruleBook().strengthModifier(field());
+        return Math.max(0, ruleModified);
     }
 
     public void damage(int amount) {
@@ -288,9 +302,52 @@ public abstract class Machine {
         }
     }
 
+    protected void defenseBreak(@NotNull Orientation knockBackDirection) {
+        Assert.requireNotNull(field);
+        Field destination = field.board().field(field.position().add(knockBackDirection.asPoint()));
+        Machine machineOnDestination = destination.machine();
+        if(machineOnDestination != null) {
+            damage(1);
+            machineOnDestination.damage(1);
+            return;
+        }
+        MoveAction knockBackMove = new MoveAction(field.position(), destination.position(), orientation, false, false);
+        Game game = field.board().game();
+        Assert.requireNotNull(game);
+        if(game.ruleBook().testMove(game, knockBackMove)) {
+            field(destination);
+        } else {
+            damage(1);
+        }
+    }
+
     @Override
     public String toString() {
         return "[" + descriptor() + orientation.descriptor() + ']';
+    }
+
+    protected static void performStandardAttack(@NotNull Machine machine, @NotNull Point origin) {
+        Assert.requireNotNull(machine.field());
+        Game game = machine.field().board().game();
+        Assert.requireNotNull(game);
+        Assert.equal(machine.field().position(), origin);
+        Field attackedField = machine.firstAssailableFieldWithMachine();
+        Assert.requireNotNull(attackedField);
+        Machine attackedMachine = attackedField.machine();
+        Assert.requireNotNull(attackedMachine);
+        int damage = Math.max(1, machine.calculateCombatPower(machine.orientation()) - attackedMachine.calculateCombatPower(machine.orientation().add(Orientation.SOUTH)));
+        if(damage == 1) {
+            attackedMachine.defenseBreak(machine.orientation());
+        }
+        attackedMachine.damage(damage);
+        if(damage == 1) {
+            machine.damage(1);
+        }
+        game.usedMachine(machine);
+        if(!machine.canAttack()) {
+            machine.overcharge();
+        }
+        machine.canAttack(false);
     }
 
 }

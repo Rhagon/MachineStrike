@@ -48,7 +48,7 @@ public class GameNotOverRule {
 
         @Override
         public boolean test(Game game, MoveAction action) {
-            return game.winner() == null;
+            return game.winner() == null || action.virtualMove();
         }
 
     }

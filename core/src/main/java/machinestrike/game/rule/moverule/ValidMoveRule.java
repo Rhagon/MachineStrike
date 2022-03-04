@@ -36,7 +36,7 @@ public class ValidMoveRule implements MoveRule{
         }
         Machine machine = game.board().field(action.origin()).machine();
         return machine != null
-                && machine.player() == game.playerOnTurn()
+                && (machine.player() == game.playerOnTurn() || action.virtualMove())
                 && game.board().field(action.destination()).machine() == null
                 && (!action.sprint() || machine.canAttack());
     }

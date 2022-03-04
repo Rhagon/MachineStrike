@@ -38,6 +38,6 @@ public class CanReachDestinationRule implements MoveRule {
         Assert.requireNotNull(machine);
         Predicate<Terrain> canPass = t -> !t.is(Terrain.IMPEDE_MOVEMENT) && ChasmNoGroundedRule.instance().test(t, machine);
         int range = machine.moveRange() + (action.sprint() ? 1 : 0);
-        return pathfinder.canReach(game, action.origin(), action.destination(), canPass, range);
+        return action.virtualMove() || pathfinder.canReach(game, action.origin(), action.destination(), canPass, range);
     }
 }

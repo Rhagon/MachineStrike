@@ -1,10 +1,12 @@
 package machinestrike.game.machine;
 
+import machinestrike.debug.Assert;
 import machinestrike.game.Orientation;
 import machinestrike.game.Player;
 import machinestrike.game.Point;
 import machinestrike.game.Trait;
 import machinestrike.game.action.AttackAction;
+import machinestrike.game.level.Field;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -29,11 +31,21 @@ public class Gunner extends Machine{
 
     @Override
     public void attack(@NotNull AttackAction action) {
-
+        performStandardAttack(this, action.origin());
     }
 
     @Override
     public @NotNull List<Point> assailableFields(@NotNull Point from, @NotNull Orientation orientation) {
-        return null;
+        return List.of(from.add(orientation.asPoint().multiply(attackRange())));
+    }
+
+    @Override
+    public boolean canCurrentlyPerformAttack() {
+        Field f = firstAssailableFieldWithMachine();
+        if(f != null) {
+            Assert.requireNotNull(f.machine());
+            return f.machine().player() == player().opponent();
+        }
+        return false;
     }
 }

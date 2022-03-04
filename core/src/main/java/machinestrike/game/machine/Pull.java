@@ -35,4 +35,9 @@ public class Pull extends Machine{
     public @NotNull List<Point> assailableFields(@NotNull Point from, @NotNull Orientation orientation) {
         return null;
     }
+
+    @Override
+    public boolean canCurrentlyPerformAttack() {
+        return false;
+    }
 }

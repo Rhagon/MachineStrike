@@ -1,6 +1,5 @@
 package machinestrike.client.console;
 
-import machinestrike.util.ActionUnion;
 import machinestrike.client.console.action.ConsoleActionHandler;
 import machinestrike.client.console.action.HelpAction;
 import machinestrike.client.console.action.QuitAction;
@@ -26,6 +25,7 @@ import machinestrike.game.rule.RuleBook;
 import machinestrike.game.rule.RuleViolation;
 import machinestrike.game.rule.factory.DefaultRuleBookFactory;
 import machinestrike.game.rule.factory.RuleBookFactory;
+import machinestrike.util.ActionUnion;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -82,11 +82,11 @@ public class ConsoleClient implements ConsoleActionHandler {
     }
 
     public void setup() {
-        Assert.requireNotNull(game);
-        game.board().field(1, 2).machine(machineFactory.createBurrower(Player.BLUE, Orientation.NORTH));
+        Assert.requireNotNull(board);
+        board.field(1, 2).machine(machineFactory.createBurrower(Player.BLUE, Orientation.NORTH));
         for(int i = 0; i <= 3; ++i) {
-            game.board().field(3, i).terrain(terrainFactory.createChasm());
-            game.board().field(i, 3).terrain(terrainFactory.createMarsh());
+            board.field(3, i).terrain(terrainFactory.createChasm());
+            board.field(i, 3).terrain(terrainFactory.createMarsh());
         }
     }
 
