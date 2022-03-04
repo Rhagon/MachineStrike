@@ -239,6 +239,9 @@ public abstract class Machine {
         Assert.equal(field.position(), action.origin());
         field(game.board().field(action.destination()));
         orientation(action.orientation());
+        if(action.virtualMove()) {
+            return;
+        }
         game.usedMachine(this);
         if(!canMove) {
             overcharge();
@@ -311,11 +314,11 @@ public abstract class Machine {
             machineOnDestination.damage(1);
             return;
         }
-        MoveAction knockBackMove = new MoveAction(field.position(), destination.position(), orientation, false, false);
+        MoveAction knockBackMove = new MoveAction(field.position(), destination.position(), orientation, false, true);
         Game game = field.board().game();
         Assert.requireNotNull(game);
         if(game.ruleBook().testMove(game, knockBackMove)) {
-            field(destination);
+            move(knockBackMove);
         } else {
             damage(1);
         }
