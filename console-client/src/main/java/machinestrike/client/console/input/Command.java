@@ -1,9 +1,9 @@
 package machinestrike.client.console.input;
 
-import machinestrike.util.ActionUnion;
+import machinestrike.action.ActionUnion;
 import machinestrike.client.console.action.ConsoleActionHandler;
 import machinestrike.client.console.input.parser.Parser;
-import machinestrike.game.action.GameActionHandler;
+import machinestrike.action.GameActionHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Matcher;

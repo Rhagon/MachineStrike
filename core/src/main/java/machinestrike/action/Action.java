@@ -1,4 +1,4 @@
-package machinestrike.game.action;
+package machinestrike.action;
 
 import machinestrike.game.rule.RuleViolation;
 import org.jetbrains.annotations.NotNull;

@@ -1,7 +1,7 @@
 package machinestrike.client.console.input.factory;
 
 import machinestrike.client.console.ConsoleClient;
-import machinestrike.util.ActionUnion;
+import machinestrike.action.ActionUnion;
 import machinestrike.client.console.action.HelpAction;
 import machinestrike.client.console.action.QuitAction;
 import machinestrike.client.console.input.Command;

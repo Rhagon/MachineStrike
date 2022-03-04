@@ -1,5 +1,6 @@
 package machinestrike.game.action;
 
+import machinestrike.action.GameActionHandler;
 import machinestrike.game.Point;
 import machinestrike.game.rule.RuleViolation;
 import org.jetbrains.annotations.NotNull;

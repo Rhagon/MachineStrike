@@ -1,7 +1,7 @@
 package machinestrike.game.rule;
 
 import machinestrike.game.Game;
-import machinestrike.game.action.Action;
+import machinestrike.action.Action;
 import org.jetbrains.annotations.NotNull;
 
 public interface Rule<ActionType extends Action> {

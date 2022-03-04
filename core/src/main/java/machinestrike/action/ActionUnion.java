@@ -1,7 +1,6 @@
-package machinestrike.util;
+package machinestrike.action;
 
 import machinestrike.debug.Assert;
-import machinestrike.game.action.Action;
 import machinestrike.game.rule.RuleViolation;
 
 public class ActionUnion<HandlerTypeA, HandlerTypeB> {

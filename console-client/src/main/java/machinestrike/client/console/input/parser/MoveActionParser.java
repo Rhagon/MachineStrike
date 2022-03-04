@@ -1,10 +1,10 @@
 package machinestrike.client.console.input.parser;
 
-import machinestrike.util.ActionUnion;
+import machinestrike.action.ActionUnion;
 import machinestrike.client.console.action.ConsoleActionHandler;
 import machinestrike.game.Orientation;
 import machinestrike.game.Point;
-import machinestrike.game.action.GameActionHandler;
+import machinestrike.action.GameActionHandler;
 import machinestrike.game.action.MoveAction;
 import org.jetbrains.annotations.NotNull;
 
