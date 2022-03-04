@@ -1,16 +1,18 @@
 package machinestrike.game.machine;
 
+import machinestrike.debug.Assert;
+import machinestrike.game.Game;
 import machinestrike.game.Orientation;
 import machinestrike.game.Player;
-import machinestrike.game.Point;
 import machinestrike.game.Trait;
 import machinestrike.game.action.AttackAction;
+import machinestrike.game.action.MoveAction;
+import machinestrike.game.level.Field;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.Set;
 
-public class Ram extends Machine{
+public class Ram extends Melee {
 
     public Ram(@NotNull String name, @NotNull Player player, int victoryPoints, int health, int strength, int moveRange,
                int attackRange, @NotNull Orientation orientation, @NotNull Armor armor, @NotNull Set<Trait> traits) {
@@ -29,16 +31,20 @@ public class Ram extends Machine{
 
     @Override
     public void attack(@NotNull AttackAction<?> action) {
-
+        Assert.requireNotNull(field());
+        Game game = field().board().game();
+        Assert.requireNotNull(game);
+        Field attackedField = firstAssailableFieldWithMachine();
+        Assert.requireNotNull(attackedField);
+        performStandardAttack(this, action.origin());
+        Machine attackedMachine = attackedField.machine();
+        if(attackedMachine != null) {
+            attackedMachine.knockBack(orientation());
+        }
+        MoveAction<Game> follow = new MoveAction<>(action.origin(), attackedField.position(), orientation(), false, true);
+        if(game.ruleBook().testMove(game, follow)) {
+            Assert.requireNoThrow(() -> game.handle(follow));
+        }
     }
 
-    @Override
-    public @NotNull List<Point> assailableFields(@NotNull Point from, @NotNull Orientation orientation) {
-        return null;
-    }
-
-    @Override
-    public boolean canCurrentlyPerformAttack() {
-        return false;
-    }
 }

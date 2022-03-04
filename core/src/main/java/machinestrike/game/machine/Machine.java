@@ -1,6 +1,5 @@
 package machinestrike.game.machine;
 
-import machinestrike.game.action.GameActionHandler;
 import machinestrike.debug.Assert;
 import machinestrike.game.*;
 import machinestrike.game.action.AttackAction;
@@ -306,7 +305,7 @@ public abstract class Machine {
         }
     }
 
-    protected void defenseBreak(@NotNull Orientation knockBackDirection) {
+    protected void knockBack(@NotNull Orientation knockBackDirection) {
         Assert.requireNotNull(field);
         Field destination = field.board().field(field.position().add(knockBackDirection.asPoint()));
         Machine machineOnDestination = destination.machine();
@@ -315,7 +314,7 @@ public abstract class Machine {
             machineOnDestination.damage(1);
             return;
         }
-        MoveAction<GameActionHandler> knockBackMove = new MoveAction<>(field.position(), destination.position(), orientation, false, true);
+        MoveAction<Game> knockBackMove = new MoveAction<>(field.position(), destination.position(), orientation, false, true);
         Game game = field.board().game();
         Assert.requireNotNull(game);
         if(game.ruleBook().testMove(game, knockBackMove)) {
@@ -341,7 +340,7 @@ public abstract class Machine {
         Assert.requireNotNull(attackedMachine);
         int damage = Math.max(1, machine.calculateCombatPower(machine.orientation()) - attackedMachine.calculateCombatPower(machine.orientation().add(Orientation.SOUTH)));
         if(damage == 1) {
-            attackedMachine.defenseBreak(machine.orientation());
+            attackedMachine.knockBack(machine.orientation());
         }
         attackedMachine.damage(damage);
         if(damage == 1) {

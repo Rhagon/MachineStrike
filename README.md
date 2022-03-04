@@ -35,7 +35,7 @@ at creation and assign separate handlers to them later.
 | Gunner | Implemented | Attacks at the end of it's attack range                                                                                       |
 | Melee  | Implemented | Attacks the first machine in it's attack range                                                                                |
 | Pull   | Stub        | Attacks the first machine in it's attack range and pulls it one field closer. +1 while on march and can traverse march        |
-| Ram    | Stub        | Attacks the first machine in it's attack range and knocks it back                                                             |
+| Ram    | Implemented | Attacks the first machine in it's attack range and knocks it back                                                             |
 | Swoop  | Stub        | Moves in front of the first machine in it's attack range and attacks it. +1 Attack on all terrains, ignores terrain penalties |
 
 ### Implemented machines
