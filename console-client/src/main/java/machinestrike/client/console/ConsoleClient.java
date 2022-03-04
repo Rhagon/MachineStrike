@@ -1,6 +1,7 @@
 package machinestrike.client.console;
 
-import machinestrike.client.console.action.ConsoleActionHandler;
+import machinestrike.action.Action;
+import machinestrike.client.console.action.ClientActionHandler;
 import machinestrike.client.console.action.HelpAction;
 import machinestrike.client.console.action.QuitAction;
 import machinestrike.client.console.input.Command;
@@ -12,8 +13,8 @@ import machinestrike.debug.Assert;
 import machinestrike.game.Game;
 import machinestrike.game.Orientation;
 import machinestrike.game.Player;
-import machinestrike.action.Action;
-import machinestrike.action.GameActionHandler;
+import machinestrike.game.action.AttackAction;
+import machinestrike.game.action.MoveAction;
 import machinestrike.game.level.Board;
 import machinestrike.game.level.factory.BoardFactory;
 import machinestrike.game.level.factory.DefaultBoardFactory;
@@ -25,14 +26,13 @@ import machinestrike.game.rule.RuleBook;
 import machinestrike.game.rule.RuleViolation;
 import machinestrike.game.rule.factory.DefaultRuleBookFactory;
 import machinestrike.game.rule.factory.RuleBookFactory;
-import machinestrike.action.ActionUnion;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.InputStream;
 import java.io.PrintStream;
 
-public class ConsoleClient implements ConsoleActionHandler {
+public class ConsoleClient implements ClientActionHandler {
 
     public static void main(String[] args) {
         new ConsoleClient().run();
@@ -97,9 +97,9 @@ public class ConsoleClient implements ConsoleActionHandler {
         game = new Game(board, Player.BLUE, ruleBook);
         renderer.board(board);
         renderer.render();
-        for(ActionUnion<GameActionHandler, ConsoleActionHandler> action : inputHandler) {
+        for(Action<ClientActionHandler> action : inputHandler) {
             try {
-                action.firstHandler(game).secondHandler(this).execute();
+                action.execute(this);
                 renderer.render();
             } catch (RuleViolation e) {
                 output.println(e.getMessage());
@@ -107,7 +107,7 @@ public class ConsoleClient implements ConsoleActionHandler {
         }
     }
 
-    public void execute(@NotNull Action<ConsoleActionHandler> action) throws RuleViolation {
+    public void execute(@NotNull Action<ClientActionHandler> action) throws RuleViolation {
         action.execute(this);
     }
 
@@ -116,9 +116,19 @@ public class ConsoleClient implements ConsoleActionHandler {
     }
 
     public void handle(@NotNull HelpAction action) {
-        for(Command command : inputHandler.commands()) {
+        for(Command<?> command : inputHandler.commands()) {
             output.println(command.syntax());
         }
+    }
+
+    public void handle(@NotNull AttackAction<?> action) throws RuleViolation {
+        Assert.requireNotNull(game);
+        game.handle(action);
+    }
+
+    public void handle(@NotNull MoveAction<?> action) throws RuleViolation {
+        Assert.requireNotNull(game);
+        game.handle(action);
     }
 
 }

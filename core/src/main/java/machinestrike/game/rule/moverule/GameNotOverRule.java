@@ -32,7 +32,7 @@ public class GameNotOverRule {
         }
 
         @Override
-        public boolean test(Game game, AttackAction action) {
+        public boolean test(Game game, AttackAction<?> action) {
             return game.winner() == null;
         }
     }
@@ -47,7 +47,7 @@ public class GameNotOverRule {
         }
 
         @Override
-        public boolean test(Game game, MoveAction action) {
+        public boolean test(Game game, MoveAction<?> action) {
             return game.winner() == null || action.virtualMove();
         }
 

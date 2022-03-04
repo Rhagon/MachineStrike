@@ -1,8 +1,7 @@
 package machinestrike.client.console.input;
 
-import machinestrike.action.ActionUnion;
-import machinestrike.client.console.action.ConsoleActionHandler;
-import machinestrike.action.GameActionHandler;
+import machinestrike.action.Action;
+import machinestrike.client.console.action.ClientActionHandler;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,17 +11,17 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public final class InputHandler implements Iterable<ActionUnion<GameActionHandler, ConsoleActionHandler>> {
+public final class InputHandler implements Iterable<Action<ClientActionHandler>> {
 
     @NotNull
     private final BufferedReader reader;
     @NotNull
     private final PrintStream output;
     @NotNull
-    private final List<Command> commands;
+    private final List<Command<?>> commands;
     private boolean active;
 
-    public InputHandler(@NotNull InputStream input, @NotNull PrintStream output, @NotNull List<Command> commands) {
+    public InputHandler(@NotNull InputStream input, @NotNull PrintStream output, @NotNull List<Command<?>> commands) {
         reader = new BufferedReader(new InputStreamReader(input));
         this.output = output;
         this.commands = commands;
@@ -30,7 +29,7 @@ public final class InputHandler implements Iterable<ActionUnion<GameActionHandle
     }
 
     @Contract(pure = true)
-    public List<Command> commands() {
+    public List<Command<?>> commands() {
         return Collections.unmodifiableList(commands);
     }
 
@@ -47,9 +46,9 @@ public final class InputHandler implements Iterable<ActionUnion<GameActionHandle
 
     @NotNull
     @Override
-    public Iterator<ActionUnion<GameActionHandler, ConsoleActionHandler>> iterator() {
+    public Iterator<Action<ClientActionHandler>> iterator() {
         return new Iterator<>() {
-            ActionUnion<GameActionHandler, ConsoleActionHandler> buffer = null;
+            Action<ClientActionHandler> buffer = null;
             @Override
             public boolean hasNext() {
                 if(!active) {
@@ -61,11 +60,11 @@ public final class InputHandler implements Iterable<ActionUnion<GameActionHandle
                 return buffer != null;
             }
             @Override
-            public ActionUnion<GameActionHandler, ConsoleActionHandler> next() {
+            public Action<ClientActionHandler> next() {
                 if(buffer == null) {
                     buffer = readAction();
                 }
-                ActionUnion<GameActionHandler, ConsoleActionHandler> a = buffer;
+                Action<ClientActionHandler> a = buffer;
                 buffer = null;
                 return a;
             }
@@ -73,7 +72,7 @@ public final class InputHandler implements Iterable<ActionUnion<GameActionHandle
     }
 
     @Nullable
-    private ActionUnion<GameActionHandler, ConsoleActionHandler> readAction() {
+    private Action<ClientActionHandler> readAction() {
         while(true) {
             String line;
             try {
@@ -84,8 +83,8 @@ public final class InputHandler implements Iterable<ActionUnion<GameActionHandle
             if(line == null) {
                 return null;
             }
-            for(Command command : commands) {
-                ActionUnion<GameActionHandler, ConsoleActionHandler> action = command.parse(line);
+            for(Command<?> command : commands) {
+                Action<ClientActionHandler> action = command.parse(line);
                 if(action != null) {
                     return action;
                 }

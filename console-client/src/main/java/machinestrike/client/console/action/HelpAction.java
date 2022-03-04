@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 public class HelpAction implements ConsoleAction {
 
     @Override
-    public void execute(@NotNull ConsoleActionHandler handler) {
+    public void execute(@NotNull ClientActionHandler handler) {
         handler.handle(this);
     }
 

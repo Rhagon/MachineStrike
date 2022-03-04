@@ -30,7 +30,7 @@ public class ValidMoveRule implements MoveRule{
     }
 
     @Override
-    public boolean test(Game game, MoveAction action) {
+    public boolean test(Game game, MoveAction<?> action) {
         if(!game.board().hasField(action.origin()) || !game.board().hasField(action.destination())) {
             return false;
         }

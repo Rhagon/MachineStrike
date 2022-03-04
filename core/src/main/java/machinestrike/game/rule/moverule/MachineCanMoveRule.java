@@ -26,7 +26,7 @@ public class MachineCanMoveRule implements MoveRule{
     }
 
     @Override
-    public boolean test(Game game, MoveAction action) {
+    public boolean test(Game game, MoveAction<?> action) {
         Machine machine = game.board().field(action.origin()).machine();
         Assert.requireNotNull(machine);
         return machine.canMove() || !machine.wasOvercharged() || action.virtualMove();

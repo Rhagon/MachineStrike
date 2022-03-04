@@ -1,16 +1,14 @@
 package machinestrike.client.console.input.parser;
 
-import machinestrike.action.ActionUnion;
-import machinestrike.client.console.action.ConsoleActionHandler;
+import machinestrike.client.console.action.ClientActionHandler;
 import machinestrike.game.Orientation;
 import machinestrike.game.Point;
-import machinestrike.action.GameActionHandler;
 import machinestrike.game.action.MoveAction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Matcher;
 
-public class MoveActionParser implements Parser<ActionUnion<GameActionHandler, ConsoleActionHandler>> {
+public class MoveActionParser implements Parser<MoveAction<ClientActionHandler>> {
 
     private static MoveActionParser instance;
 
@@ -26,12 +24,7 @@ public class MoveActionParser implements Parser<ActionUnion<GameActionHandler, C
 
     @Override
     @NotNull
-    public ActionUnion<GameActionHandler, ConsoleActionHandler> parse(@NotNull Matcher matcher) {
-        return ActionUnion.first(parseToAction(matcher));
-    }
-
-    @NotNull
-    public MoveAction parseToAction(@NotNull Matcher matcher) {
+    public MoveAction<ClientActionHandler> parse(@NotNull Matcher matcher) {
         int oc = matcher.group("oc").toUpperCase().charAt(0) - 'A';
         int or = Integer.parseInt(matcher.group("or")) - 1;
         int dc = matcher.group("dc").toUpperCase().charAt(0) - 'A';
@@ -43,6 +36,7 @@ public class MoveActionParser implements Parser<ActionUnion<GameActionHandler, C
             case 'w' -> Orientation.WEST;
             default -> throw new IllegalStateException("invalid direction that should have been captured by the caller");
         };
-        return new MoveAction(new Point(oc, or), new Point(dc, dr), dir, false);
+        return new MoveAction<>(new Point(oc, or), new Point(dc, dr), dir, false);
     }
+
 }

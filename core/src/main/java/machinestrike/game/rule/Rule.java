@@ -4,7 +4,7 @@ import machinestrike.game.Game;
 import machinestrike.action.Action;
 import org.jetbrains.annotations.NotNull;
 
-public interface Rule<ActionType extends Action> {
+public interface Rule<ActionType extends Action<?>> {
 
     @NotNull String errorMessage();
 

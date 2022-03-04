@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface CommandListFactory {
 
-    List<Command> createCommandList(ConsoleClient client);
+    List<Command<?>> createCommandList(ConsoleClient client);
 
 }

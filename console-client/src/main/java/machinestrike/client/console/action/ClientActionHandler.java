@@ -1,8 +1,9 @@
 package machinestrike.client.console.action;
 
+import machinestrike.action.GameActionHandler;
 import org.jetbrains.annotations.NotNull;
 
-public interface ConsoleActionHandler {
+public interface ClientActionHandler extends GameActionHandler {
 
     void handle(@NotNull HelpAction action);
 

@@ -25,7 +25,7 @@ public class ValidAttackRule implements AttackRule {
     }
 
     @Override
-    public boolean test(Game game, AttackAction action) {
+    public boolean test(Game game, AttackAction<?> action) {
         if(!game.board().hasField(action.origin())) {
             return false;
         }

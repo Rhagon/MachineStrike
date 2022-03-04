@@ -148,4 +148,15 @@ public class Assert {
         same(t1, t2, "Assertion failed: " + t1 + " = " + t2, level);
     }
 
+    public interface CrashableRunnable {
+        void run() throws Throwable;
+    }
+
+    public static void requireNoThrow(CrashableRunnable run) {
+        try {
+            run.run();
+        } catch(Throwable t) {
+            Level.severe.handle("Unexpected throw: " + t);
+        }
+    }
 }

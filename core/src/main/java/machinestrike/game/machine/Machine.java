@@ -1,5 +1,6 @@
 package machinestrike.game.machine;
 
+import machinestrike.action.GameActionHandler;
 import machinestrike.debug.Assert;
 import machinestrike.game.*;
 import machinestrike.game.action.AttackAction;
@@ -232,7 +233,7 @@ public abstract class Machine {
     /**
      * Executes a move without verifying it. That has to be done by the caller.
      */
-    public void move(@NotNull MoveAction action) {
+    public void move(@NotNull MoveAction<?> action) {
         Assert.requireNotNull(field);
         Game game = field.board().game();
         Assert.requireNotNull(game);
@@ -255,7 +256,7 @@ public abstract class Machine {
     /**
      * Executes an attack without verifying it. That has to be done by the caller.
      */
-    public abstract void attack(@NotNull AttackAction action);
+    public abstract void attack(@NotNull AttackAction<?> action);
 
     @Contract(pure = true)
     @Nullable
@@ -314,11 +315,11 @@ public abstract class Machine {
             machineOnDestination.damage(1);
             return;
         }
-        MoveAction knockBackMove = new MoveAction(field.position(), destination.position(), orientation, false, true);
+        MoveAction<GameActionHandler> knockBackMove = new MoveAction<>(field.position(), destination.position(), orientation, false, true);
         Game game = field.board().game();
         Assert.requireNotNull(game);
         if(game.ruleBook().testMove(game, knockBackMove)) {
-            move(knockBackMove);
+            Assert.requireNoThrow(() -> game.handle(knockBackMove));
         } else {
             damage(1);
         }

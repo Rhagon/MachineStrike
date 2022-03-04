@@ -107,14 +107,14 @@ public class Game implements GameActionHandler {
         action.execute(this);
     }
 
-    public void handle(@NotNull MoveAction action) throws RuleViolation {
+    public void handle(@NotNull MoveAction<?> action) throws RuleViolation {
         ruleBook.verifyMove(this, action);
         Machine machine = board.field(action.origin()).machine();
         Assert.requireNotNull(machine);
         machine.move(action);
     }
 
-    public void handle(@NotNull AttackAction action) throws RuleViolation {
+    public void handle(@NotNull AttackAction<?> action) throws RuleViolation {
         ruleBook.verifyAttack(this, action);
         Machine machine = board.field(action.origin()).machine();
         Assert.requireNotNull(machine);
