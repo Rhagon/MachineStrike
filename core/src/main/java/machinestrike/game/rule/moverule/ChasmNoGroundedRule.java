@@ -31,7 +31,7 @@ public class ChasmNoGroundedRule implements MoveRule{
     }
 
     @Override
-    public boolean test(@NotNull Game game, @NotNull MoveAction<?> action) {
+    public boolean test(@NotNull Game game, @NotNull MoveAction action) {
         Machine machine = game.board().field(action.origin()).machine();
         Terrain terrain = game.board().field(action.destination()).terrain();
         Assert.requireNotNull(machine);

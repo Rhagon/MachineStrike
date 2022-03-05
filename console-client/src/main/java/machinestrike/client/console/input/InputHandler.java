@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public final class InputHandler implements Iterable<Action<ClientActionHandler>> {
+public final class InputHandler implements Iterable<Action<? super ClientActionHandler>> {
 
     @NotNull
     private final BufferedReader reader;
@@ -46,9 +46,9 @@ public final class InputHandler implements Iterable<Action<ClientActionHandler>>
 
     @NotNull
     @Override
-    public Iterator<Action<ClientActionHandler>> iterator() {
+    public Iterator<Action<? super ClientActionHandler>> iterator() {
         return new Iterator<>() {
-            Action<ClientActionHandler> buffer = null;
+            Action<? super ClientActionHandler> buffer = null;
             @Override
             public boolean hasNext() {
                 if(!active) {
@@ -60,11 +60,11 @@ public final class InputHandler implements Iterable<Action<ClientActionHandler>>
                 return buffer != null;
             }
             @Override
-            public Action<ClientActionHandler> next() {
+            public Action<? super ClientActionHandler> next() {
                 if(buffer == null) {
                     buffer = readAction();
                 }
-                Action<ClientActionHandler> a = buffer;
+                Action<? super ClientActionHandler> a = buffer;
                 buffer = null;
                 return a;
             }
@@ -72,7 +72,7 @@ public final class InputHandler implements Iterable<Action<ClientActionHandler>>
     }
 
     @Nullable
-    private Action<ClientActionHandler> readAction() {
+    private Action<? super ClientActionHandler> readAction() {
         while(true) {
             String line;
             try {
@@ -84,7 +84,7 @@ public final class InputHandler implements Iterable<Action<ClientActionHandler>>
                 return null;
             }
             for(Command<?> command : commands) {
-                Action<ClientActionHandler> action = command.parse(line);
+                Action<? super ClientActionHandler> action = command.parse(line);
                 if(action != null) {
                     return action;
                 }

@@ -26,7 +26,7 @@ public class MachineCanAttackRule implements AttackRule {
     }
 
     @Override
-    public boolean test(Game game, AttackAction<?> action) {
+    public boolean test(Game game, AttackAction action) {
         Machine machine = game.board().field(action.origin()).machine();
         Assert.requireNotNull(machine);
         if(!machine.canAttack() && machine.wasOvercharged()) {

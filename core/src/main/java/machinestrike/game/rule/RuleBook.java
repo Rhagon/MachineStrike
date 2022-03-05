@@ -25,7 +25,7 @@ public record RuleBook(int machinesPerTurn, int requiredVictoryPoints, List<Move
         this.strengthRules = Collections.unmodifiableList(strengthRules);
     }
 
-    public boolean testMove(@NotNull Game game, @NotNull MoveAction<?> action) {
+    public boolean testMove(@NotNull Game game, @NotNull MoveAction action) {
         for(MoveRule rule : moveRules) {
             if(!rule.test(game, action)) {
                 return false;
@@ -34,13 +34,13 @@ public record RuleBook(int machinesPerTurn, int requiredVictoryPoints, List<Move
         return true;
     }
 
-    public void verifyMove(@NotNull Game game, @NotNull MoveAction<?> action) throws RuleViolation {
+    public void verifyMove(@NotNull Game game, @NotNull MoveAction action) throws RuleViolation {
         for(MoveRule rule : moveRules) {
             rule.verify(game, action);
         }
     }
 
-    public boolean testAttack(@NotNull Game game, @NotNull AttackAction<?> action) {
+    public boolean testAttack(@NotNull Game game, @NotNull AttackAction action) {
         for(AttackRule rule : attackRules) {
             if(!rule.test(game, action)) {
                 return false;
@@ -49,7 +49,7 @@ public record RuleBook(int machinesPerTurn, int requiredVictoryPoints, List<Move
         return true;
     }
 
-    public void verifyAttack(@NotNull Game game, @NotNull AttackAction<?> action) throws RuleViolation {
+    public void verifyAttack(@NotNull Game game, @NotNull AttackAction action) throws RuleViolation {
         for(AttackRule rule : attackRules) {
             rule.verify(game, action);
         }

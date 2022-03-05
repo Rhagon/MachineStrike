@@ -97,7 +97,7 @@ public class ConsoleClient implements ClientActionHandler {
         game = new Game(board, Player.BLUE, ruleBook);
         renderer.board(board);
         renderer.render();
-        for(Action<ClientActionHandler> action : inputHandler) {
+        for(Action<? super ClientActionHandler> action : inputHandler) {
             try {
                 action.execute(this);
                 renderer.render();
@@ -121,12 +121,12 @@ public class ConsoleClient implements ClientActionHandler {
         }
     }
 
-    public void handle(@NotNull AttackAction<?> action) throws RuleViolation {
+    public void handle(@NotNull AttackAction action) throws RuleViolation {
         Assert.requireNotNull(game);
         game.handle(action);
     }
 
-    public void handle(@NotNull MoveAction<?> action) throws RuleViolation {
+    public void handle(@NotNull MoveAction action) throws RuleViolation {
         Assert.requireNotNull(game);
         game.handle(action);
     }

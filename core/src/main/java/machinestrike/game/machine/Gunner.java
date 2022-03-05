@@ -30,7 +30,7 @@ public class Gunner extends Machine{
     }
 
     @Override
-    public void attack(@NotNull AttackAction<?> action) {
+    public void attack(@NotNull AttackAction action) {
         performStandardAttack(this, action.origin());
     }
 

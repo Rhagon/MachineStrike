@@ -5,8 +5,8 @@ import org.jetbrains.annotations.NotNull;
 
 public interface GameActionHandler {
 
-    void handle(@NotNull AttackAction<?> action) throws RuleViolation;
+    void handle(@NotNull AttackAction action) throws RuleViolation;
 
-    void handle(@NotNull MoveAction<?> action) throws RuleViolation;
+    void handle(@NotNull MoveAction action) throws RuleViolation;
 
 }

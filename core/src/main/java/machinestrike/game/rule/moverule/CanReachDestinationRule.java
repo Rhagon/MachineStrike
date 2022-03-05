@@ -33,7 +33,7 @@ public class CanReachDestinationRule implements MoveRule {
     }
 
     @Override
-    public boolean test(@NotNull Game game, @NotNull MoveAction<?> action) {
+    public boolean test(@NotNull Game game, @NotNull MoveAction action) {
         Machine machine = game.board().field(action.origin()).machine();
         Assert.requireNotNull(machine);
         Predicate<Terrain> canPass = t -> !t.is(Terrain.IMPEDE_MOVEMENT) && ChasmNoGroundedRule.instance().test(t, machine);

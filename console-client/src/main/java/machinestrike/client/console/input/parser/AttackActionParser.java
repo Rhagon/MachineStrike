@@ -1,13 +1,12 @@
 package machinestrike.client.console.input.parser;
 
-import machinestrike.client.console.action.ClientActionHandler;
 import machinestrike.game.Point;
 import machinestrike.game.action.AttackAction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Matcher;
 
-public class AttackActionParser implements Parser<AttackAction<ClientActionHandler>> {
+public class AttackActionParser implements Parser<AttackAction> {
 
     private static AttackActionParser instance;
 
@@ -22,10 +21,10 @@ public class AttackActionParser implements Parser<AttackAction<ClientActionHandl
     }
 
     @Override
-    public @NotNull AttackAction<ClientActionHandler> parse(@NotNull Matcher matcher) {
+    public @NotNull AttackAction parse(@NotNull Matcher matcher) {
         int oc = matcher.group("oc").toUpperCase().charAt(0) - 'A';
         int or = Integer.parseInt(matcher.group("or")) - 1;
-        return new AttackAction<>(new Point(oc, or));
+        return new AttackAction(new Point(oc, or));
     }
 
 }

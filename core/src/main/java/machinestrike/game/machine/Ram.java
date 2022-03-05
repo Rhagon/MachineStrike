@@ -30,7 +30,7 @@ public class Ram extends Melee {
     }
 
     @Override
-    public void attack(@NotNull AttackAction<?> action) {
+    public void attack(@NotNull AttackAction action) {
         Assert.requireNotNull(field());
         Game game = field().board().game();
         Assert.requireNotNull(game);
@@ -41,7 +41,7 @@ public class Ram extends Melee {
         if(attackedMachine != null) {
             attackedMachine.knockBack(orientation());
         }
-        MoveAction<Game> follow = new MoveAction<>(action.origin(), attackedField.position(), orientation(), false, true);
+        MoveAction follow = new MoveAction(action.origin(), attackedField.position(), orientation(), false, true);
         if(game.ruleBook().testMove(game, follow)) {
             Assert.requireNoThrow(() -> game.handle(follow));
         }

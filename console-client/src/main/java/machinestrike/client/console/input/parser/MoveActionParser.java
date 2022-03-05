@@ -1,6 +1,5 @@
 package machinestrike.client.console.input.parser;
 
-import machinestrike.client.console.action.ClientActionHandler;
 import machinestrike.game.Orientation;
 import machinestrike.game.Point;
 import machinestrike.game.action.MoveAction;
@@ -8,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Matcher;
 
-public class MoveActionParser implements Parser<MoveAction<ClientActionHandler>> {
+public class MoveActionParser implements Parser<MoveAction> {
 
     private static MoveActionParser instance;
 
@@ -24,7 +23,7 @@ public class MoveActionParser implements Parser<MoveAction<ClientActionHandler>>
 
     @Override
     @NotNull
-    public MoveAction<ClientActionHandler> parse(@NotNull Matcher matcher) {
+    public MoveAction parse(@NotNull Matcher matcher) {
         int oc = matcher.group("oc").toUpperCase().charAt(0) - 'A';
         int or = Integer.parseInt(matcher.group("or")) - 1;
         int dc = matcher.group("dc").toUpperCase().charAt(0) - 'A';
@@ -36,7 +35,7 @@ public class MoveActionParser implements Parser<MoveAction<ClientActionHandler>>
             case 'w' -> Orientation.WEST;
             default -> throw new IllegalStateException("invalid direction that should have been captured by the caller");
         };
-        return new MoveAction<>(new Point(oc, or), new Point(dc, dr), dir, false);
+        return new MoveAction(new Point(oc, or), new Point(dc, dr), dir, false);
     }
 
 }

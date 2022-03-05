@@ -5,10 +5,10 @@ import machinestrike.game.Point;
 import machinestrike.game.rule.RuleViolation;
 import org.jetbrains.annotations.NotNull;
 
-public record AttackAction<T extends GameActionHandler>(@NotNull Point origin) implements Action<T> {
+public record AttackAction(@NotNull Point origin) implements Action<GameActionHandler> {
 
     @Override
-    public void execute(@NotNull T handler) throws RuleViolation {
+    public void execute(@NotNull GameActionHandler handler) throws RuleViolation {
         handler.handle(this);
     }
 

@@ -28,7 +28,7 @@ public class Swoop extends Machine{
     }
 
     @Override
-    public void attack(@NotNull AttackAction<?> action) {
+    public void attack(@NotNull AttackAction action) {
 
     }
 

@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public record Command<ActionType extends Action<ClientActionHandler>>(@NotNull Pattern pattern, @NotNull Parser<ActionType> parser, @NotNull String syntax) {
+public record Command<ActionType extends Action<? super ClientActionHandler>>(@NotNull Pattern pattern, @NotNull Parser<ActionType> parser, @NotNull String syntax) {
 
     public Command(@NotNull String pattern, @NotNull Parser<ActionType> parser, @NotNull String syntax) {
         this(Pattern.compile(pattern), parser, syntax);
