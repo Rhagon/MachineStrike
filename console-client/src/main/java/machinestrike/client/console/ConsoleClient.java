@@ -58,7 +58,12 @@ public class ConsoleClient implements ClientActionHandler {
     private Game game;
 
     public ConsoleClient() {
-        this(System.in, new RenderPrintStream(System.out), System.out);
+        this(System.in, new RenderPrintStream(System.out) {
+            @Override
+            public void clear() {
+                this.print("\033[H\033[2J");
+            }
+        }, System.out);
     }
 
     public ConsoleClient(@NotNull InputStream input, @NotNull RenderStream boardStream, @NotNull PrintStream output) {

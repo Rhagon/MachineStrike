@@ -2,6 +2,12 @@ plugins {
     id 'application'
 }
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'machinestrike.client.console.ConsoleClient'
+    }
+}
+
 application {
     mainClass = 'machinestrike.client.console.ConsoleClient'
 }
