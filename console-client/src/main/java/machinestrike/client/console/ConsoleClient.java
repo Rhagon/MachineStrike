@@ -4,6 +4,7 @@ import machinestrike.action.Action;
 import machinestrike.client.console.action.ClientActionHandler;
 import machinestrike.client.console.action.HelpAction;
 import machinestrike.client.console.action.QuitAction;
+import machinestrike.client.console.action.RedrawAction;
 import machinestrike.client.console.input.Command;
 import machinestrike.client.console.input.InputHandler;
 import machinestrike.client.console.input.factory.CommandListFactory;
@@ -50,8 +51,6 @@ public class ConsoleClient implements ClientActionHandler {
     private final TerrainFactory terrainFactory;
     @NotNull
     private final RuleBookFactory ruleBookFactory;
-    @NotNull
-    private final BoardRenderer renderer;
     @Nullable
     private Board board;
     @Nullable
@@ -83,7 +82,6 @@ public class ConsoleClient implements ClientActionHandler {
         this.ruleBookFactory = rf;
         this.board = null;
         this.game = null;
-        this.renderer = new BoardRenderer(null, boardStream, 13, 5, formatter);
     }
 
     public void setup() {
@@ -100,16 +98,24 @@ public class ConsoleClient implements ClientActionHandler {
         RuleBook ruleBook = ruleBookFactory.createRuleBook();
         setup();
         game = new Game(board, Player.BLUE, ruleBook);
-        renderer.board(board);
-        renderer.render();
+
+        render();
         for(Action<? super ClientActionHandler> action : inputHandler) {
             try {
                 action.execute(this);
-                renderer.render();
+                render();
             } catch (RuleViolation e) {
                 output.println(e.getMessage());
             }
         }
+    }
+
+    private void render() {
+        clearConsole();
+    }
+
+    private void clearConsole() {
+        System.out.println("\033[H\033[2J");
     }
 
     public void execute(@NotNull Action<ClientActionHandler> action) throws RuleViolation {
@@ -124,6 +130,10 @@ public class ConsoleClient implements ClientActionHandler {
         for(Command<?> command : inputHandler.commands()) {
             output.println(command.syntax());
         }
+    }
+
+    public void handle(@NotNull RedrawAction action) {
+        render();
     }
 
     public void handle(@NotNull AttackAction action) throws RuleViolation {

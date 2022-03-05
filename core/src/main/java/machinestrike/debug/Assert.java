@@ -1,22 +1,20 @@
 package machinestrike.debug;
 
-import machinestrike.game.rule.RuleViolation;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.BiPredicate;
-import java.util.function.Predicate;
+import java.util.Stack;
 
 public class Assert {
 
     public enum Level {
-        ignore((message) -> {}),
-        warn(System.err::println),
-        warn_and_explain(x -> {
+        IGNORE((message) -> {}),
+        WARN(System.err::println),
+        WARN_AND_TRACK(x -> {
             System.err.println(x);
-            new RuleViolation(x).printStackTrace(System.err);
+            new AssertionError(x).printStackTrace(System.err);
         }),
-        severe((message) -> {throw new AssertionError(message);});
+        SEVERE((message) -> {throw new AssertionError(message);});
 
         private interface FailHandler {
             void handle(@NotNull String message);
@@ -34,129 +32,102 @@ public class Assert {
         }
     }
 
-    private static Level level = Level.severe;
+    private static final Level DEFAULT_LEVEL = Level.WARN;
+    private static final Stack<Level> stack = new Stack<>();
 
-    public static void setLevel(Level level) {
-        Assert.level = level;
+    public static void push(@NotNull Level newLevel) {
+        stack.push(newLevel);
+    }
+
+    @NotNull
+    public static Level pop() {
+        return stack.pop();
+    }
+
+    @NotNull
+    public static Level level() {
+        if(stack.empty()) {
+            return DEFAULT_LEVEL;
+        }
+        return stack.peek();
     }
 
     public static void range(int min, int value, int max) {
-        range(min, value, max, value + "Failed assertion: " + value + " ∈ [" + min + ", " + max + "]", level);
-    }
-
-    public static void range(int min, int value, int max, @NotNull String message, @NotNull Level level) {
         if(value < min || value > max) {
-            level.handle(message);
+            level().handle(value + "Failed assertion: " + value + " ∈ [" + min + ", " + max + "]");
         }
     }
 
     public static void lessOrEqual(int a, int b) {
-        lessOrEqual(a, b, "Failed assertion: " + a + " ≤ " + b, level);
-    }
-
-    public static void lessOrEqual(int a, int b, @NotNull String message, @NotNull Level level) {
         if(a > b) {
-            level.handle(message);
+            level().handle("Failed assertion: " + a + " ≤ " + b);
         }
     }
 
     public static void less(int a, int b) {
-        less(a, b, "Failed assertion: " + a + " < " + b, level);
-    }
-
-    public static void less(int a, int b, @NotNull String message, @NotNull Level level) {
         if(a >= b) {
-            level.handle(message);
+            level().handle("Failed assertion: " + a + " < " + b);
         }
     }
 
     public static <T> void equal(T a, T b) {
-        equal(a, b, "Failed assertion: " + a + " \u2261 " + b, level);
-    }
-
-    public static <T> void equal(T a, T b, @NotNull String message, @NotNull Level level) {
+        String message = "Failed assertion: " + a + " \u2261 " + b;
         if(a == null) {
             if(b != null) {
-                level.handle(message);
+                level().handle(message);
             }
         } else if(!a.equals(b)) {
-            level.handle(message);
+            level().handle(message);
         }
     }
 
-    public static <T> void condition(Predicate<T> predicate, T value, @NotNull String message) {
-        condition(predicate, value, message, level);
-    }
-
-    public static <T> void condition(Predicate<T> predicate, T value, @NotNull String message, @NotNull Level level) {
-        if(!predicate.test(value)) {
-            level.handle(message);
+    public static <T> void same(T t1, T t2) {
+        if(t1 != t2) {
+            level().handle("Failed assertion: " + t1 + " = " + t2);
         }
     }
 
-    public static <T, U> void condition(BiPredicate<T, U> predicate, T a, U b, @NotNull String message) {
-        condition(predicate, a, b, message, level);
+    public static <T> void notNull(T t) {
+        if (t == null) {
+            level().handle("Failed assertion: <object> ≠ null");
+        }
     }
 
-    public static <T, U> void condition(BiPredicate<T, U> predicate, T a, U b, @NotNull String message, @NotNull Level level) {
-        if(!predicate.test(a, b)) {
-            level.handle(message);
+    public static <T> void isNull(T t) {
+        if(t != null) {
+            level().handle("Failed assertion: " + t + " = null");
+        }
+    }
+
+    public static void isTrue(boolean bool) {
+        if(!bool) {
+            level().handle("Failed assertion: value is true");
         }
     }
 
     @Contract("null -> fail")
     public static <T> void requireNotNull(T t) {
-        notNull(t);
-    }
-
-    public static <T> void notNull(T t) {
-        notNull(t, level);
-    }
-
-    public static <T> void notNull(T t, Level level) {
-        notNull(t, "Failed assertion: object is not null", level);
-    }
-
-    public static <T> void notNull(T t, @NotNull String message, @NotNull Level level) {
-        if (t == null) {
-            level.handle(message);
-        }
-    }
-
-    public static <T> void isNull(T t) {
-        isNull(t, "Failed assertion: object is null", level);
-    }
-
-    public static <T> void isNull(T t, String message, Level level) {
-        if(t != null) {
-            level.handle(message);
+        if(t == null) {
+            Level.SEVERE.handle("Requirement not met: <object> ≠ null");
         }
     }
 
     @Contract("!null -> fail")
     public static <T> void requireNull(T t) {
-        isNull(t);
-    }
-
-    public static <T> void same(T t1, T t2, String message, Level level) {
-        if(t1 != t2) {
-            level.handle(message);
+        if(t != null) {
+            Level.SEVERE.handle("Requirement not met: " + t + " = null");
         }
     }
 
-    public static <T> void same(T t1, T t2) {
-        same(t1, t2, "Assertion failed: " + t1 + " = " + t2, level);
-    }
-
-    public interface CrashableRunnable {
+    public interface UnsafeRunnable {
         void run() throws Throwable;
     }
 
-    public static void requireNoThrow(CrashableRunnable run) {
+    public static void requireNoThrow(@NotNull UnsafeRunnable run) {
         try {
             run.run();
         } catch(Throwable t) {
-            Level.severe.handle("Unexpected throw: " + t);
+            Level.SEVERE.handle("Requirement not met: No throw: " + t.getMessage() + "\n");
         }
     }
 }

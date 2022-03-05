@@ -1,6 +1,6 @@
 package machinestrike.client.console;
 
-import machinestrike.client.console.renderer.BoardRenderer;
+import machinestrike.client.console.renderer.Renderer;
 import machinestrike.client.console.renderer.DefaultFieldFormatter;
 import machinestrike.client.console.renderer.FieldSection;
 import machinestrike.client.console.renderer.RenderPrintStream;
@@ -17,7 +17,7 @@ public class TestVisualizer {
 
     public static void main(String[] args) {
         Board board = DefaultBoardFactory.instance().createStandardBoard(DefaultTerrainFactory.instance());
-        BoardRenderer visualizer = new BoardRenderer(board, new RenderPrintStream(System.out), 10, 4, DefaultFieldFormatter.instance());
+        Renderer visualizer = new Renderer(board, null, new RenderPrintStream(System.out), 10, 4, 20, DefaultFieldFormatter.instance());
         DefaultMachineFactory factory = DefaultMachineFactory.instance();
         board.field(3, 1).machine(factory.createBurrower(Player.BLUE, Orientation.NORTH));
         board.field(3, 6).machine(factory.createBurrower(Player.RED, Orientation.SOUTH));
