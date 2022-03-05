@@ -1,10 +1,10 @@
 package machinestrike.game.rule;
 
-import machinestrike.debug.Assert;
 import machinestrike.game.Game;
+import machinestrike.game.Orientation;
 import machinestrike.game.action.AttackAction;
 import machinestrike.game.action.MoveAction;
-import machinestrike.game.level.Field;
+import machinestrike.game.machine.Machine;
 import machinestrike.game.rule.attackrule.AttackRule;
 import machinestrike.game.rule.moverule.MoveRule;
 import machinestrike.game.rule.strengthrule.StrengthRule;
@@ -55,13 +55,19 @@ public record RuleBook(int machinesPerTurn, int requiredVictoryPoints, List<Move
         }
     }
 
-    public int strengthModifier(@NotNull Field field) {
-        Assert.requireNotNull(field.machine());
-        int modifier = 0;
+    /**
+     * Strength of a machine might be dependent on the direction of the attack
+     * @param machine The machine that the combat strength is calculated for
+     * @param direction The absolute direction that the strength is calculated for. For an attacker this will
+     *                    typically be the orientation of the attacker itself. For a defender it is the direction that,
+     *                    the attack is coming from, so it is the opposite of the orientation of the attacker.
+     */
+    public int calculateStrength(@NotNull Machine machine, @NotNull Orientation direction) {
+        int strength = 0;
         for(StrengthRule rule : strengthRules) {
-            modifier += rule.getModifier(field);
+            strength += rule.getModifier(machine, direction);
         }
-        return modifier;
+        return Math.max(0, strength);
     }
 
 }

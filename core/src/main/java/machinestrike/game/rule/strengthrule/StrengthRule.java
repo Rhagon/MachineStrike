@@ -1,10 +1,11 @@
 package machinestrike.game.rule.strengthrule;
 
-import machinestrike.game.level.Field;
+import machinestrike.game.Orientation;
+import machinestrike.game.machine.Machine;
 import org.jetbrains.annotations.NotNull;
 
 public interface StrengthRule {
 
-    int getModifier(@NotNull Field field);
+    int getModifier(@NotNull Machine machine, @NotNull Orientation direction);
 
 }

@@ -5,7 +5,10 @@ import machinestrike.game.rule.attackrule.AttackRule;
 import machinestrike.game.rule.attackrule.MachineCanAttackRule;
 import machinestrike.game.rule.attackrule.ValidAttackRule;
 import machinestrike.game.rule.moverule.*;
+import machinestrike.game.rule.strengthrule.ArmorStrengthRule;
+import machinestrike.game.rule.strengthrule.BaseStrengthRule;
 import machinestrike.game.rule.strengthrule.StrengthRule;
+import machinestrike.game.rule.strengthrule.TerrainStrengthRule;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -39,7 +42,10 @@ public class DefaultRuleBookFactory implements RuleBookFactory {
                 ValidAttackRule.instance(),
                 MachineCanAttackRule.instance());
 
-        List<StrengthRule> strengthRules = List.of();
+        List<StrengthRule> strengthRules = List.of(
+                BaseStrengthRule.instance(),
+                ArmorStrengthRule.instance(),
+                TerrainStrengthRule.instance());
 
         return new RuleBook(2, 7, moveRules, attackRules, strengthRules);
     }

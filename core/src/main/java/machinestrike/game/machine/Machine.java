@@ -4,7 +4,6 @@ import machinestrike.debug.Assert;
 import machinestrike.game.*;
 import machinestrike.game.action.AttackAction;
 import machinestrike.game.action.MoveAction;
-import machinestrike.game.level.Board;
 import machinestrike.game.level.Field;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +18,10 @@ import java.util.Set;
 public abstract class Machine {
 
     public static final Trait GROUNDED = Trait.get("unit.grounded"),
-        AIRBORNE = Trait.get("unit.airborne");
+            AIRBORNE = Trait.get("unit.airborne"),
+            IGNORE_MOVE_IMPEDIMENT = Trait.get("unit.ignore-move-impediment"),
+            IGNORE_TERRAIN_MODIFIER = Trait.get("unit.ignore-terrain-modifier")
+    ;
 
     @NotNull
     private final String name;
@@ -281,19 +283,6 @@ public abstract class Machine {
 
     public abstract boolean canCurrentlyPerformAttack();
 
-    @Contract(pure = true)
-    public int calculateCombatPower(@NotNull Orientation orientation) {
-        Assert.requireNotNull(field());
-        Board board = field().board();
-        Game game = board.game();
-        Assert.requireNotNull(game);
-        int basePower = player() == game.playerOnTurn() ? strength : 0;
-        int armorModified = basePower + armor.inDirection(orientation).damageModifier();
-        int terrainModified = armorModified + field().terrain().strengthModifier();
-        int ruleModified = terrainModified + game.ruleBook().strengthModifier(field());
-        return Math.max(0, ruleModified);
-    }
-
     public void damage(int amount) {
         Assert.requireNotNull(field);
         Game game = field.board().game();
@@ -338,12 +327,14 @@ public abstract class Machine {
         Assert.requireNotNull(attackedField);
         Machine attackedMachine = attackedField.machine();
         Assert.requireNotNull(attackedMachine);
-        int damage = Math.max(1, machine.calculateCombatPower(machine.orientation()) - attackedMachine.calculateCombatPower(machine.orientation().add(Orientation.SOUTH)));
-        if(damage == 1) {
-            attackedMachine.knockBack(machine.orientation());
-        }
+        int attackerPower = game.ruleBook().calculateStrength(machine, machine.orientation());
+        int defenderPower = game.ruleBook().calculateStrength(attackedMachine, machine.orientation.add(Orientation.SOUTH));
+        int rawDamage = attackerPower - defenderPower;
+        int damage = Math.max(1, attackerPower - defenderPower);
+        boolean defenseBreak = rawDamage < 1;
         attackedMachine.damage(damage);
-        if(damage == 1) {
+        if(defenseBreak) {
+            attackedMachine.knockBack(machine.orientation());
             machine.damage(1);
         }
         game.usedMachine(machine);

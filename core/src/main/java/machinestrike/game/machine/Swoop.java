@@ -7,9 +7,16 @@ import machinestrike.game.action.MoveAction;
 import machinestrike.game.level.Field;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class Swoop extends Melee {
+
+    private static Set<Trait> addSwoopTraits(Set<Trait> traits) {
+        HashSet<Trait> modified = new HashSet<>(traits);
+        modified.add(Machine.IGNORE_MOVE_IMPEDIMENT);
+        return modified;
+    }
 
     public Swoop(@NotNull String name, @NotNull Player player, int victoryPoints, int health, int strength,
                  int moveRange, int attackRange, @NotNull Orientation orientation, @NotNull Armor armor, @NotNull Set<Trait> traits) {
