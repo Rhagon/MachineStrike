@@ -9,4 +9,6 @@ public interface ClientActionHandler extends GameActionHandler {
 
     void handle(@NotNull QuitAction action);
 
+    void handle(@NotNull RedrawAction action);
+
 }

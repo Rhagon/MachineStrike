@@ -3,6 +3,7 @@ package machinestrike.client.console.input.factory;
 import machinestrike.client.console.ConsoleClient;
 import machinestrike.client.console.action.HelpAction;
 import machinestrike.client.console.action.QuitAction;
+import machinestrike.client.console.action.RedrawAction;
 import machinestrike.client.console.input.Command;
 import machinestrike.client.console.input.parser.AttackActionParser;
 import machinestrike.client.console.input.parser.MoveActionParser;
@@ -34,6 +35,7 @@ public class DefaultCommandListFactory implements CommandListFactory {
     public List<Command<?>> createCommandList(ConsoleClient client) {
         return List.of(
                 new Command<>("quit|q|exit|stop", m -> new QuitAction(), "quit"),
+                new Command<>("redraw", m -> new RedrawAction(), "redraw"),
                 new Command<>("help|h|\\?", m -> new HelpAction(), "help"),
                 new Command<>(movePattern, MoveActionParser.instance(), "move <field> to <field> [facing <orientation>]"),
                 new Command<>(sprintPattern, SprintActionParser.instance(), "sprint <field> to <field> [facing <orientation>]"),

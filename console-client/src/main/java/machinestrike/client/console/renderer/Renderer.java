@@ -1,5 +1,6 @@
 package machinestrike.client.console.renderer;
 
+import machinestrike.client.console.infoboard.InfoBoard;
 import machinestrike.game.level.Board;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -8,28 +9,38 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BoardRenderer {
+public class Renderer {
 
-    private final int fieldWidth, fieldHeight;
+    private final int fieldWidth, fieldHeight, infoWidth;
     @NotNull
     private final FieldFormatter formatter;
     @Nullable
     private Board board;
+    @Nullable
+    private InfoBoard info;
     @NotNull
     private final RenderStream output;
 
-    public BoardRenderer(@Nullable Board board, @NotNull RenderStream output, int fieldWidth, int fieldHeight,
-                         @NotNull FieldFormatter formatter) {
+    public Renderer(@Nullable Board board, @Nullable InfoBoard info, @NotNull RenderStream output, int fieldWidth,
+                    int fieldHeight, int infoWidth, @NotNull FieldFormatter formatter) {
         this.board = board;
+        this.info = info;
         this.fieldWidth = fieldWidth;
         this.fieldHeight = fieldHeight;
+        this.infoWidth = infoWidth;
         this.formatter = formatter;
         this.output = output;
     }
 
     @Contract("_ -> this")
-    public BoardRenderer board(@Nullable Board board) {
+    public Renderer board(@Nullable Board board) {
         this.board = board;
+        return this;
+    }
+
+    @Contract("_ -> this")
+    public Renderer info(@Nullable InfoBoard info) {
+        this.info = info;
         return this;
     }
 
