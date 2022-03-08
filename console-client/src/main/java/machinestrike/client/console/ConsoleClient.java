@@ -8,9 +8,7 @@ import machinestrike.client.console.input.factory.CommandListFactory;
 import machinestrike.client.console.input.factory.DefaultCommandListFactory;
 import machinestrike.client.console.renderer.DefaultFieldFormatter;
 import machinestrike.client.console.renderer.FieldFormatter;
-import machinestrike.client.console.renderer.component.Anchor;
-import machinestrike.client.console.renderer.component.BoardBox;
-import machinestrike.client.console.renderer.component.Canvas;
+import machinestrike.client.console.renderer.component.*;
 import machinestrike.debug.Assert;
 import machinestrike.game.Game;
 import machinestrike.game.Orientation;
@@ -25,7 +23,6 @@ import machinestrike.game.level.factory.DefaultTerrainFactory;
 import machinestrike.game.level.factory.TerrainFactory;
 import machinestrike.game.machine.factory.DefaultMachineFactory;
 import machinestrike.game.machine.factory.MachineFactory;
-import machinestrike.game.rule.RuleBook;
 import machinestrike.game.rule.RuleViolation;
 import machinestrike.game.rule.factory.DefaultRuleBookFactory;
 import machinestrike.game.rule.factory.RuleBookFactory;
@@ -61,6 +58,8 @@ public class ConsoleClient implements ClientActionHandler {
     private final Canvas canvas;
     @NotNull
     private final BoardBox boardBox;
+    @NotNull
+    private final Label infoText;
 
     public ConsoleClient() {
         this(System.in, System.out);
@@ -83,10 +82,19 @@ public class ConsoleClient implements ClientActionHandler {
         this.ruleBookFactory = rf;
         this.board = null;
         this.game = null;
-        this.canvas = new Canvas(100, 50);
-        this.boardBox = new BoardBox(board, 2f);
-        this.boardBox.anchor(Anchor.AREA);
-        canvas.child(boardBox);
+        this.canvas = new Canvas(150, 42);
+        @NotNull Panel scene = new Panel();
+        scene.anchor(Anchor.AREA);
+        this.boardBox = new BoardBox(board, 2.2f);
+        this.boardBox.anchor(Anchor.AREA.pad(0, 0, 60, 0));
+        @NotNull BoxPanel infoPanel = new BoxPanel(new BoxPanel.Outline('-', '|', '+', 1, 1));
+        infoPanel.anchor(Anchor.TOP_RIGHT.size(60, 15));
+        infoText = new Label();
+        infoText.anchor(Anchor.AREA.pad(1, 1, 1, 1));
+        infoPanel.add(infoText);
+        scene.add(this.boardBox);
+        scene.add(infoPanel);
+        this.canvas.child(scene);
     }
 
     @NotNull
@@ -112,14 +120,13 @@ public class ConsoleClient implements ClientActionHandler {
             b.field(3, i).terrain(terrainFactory.createChasm());
             b.field(i, 3).terrain(terrainFactory.createMarsh());
         }
+        game(new Game(b, Player.BLUE, ruleBookFactory.createRuleBook()));
     }
 
     public void run() {
         Board b = boardFactory.createStandardBoard(terrainFactory);
-        RuleBook ruleBook = ruleBookFactory.createRuleBook();
         setup(b);
-        game(new Game(b, Player.BLUE, ruleBook));
-        render();
+        forceRedraw();
         output.print("> ");
         for(Action<? super ClientActionHandler> action : inputHandler) {
             try {
@@ -143,9 +150,15 @@ public class ConsoleClient implements ClientActionHandler {
         canvas.size(new Point(width, height));
     }
 
-    private void render() {
+    private void forceRedraw() {
         update();
         canvas.repaint();
+        clearConsole();
+        output.println(canvas);
+    }
+
+    private void render() {
+        update();
         clearConsole();
         output.println(canvas);
     }
@@ -161,14 +174,17 @@ public class ConsoleClient implements ClientActionHandler {
 
     @Override
     public void handle(@NotNull HelpAction action) {
+        StringBuilder builder = new StringBuilder();
         for(Command<?> command : inputHandler.commands()) {
-            output.println(command.syntax());
+            builder.append(command.syntax()).append("\n");
         }
+        infoText.text(builder.toString());
+        render();
     }
 
     @Override
     public void handle(@NotNull RedrawAction action) {
-        render();
+        forceRedraw();
     }
 
     @Override
@@ -188,12 +204,14 @@ public class ConsoleClient implements ClientActionHandler {
     @Override
     public void handle(@NotNull SetWindowSizeAction action) {
         updateWindowSize(action.width(), action.height());
+        infoText.text("Changed window size to " + new Point(action.width(), action.height()));
         render();
     }
 
     @Override
     public void handle(@NotNull UnknownCommandAction action) {
-        output.println("Unknown command");
+        infoText.text("Unknown command");
+        render();
     }
 
 }
