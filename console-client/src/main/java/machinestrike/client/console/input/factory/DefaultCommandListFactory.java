@@ -1,9 +1,6 @@
 package machinestrike.client.console.input.factory;
 
-import machinestrike.client.console.action.HelpAction;
-import machinestrike.client.console.action.QuitAction;
-import machinestrike.client.console.action.RedrawAction;
-import machinestrike.client.console.action.UnknownCommandAction;
+import machinestrike.client.console.action.*;
 import machinestrike.client.console.input.Command;
 import machinestrike.client.console.input.parser.AttackActionParser;
 import machinestrike.client.console.input.parser.MoveActionParser;

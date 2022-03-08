@@ -45,9 +45,9 @@ public class FieldBox extends BoxPanel {
         Machine m = field.machine();
         if(m != null) {
             machine.text(m.name());
-            strength.text(m.strength() + "");
-            move.text("" + m.orientation().descriptor() + m.moveRange());
-            health.text(m.health() + "");
+            strength.text("\u2694" + m.strength());
+            move.text("\uD83D\uDC5E" + m.moveRange() + m.orientation().descriptor());
+            health.text("\u2665" + m.health());
         } else {
             machine.text("");
             strength.text("");

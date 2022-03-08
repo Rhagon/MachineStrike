@@ -29,6 +29,7 @@ import machinestrike.game.rule.factory.RuleBookFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 
@@ -82,10 +83,10 @@ public class ConsoleClient implements ClientActionHandler {
         this.ruleBookFactory = rf;
         this.board = null;
         this.game = null;
-        this.canvas = new Canvas(150, 42);
+        this.canvas = new Canvas(160, 42);
         @NotNull Panel scene = new Panel();
         scene.anchor(Anchor.AREA);
-        this.boardBox = new BoardBox(board, 2.2f);
+        this.boardBox = new BoardBox(board, 2.4f);
         this.boardBox.anchor(Anchor.AREA.pad(0, 0, 60, 0));
         @NotNull BoxPanel infoPanel = new BoxPanel(new BoxPanel.Outline('-', '|', '+', 1, 1));
         infoPanel.anchor(Anchor.TOP_RIGHT.size(60, 15));
