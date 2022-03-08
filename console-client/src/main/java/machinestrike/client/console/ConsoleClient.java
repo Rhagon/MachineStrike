@@ -1,10 +1,7 @@
 package machinestrike.client.console;
 
 import machinestrike.action.Action;
-import machinestrike.client.console.action.ClientActionHandler;
-import machinestrike.client.console.action.HelpAction;
-import machinestrike.client.console.action.QuitAction;
-import machinestrike.client.console.action.RedrawAction;
+import machinestrike.client.console.action.*;
 import machinestrike.client.console.input.Command;
 import machinestrike.client.console.input.InputHandler;
 import machinestrike.client.console.input.factory.CommandListFactory;
@@ -18,6 +15,7 @@ import machinestrike.debug.Assert;
 import machinestrike.game.Game;
 import machinestrike.game.Orientation;
 import machinestrike.game.Player;
+import machinestrike.game.Point;
 import machinestrike.game.action.AttackAction;
 import machinestrike.game.action.MoveAction;
 import machinestrike.game.level.Board;
@@ -44,7 +42,7 @@ public class ConsoleClient implements ClientActionHandler {
     }
 
     @NotNull
-    private PrintStream output;
+    private final PrintStream output;
     @NotNull
     private final InputHandler inputHandler;
     @NotNull
@@ -60,9 +58,9 @@ public class ConsoleClient implements ClientActionHandler {
     @Nullable
     private Game game;
     @NotNull
-    private Canvas canvas;
+    private final Canvas canvas;
     @NotNull
-    private BoardBox boardBox;
+    private final BoardBox boardBox;
 
     public ConsoleClient() {
         this(System.in, System.out);
@@ -78,17 +76,17 @@ public class ConsoleClient implements ClientActionHandler {
                          @NotNull CommandListFactory commandFactory, @NotNull BoardFactory bf, @NotNull MachineFactory mf,
                          @NotNull TerrainFactory tf, @NotNull RuleBookFactory rf, @NotNull FieldFormatter formatter) {
         this.output = output;
-        this.inputHandler = new InputHandler(input, output, commandFactory.createCommandList());
+        this.inputHandler = new InputHandler(input, commandFactory.createCommandList());
         this.boardFactory = bf;
         this.machineFactory = mf;
         this.terrainFactory = tf;
         this.ruleBookFactory = rf;
         this.board = null;
         this.game = null;
-        this.canvas = new Canvas(100, 40);
-        this.boardBox = new BoardBox(board);
+        this.canvas = new Canvas(100, 50);
+        this.boardBox = new BoardBox(board, 2f);
         this.boardBox.anchor(Anchor.AREA);
-        canvas.stage(boardBox);
+        canvas.child(boardBox);
     }
 
     @NotNull
@@ -96,37 +94,53 @@ public class ConsoleClient implements ClientActionHandler {
         return canvas;
     }
 
-    public void setup() {
-        Assert.requireNotNull(board);
-        board.field(1, 2).machine(machineFactory.createBurrower(Player.BLUE, Orientation.NORTH));
+    public void game(@Nullable Game game) {
+        this.game = game;
+        if(game != null) {
+            board(game.board());
+        }
+    }
+
+    public void board(@Nullable Board board) {
+        this.board = board;
+        canvas.ignoreRepaint(() -> boardBox.board(board));
+    }
+
+    public void setup(@NotNull Board b) {
+        b.field(1, 2).machine(machineFactory.createBurrower(Player.BLUE, Orientation.NORTH));
         for(int i = 0; i <= 3; ++i) {
-            board.field(3, i).terrain(terrainFactory.createChasm());
-            board.field(i, 3).terrain(terrainFactory.createMarsh());
+            b.field(3, i).terrain(terrainFactory.createChasm());
+            b.field(i, 3).terrain(terrainFactory.createMarsh());
         }
     }
 
     public void run() {
-        board = boardFactory.createStandardBoard(terrainFactory);
-        boardBox.board(board);
+        Board b = boardFactory.createStandardBoard(terrainFactory);
         RuleBook ruleBook = ruleBookFactory.createRuleBook();
-        setup();
-        game = new Game(board, Player.BLUE, ruleBook);
-
+        setup(b);
+        game(new Game(b, Player.BLUE, ruleBook));
         render();
+        output.print("> ");
         for(Action<? super ClientActionHandler> action : inputHandler) {
             try {
                 action.execute(this);
-                render();
             } catch (RuleViolation e) {
                 output.println(e.getMessage());
+            }
+            if(inputHandler.active()) {
+                output.print("> ");
             }
         }
     }
 
     public void update() {
-        canvas.ignoreRepaint(true);
-        boardBox.update();
-        canvas.ignoreRepaint(false);
+        canvas.ignoreRepaint(boardBox::update);
+    }
+
+    public void updateWindowSize(int width, int height) {
+        width = Math.max(width, 0);
+        height = Math.max(height, 0);
+        canvas.size(new Point(width, height));
     }
 
     private void render() {
@@ -140,30 +154,46 @@ public class ConsoleClient implements ClientActionHandler {
         output.println("\033[H\033[2J");
     }
 
+    @Override
     public void handle(@NotNull QuitAction action) {
         inputHandler.active(false);
     }
 
+    @Override
     public void handle(@NotNull HelpAction action) {
         for(Command<?> command : inputHandler.commands()) {
             output.println(command.syntax());
         }
     }
 
+    @Override
     public void handle(@NotNull RedrawAction action) {
         render();
     }
 
+    @Override
     public void handle(@NotNull AttackAction action) throws RuleViolation {
         Assert.requireNotNull(game);
         game.handle(action);
         render();
     }
 
+    @Override
     public void handle(@NotNull MoveAction action) throws RuleViolation {
         Assert.requireNotNull(game);
         game.handle(action);
         render();
+    }
+
+    @Override
+    public void handle(@NotNull SetWindowSizeAction action) {
+        updateWindowSize(action.width(), action.height());
+        render();
+    }
+
+    @Override
+    public void handle(@NotNull UnknownCommandAction action) {
+        output.println("Unknown command");
     }
 
 }

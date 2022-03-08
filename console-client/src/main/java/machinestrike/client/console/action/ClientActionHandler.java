@@ -11,4 +11,7 @@ public interface ClientActionHandler extends GameActionHandler {
 
     void handle(@NotNull RedrawAction action);
 
+    void handle(@NotNull SetWindowSizeAction action);
+
+    void handle(@NotNull UnknownCommandAction action);
 }

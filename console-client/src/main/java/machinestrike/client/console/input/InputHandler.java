@@ -16,14 +16,11 @@ public final class InputHandler implements Iterable<Action<? super ClientActionH
     @NotNull
     private final BufferedReader reader;
     @NotNull
-    private final PrintStream output;
-    @NotNull
     private final List<Command<?>> commands;
     private boolean active;
 
-    public InputHandler(@NotNull InputStream input, @NotNull PrintStream output, @NotNull List<Command<?>> commands) {
+    public InputHandler(@NotNull InputStream input, @NotNull List<Command<?>> commands) {
         reader = new BufferedReader(new InputStreamReader(input));
-        this.output = output;
         this.commands = commands;
         this.active = true;
     }
@@ -89,7 +86,6 @@ public final class InputHandler implements Iterable<Action<? super ClientActionH
                     return action;
                 }
             }
-            output.println("Unknown command");
         }
     }
 

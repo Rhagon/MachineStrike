@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -146,7 +147,12 @@ public class Label extends Component {
                     }
                 }
             }
-            this.lines = lines.toArray(String[]::new);
+            String[] allLines = lines.toArray(String[]::new);
+            if(allLines.length > size().y()) {
+                this.lines = Arrays.copyOfRange(allLines, 0, size().y());
+            } else {
+                this.lines = allLines;
+            }
         } else {
             lines = text.lines().toArray(String[]::new);
             for(int i = 0; i < lines.length; ++i) {

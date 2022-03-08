@@ -46,13 +46,13 @@ public abstract class Component {
     @NotNull
     @Contract(pure = true)
     public Point size() {
-        return rect.size();
+        return rect().size();
     }
 
     @NotNull
     @Contract(pure = true)
     public Point position() {
-        return rect.position();
+        return rect().position();
     }
 
     protected abstract void onLayoutChange();
@@ -98,7 +98,6 @@ public abstract class Component {
     protected boolean parent(@Nullable Container parent) {
         if(parent == null || this.parent == null) {
             this.parent = parent;
-            updateLayout();
             return true;
         }
         return false;

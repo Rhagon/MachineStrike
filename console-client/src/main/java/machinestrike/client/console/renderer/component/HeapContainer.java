@@ -30,6 +30,7 @@ public abstract class HeapContainer extends Container {
         }
         if(child.parent(this)) {
             children.add(index, child);
+            child.updateLayout();
             return true;
         }
         return false;

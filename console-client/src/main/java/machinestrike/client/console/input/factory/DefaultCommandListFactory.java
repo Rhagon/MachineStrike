@@ -3,9 +3,11 @@ package machinestrike.client.console.input.factory;
 import machinestrike.client.console.action.HelpAction;
 import machinestrike.client.console.action.QuitAction;
 import machinestrike.client.console.action.RedrawAction;
+import machinestrike.client.console.action.UnknownCommandAction;
 import machinestrike.client.console.input.Command;
 import machinestrike.client.console.input.parser.AttackActionParser;
 import machinestrike.client.console.input.parser.MoveActionParser;
+import machinestrike.client.console.input.parser.SetWindowSizeActionParser;
 import machinestrike.client.console.input.parser.SprintActionParser;
 
 import java.util.List;
@@ -19,6 +21,7 @@ public class DefaultCommandListFactory implements CommandListFactory {
     private static final Pattern movePattern = Pattern.compile("move\\s" + abstractMovePattern);
     private static final Pattern sprintPattern = Pattern.compile("sprint\\s" + abstractMovePattern);
     private static final Pattern attackPattern = Pattern.compile("attack\\swith\\s(?<oc>[A-Za-z])(?<or>[1-9][0-9]*)");
+    private static final Pattern setWindowSizePattern = Pattern.compile("(?:set|change)\\swindow\\ssize\\sto\\s(?<w>[1-9][0-9]*)\\s(?<h>[1-9][0-9]*)");
 
     public static DefaultCommandListFactory instance() {
         if(instance == null) {
@@ -38,7 +41,9 @@ public class DefaultCommandListFactory implements CommandListFactory {
                 new Command<>("help|h|\\?", m -> new HelpAction(), "help"),
                 new Command<>(movePattern, MoveActionParser.instance(), "move <field> to <field> [facing <orientation>]"),
                 new Command<>(sprintPattern, SprintActionParser.instance(), "sprint <field> to <field> [facing <orientation>]"),
-                new Command<>(attackPattern, AttackActionParser.instance(), "attack with <field>")
+                new Command<>(attackPattern, AttackActionParser.instance(), "attack with <field>"),
+                new Command<>(setWindowSizePattern, SetWindowSizeActionParser.instance(), "set window size to <width> <height>"),
+                new Command<>(Pattern.compile(".*"), m -> new UnknownCommandAction(m.group()), "")
         );
     }
 }

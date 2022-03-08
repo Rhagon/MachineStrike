@@ -5,22 +5,14 @@ import machinestrike.debug.Assert;
 import machinestrike.game.Point;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
-public class Canvas extends Container {
+public class Canvas extends Decorator {
 
     private char[][] symbols;
-
-    @Nullable
-    private Component stage;
-
     @NotNull
     private Point size;
-
     private boolean ignoreRepaint;
 
     public Canvas(int sizeX, int sizeY) {
@@ -33,39 +25,20 @@ public class Canvas extends Container {
         ignoreRepaint = false;
     }
 
-    @Nullable
-    public Component stage() {
-        return stage;
-    }
-
-    public boolean stage(@Nullable Component stage) {
-        if(this.stage != null) {
-            Assert.isTrue(this.stage.parent(null));
-        }
-        if(stage == null) {
-            this.stage = null;
-            return true;
-        }
-        if(stage.parent(this)) {
-            this.stage = stage;
-            return true;
-        }
-        return false;
-    }
-
-    @NotNull
-    @Contract(pure = true)
-    @Override
-    public Point size() {
-        return size;
-    }
-
     @Contract("_ -> this")
     public Canvas size(@NotNull Point size) {
         this.size = size;
         symbols = new char[size.y()][size.x()];
-        clear();
+        fill(' ');
+        ignoreRepaint(this::updateLayout);
+        repaint();
         return this;
+    }
+
+    @Override
+    @NotNull
+    public Rect rect() {
+        return new Rect(Point.ZERO, size);
     }
 
     public void drawChar(@NotNull Point position, char c) {
@@ -74,8 +47,8 @@ public class Canvas extends Container {
         symbols[position.y()][position.x()] = c;
     }
 
-    public void clear() {
-        fillRect(0, 0, size.x() - 1, size.y() - 1, ' ');
+    public void fill(char c) {
+        fillRect(0, 0, size.x() - 1, size.y() - 1, c);
     }
 
     public void fillRect(int x, int y, int width, int height, char c) {
@@ -97,6 +70,11 @@ public class Canvas extends Container {
     }
 
     @Override
+    public void updateLayout() {
+        onLayoutChange();
+    }
+
+    @Override
     @Contract(pure = true)
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -107,32 +85,19 @@ public class Canvas extends Container {
     }
 
     @Override
-    @NotNull
-    public Rect rect() {
-        return new Rect(Point.ZERO, size());
-    }
-
-    @Override
-    public @NotNull List<Component> children() {
-        if(stage == null) {
-            return Collections.emptyList();
-        }
-        return List.of(stage);
-    }
-
-    @Override
     public void repaint(@NotNull Rect rect) {
-        if(!ignoreRepaint && stage != null) {
-            paint(new Graphics(this, rect, Point.ZERO));
+        if(!ignoreRepaint && child() != null) {
+            Rect canvasIntersection = rect.intersection(rect());
+            fillRect(canvasIntersection, ' ');
+            paint(new Graphics(this, canvasIntersection, Point.ZERO));
         }
     }
 
-    public void ignoreRepaint(boolean ignoreRepaint) {
-        this.ignoreRepaint = ignoreRepaint;
-    }
-
-    public boolean ignoreRepaint() {
-        return ignoreRepaint;
+    public void ignoreRepaint(Runnable run) {
+        boolean old = ignoreRepaint;
+        ignoreRepaint = true;
+        run.run();
+        ignoreRepaint = old;
     }
 
 }
