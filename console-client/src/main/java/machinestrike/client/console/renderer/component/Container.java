@@ -25,7 +25,7 @@ public abstract class Container extends Component {
     @Override
     public void onLayoutChange() {
         for(Component c : children()) {
-            c.onLayoutChange();
+            c.updateLayout();
         }
     }
 

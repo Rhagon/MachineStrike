@@ -1,6 +1,5 @@
 package machinestrike.client.console.input.factory;
 
-import machinestrike.client.console.ConsoleClient;
 import machinestrike.client.console.action.HelpAction;
 import machinestrike.client.console.action.QuitAction;
 import machinestrike.client.console.action.RedrawAction;
@@ -32,7 +31,7 @@ public class DefaultCommandListFactory implements CommandListFactory {
     }
 
     @Override
-    public List<Command<?>> createCommandList(ConsoleClient client) {
+    public List<Command<?>> createCommandList() {
         return List.of(
                 new Command<>("quit|q|exit|stop", m -> new QuitAction(), "quit"),
                 new Command<>("redraw", m -> new RedrawAction(), "redraw"),

@@ -9,7 +9,11 @@ import machinestrike.client.console.input.Command;
 import machinestrike.client.console.input.InputHandler;
 import machinestrike.client.console.input.factory.CommandListFactory;
 import machinestrike.client.console.input.factory.DefaultCommandListFactory;
-import machinestrike.client.console.renderer.*;
+import machinestrike.client.console.renderer.DefaultFieldFormatter;
+import machinestrike.client.console.renderer.FieldFormatter;
+import machinestrike.client.console.renderer.component.Anchor;
+import machinestrike.client.console.renderer.component.BoardBox;
+import machinestrike.client.console.renderer.component.Canvas;
 import machinestrike.debug.Assert;
 import machinestrike.game.Game;
 import machinestrike.game.Orientation;
@@ -40,7 +44,7 @@ public class ConsoleClient implements ClientActionHandler {
     }
 
     @NotNull
-    private final PrintStream output;
+    private PrintStream output;
     @NotNull
     private final InputHandler inputHandler;
     @NotNull
@@ -55,33 +59,41 @@ public class ConsoleClient implements ClientActionHandler {
     private Board board;
     @Nullable
     private Game game;
+    @NotNull
+    private Canvas canvas;
+    @NotNull
+    private BoardBox boardBox;
 
     public ConsoleClient() {
-        this(System.in, new RenderPrintStream(System.out) {
-            @Override
-            public void clear() {
-                this.print("\033[H\033[2J");
-            }
-        }, System.out);
+        this(System.in, System.out);
     }
 
-    public ConsoleClient(@NotNull InputStream input, @NotNull RenderStream boardStream, @NotNull PrintStream output) {
-        this(input, boardStream, output, DefaultCommandListFactory.instance(),
+    public ConsoleClient(@NotNull InputStream input, @NotNull PrintStream output) {
+        this(input, output, DefaultCommandListFactory.instance(),
                 DefaultBoardFactory.instance(), DefaultMachineFactory.instance(), DefaultTerrainFactory.instance(),
                 DefaultRuleBookFactory.instance(), DefaultFieldFormatter.instance());
     }
 
-    public ConsoleClient(@NotNull InputStream input, @NotNull RenderStream boardStream, @NotNull PrintStream output,
+    public ConsoleClient(@NotNull InputStream input, @NotNull PrintStream output,
                          @NotNull CommandListFactory commandFactory, @NotNull BoardFactory bf, @NotNull MachineFactory mf,
                          @NotNull TerrainFactory tf, @NotNull RuleBookFactory rf, @NotNull FieldFormatter formatter) {
         this.output = output;
-        this.inputHandler = new InputHandler(input, output, commandFactory.createCommandList(this));
+        this.inputHandler = new InputHandler(input, output, commandFactory.createCommandList());
         this.boardFactory = bf;
         this.machineFactory = mf;
         this.terrainFactory = tf;
         this.ruleBookFactory = rf;
         this.board = null;
         this.game = null;
+        this.canvas = new Canvas(100, 40);
+        this.boardBox = new BoardBox(board);
+        this.boardBox.anchor(Anchor.AREA);
+        canvas.stage(boardBox);
+    }
+
+    @NotNull
+    public Canvas canvas() {
+        return canvas;
     }
 
     public void setup() {
@@ -95,6 +107,7 @@ public class ConsoleClient implements ClientActionHandler {
 
     public void run() {
         board = boardFactory.createStandardBoard(terrainFactory);
+        boardBox.board(board);
         RuleBook ruleBook = ruleBookFactory.createRuleBook();
         setup();
         game = new Game(board, Player.BLUE, ruleBook);
@@ -110,16 +123,21 @@ public class ConsoleClient implements ClientActionHandler {
         }
     }
 
+    public void update() {
+        canvas.ignoreRepaint(true);
+        boardBox.update();
+        canvas.ignoreRepaint(false);
+    }
+
     private void render() {
+        update();
+        canvas.repaint();
         clearConsole();
+        output.println(canvas);
     }
 
     private void clearConsole() {
-        System.out.println("\033[H\033[2J");
-    }
-
-    public void execute(@NotNull Action<ClientActionHandler> action) throws RuleViolation {
-        action.execute(this);
+        output.println("\033[H\033[2J");
     }
 
     public void handle(@NotNull QuitAction action) {
@@ -139,11 +157,13 @@ public class ConsoleClient implements ClientActionHandler {
     public void handle(@NotNull AttackAction action) throws RuleViolation {
         Assert.requireNotNull(game);
         game.handle(action);
+        render();
     }
 
     public void handle(@NotNull MoveAction action) throws RuleViolation {
         Assert.requireNotNull(game);
         game.handle(action);
+        render();
     }
 
 }
