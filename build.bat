@@ -1,0 +1,1 @@
+./gradlew.bat console-client:build console-client:createRunScript

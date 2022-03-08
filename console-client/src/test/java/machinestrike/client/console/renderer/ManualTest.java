@@ -19,7 +19,7 @@ public class ManualTest {
         box.anchor(Anchor.CENTER);
         box.add(label);
 
-        canvas.stage(box);
+        canvas.child(box);
 
         canvas.repaint();
 

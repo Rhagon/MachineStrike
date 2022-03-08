@@ -37,6 +37,17 @@ dependencies {
 
 }
 
+task createRunScript(type: Copy) {
+    group('build')
+    dependsOn(jar)
+    from 'src/main/other/Machine-Strike.bat'
+    into new File(buildDir, 'bin')
+    expand([
+            artifact_name: jar.archiveFileName.get()
+    ])
+    outputs.upToDateWhen { false }
+}
+
 test {
     useJUnitPlatform()
 }
