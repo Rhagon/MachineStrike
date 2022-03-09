@@ -1,11 +1,15 @@
 package machinestrike.game.level.factory;
 
+import machinestrike.game.Point;
 import machinestrike.game.level.Board;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
 public interface BoardFactory {
+
+    @NotNull
+    Board createStandardBoard(@NotNull Point size, @NotNull TerrainFactory terrainFactory);
 
     @NotNull
     Board createStandardBoard(@NotNull TerrainFactory terrainFactory);

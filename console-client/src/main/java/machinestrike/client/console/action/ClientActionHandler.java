@@ -14,4 +14,15 @@ public interface ClientActionHandler extends GameActionHandler {
     void handle(@NotNull SetWindowSizeAction action);
 
     void handle(@NotNull UnknownCommandAction action);
+
+    void handle(@NotNull NewGameAction action);
+
+    void handle(@NotNull ConfirmationAction action);
+
+    void handle(@NotNull SetTerrainAction action);
+
+    void handle(@NotNull MirrorTerrainAction action);
+
+    void handle(@NotNull PlaceMachineAction action);
+
 }

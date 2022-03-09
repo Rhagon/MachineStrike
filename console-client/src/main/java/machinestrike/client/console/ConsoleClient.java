@@ -1,22 +1,18 @@
 package machinestrike.client.console;
 
 import machinestrike.action.Action;
-import machinestrike.client.console.action.*;
-import machinestrike.client.console.input.Command;
+import machinestrike.client.console.action.ClientActionHandler;
 import machinestrike.client.console.input.InputHandler;
 import machinestrike.client.console.input.factory.CommandListFactory;
 import machinestrike.client.console.input.factory.DefaultCommandListFactory;
 import machinestrike.client.console.renderer.DefaultFieldFormatter;
 import machinestrike.client.console.renderer.FieldFormatter;
 import machinestrike.client.console.renderer.component.*;
-import machinestrike.debug.Assert;
+import machinestrike.client.console.statemachine.SetupMode;
+import machinestrike.client.console.statemachine.StateMachine;
 import machinestrike.game.Game;
-import machinestrike.game.Orientation;
 import machinestrike.game.Player;
 import machinestrike.game.Point;
-import machinestrike.game.action.AttackAction;
-import machinestrike.game.action.MoveAction;
-import machinestrike.game.level.Board;
 import machinestrike.game.level.factory.BoardFactory;
 import machinestrike.game.level.factory.DefaultBoardFactory;
 import machinestrike.game.level.factory.DefaultTerrainFactory;
@@ -29,14 +25,13 @@ import machinestrike.game.rule.factory.RuleBookFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 
-public class ConsoleClient implements ClientActionHandler {
+public class ConsoleClient {
 
     public static void main(String[] args) {
-        new ConsoleClient().run();
+        new ConsoleClient(new Point(160, 42)).run();
     }
 
     @NotNull
@@ -51,10 +46,10 @@ public class ConsoleClient implements ClientActionHandler {
     private final TerrainFactory terrainFactory;
     @NotNull
     private final RuleBookFactory ruleBookFactory;
-    @Nullable
-    private Board board;
-    @Nullable
+    @NotNull
     private Game game;
+    @NotNull
+    private final StateMachine stateMachine;
     @NotNull
     private final Canvas canvas;
     @NotNull
@@ -62,17 +57,17 @@ public class ConsoleClient implements ClientActionHandler {
     @NotNull
     private final Label infoText;
 
-    public ConsoleClient() {
-        this(System.in, System.out);
+    public ConsoleClient(@NotNull Point windowSize) {
+        this(windowSize, System.in, System.out);
     }
 
-    public ConsoleClient(@NotNull InputStream input, @NotNull PrintStream output) {
-        this(input, output, DefaultCommandListFactory.instance(),
+    public ConsoleClient(@NotNull Point windowSize, @NotNull InputStream input, @NotNull PrintStream output) {
+        this(windowSize, input, output, DefaultCommandListFactory.instance(),
                 DefaultBoardFactory.instance(), DefaultMachineFactory.instance(), DefaultTerrainFactory.instance(),
                 DefaultRuleBookFactory.instance(), DefaultFieldFormatter.instance());
     }
 
-    public ConsoleClient(@NotNull InputStream input, @NotNull PrintStream output,
+    public ConsoleClient(@NotNull Point windowSize, @NotNull InputStream input, @NotNull PrintStream output,
                          @NotNull CommandListFactory commandFactory, @NotNull BoardFactory bf, @NotNull MachineFactory mf,
                          @NotNull TerrainFactory tf, @NotNull RuleBookFactory rf, @NotNull FieldFormatter formatter) {
         this.output = output;
@@ -81,21 +76,14 @@ public class ConsoleClient implements ClientActionHandler {
         this.machineFactory = mf;
         this.terrainFactory = tf;
         this.ruleBookFactory = rf;
-        this.board = null;
-        this.game = null;
-        this.canvas = new Canvas(160, 42);
-        @NotNull Panel scene = new Panel();
-        scene.anchor(Anchor.AREA);
-        this.boardBox = new BoardBox(board, 2.4f);
-        this.boardBox.anchor(Anchor.AREA.pad(0, 0, 60, 0));
-        @NotNull BoxPanel infoPanel = new BoxPanel(new BoxPanel.Outline('-', '|', '+', 1, 1));
-        infoPanel.anchor(Anchor.TOP_RIGHT.size(60, 15));
-        infoText = new Label();
-        infoText.anchor(Anchor.AREA.pad(1, 1, 1, 1));
-        infoPanel.add(infoText);
-        scene.add(this.boardBox);
-        scene.add(infoPanel);
-        this.canvas.child(scene);
+        this.game = createNewGame();
+        this.stateMachine = new StateMachine(this);
+
+        this.canvas = new Canvas(windowSize);
+        this.boardBox = new BoardBox(game.board(), 2.4f);
+        this.infoText = new Label();
+
+        setupUI();
     }
 
     @NotNull
@@ -103,46 +91,48 @@ public class ConsoleClient implements ClientActionHandler {
         return canvas;
     }
 
-    public void game(@Nullable Game game) {
+    public void game(@NotNull Game game) {
         this.game = game;
-        if(game != null) {
-            board(game.board());
-        }
+        canvas.ignoreRepaint(() -> boardBox.board(game.board()));
+        updateUI();
     }
 
-    public void board(@Nullable Board board) {
-        this.board = board;
-        canvas.ignoreRepaint(() -> boardBox.board(board));
+    @NotNull
+    public Game game() {
+        return game;
     }
 
-    public void setup(@NotNull Board b) {
-        b.field(1, 2).machine(machineFactory.createBurrower(Player.BLUE, Orientation.NORTH));
-        for(int i = 0; i <= 3; ++i) {
-            b.field(3, i).terrain(terrainFactory.createChasm());
-            b.field(i, 3).terrain(terrainFactory.createMarsh());
-        }
-        game(new Game(b, Player.BLUE, ruleBookFactory.createRuleBook()));
+    @NotNull
+    public TerrainFactory terrainFactory() {
+        return terrainFactory;
+    }
+
+    @NotNull
+    public MachineFactory machineFactory() {
+        return machineFactory;
     }
 
     public void run() {
-        Board b = boardFactory.createStandardBoard(terrainFactory);
-        setup(b);
-        forceRedraw();
+        this.stateMachine.enter(new SetupMode(stateMachine));
+        updateUI();
+        render();
         output.print("> ");
         for(Action<? super ClientActionHandler> action : inputHandler) {
             try {
-                action.execute(this);
+                stateMachine.handle(action);
             } catch (RuleViolation e) {
-                output.println(e.getMessage());
+                info(e.getMessage());
             }
             if(inputHandler.active()) {
+                render();
                 output.print("> ");
             }
         }
     }
 
-    public void update() {
+    public void updateUI() {
         canvas.ignoreRepaint(boardBox::update);
+        canvas.repaint();
     }
 
     public void updateWindowSize(int width, int height) {
@@ -151,68 +141,46 @@ public class ConsoleClient implements ClientActionHandler {
         canvas.size(new Point(width, height));
     }
 
-    private void forceRedraw() {
-        update();
-        canvas.repaint();
+    public void render() {
         clearConsole();
         output.println(canvas);
     }
 
-    private void render() {
-        update();
-        clearConsole();
-        output.println(canvas);
+    public Game createNewGame() {
+        return new Game(boardFactory.createStandardBoard(terrainFactory), Player.BLUE, ruleBookFactory.createRuleBook());
     }
 
-    private void clearConsole() {
-        output.println("\033[H\033[2J");
+    public Game createNewGame(@NotNull Point boardSize) {
+        return new Game(boardFactory.createStandardBoard(boardSize, terrainFactory), Player.BLUE, ruleBookFactory.createRuleBook());
     }
 
-    @Override
-    public void handle(@NotNull QuitAction action) {
+    public void newGame(@Nullable Point boardSize) {
+        game(boardSize == null ? createNewGame() : createNewGame(boardSize));
+    }
+
+    public void quit() {
         inputHandler.active(false);
     }
 
-    @Override
-    public void handle(@NotNull HelpAction action) {
-        StringBuilder builder = new StringBuilder();
-        for(Command<?> command : inputHandler.commands()) {
-            builder.append(command.syntax()).append("\n");
-        }
-        infoText.text(builder.toString());
-        render();
+    public void info(@NotNull String message) {
+        infoText.text(message);
     }
 
-    @Override
-    public void handle(@NotNull RedrawAction action) {
-        forceRedraw();
+    protected void setupUI() {
+        Panel scene = new Panel();
+        scene.anchor(Anchor.AREA);
+        boardBox.anchor(Anchor.AREA.pad(0, 0, 60, 0));
+        BoxPanel infoPanel = new BoxPanel(new BoxPanel.Outline('-', '|', '+', 1, 1));
+        infoPanel.anchor(Anchor.TOP_RIGHT.size(60, 15));
+        infoText.anchor(Anchor.AREA.pad(1, 1, 1, 1));
+        infoPanel.add(infoText);
+        scene.add(boardBox);
+        scene.add(infoPanel);
+        canvas.child(scene);
     }
 
-    @Override
-    public void handle(@NotNull AttackAction action) throws RuleViolation {
-        Assert.requireNotNull(game);
-        game.handle(action);
-        render();
-    }
-
-    @Override
-    public void handle(@NotNull MoveAction action) throws RuleViolation {
-        Assert.requireNotNull(game);
-        game.handle(action);
-        render();
-    }
-
-    @Override
-    public void handle(@NotNull SetWindowSizeAction action) {
-        updateWindowSize(action.width(), action.height());
-        infoText.text("Changed window size to " + new Point(action.width(), action.height()));
-        render();
-    }
-
-    @Override
-    public void handle(@NotNull UnknownCommandAction action) {
-        infoText.text("Unknown command");
-        render();
+    protected void clearConsole() {
+        output.println("\033[H\033[2J"); //Does this work on linux and macos as well?
     }
 
 }

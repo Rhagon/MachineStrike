@@ -2,11 +2,14 @@ package machinestrike.game.level.factory;
 
 import machinestrike.game.level.Terrain;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
-import static machinestrike.game.level.Terrain.*;
+import static machinestrike.game.level.Terrain.EXCLUDE_GROUNDED;
+import static machinestrike.game.level.Terrain.IMPEDE_MOVEMENT;
 
 public class DefaultTerrainFactory implements TerrainFactory{
 
@@ -21,6 +24,26 @@ public class DefaultTerrainFactory implements TerrainFactory{
     }
 
     private DefaultTerrainFactory() {
+    }
+
+    @Override
+    @NotNull
+    public List<String> names() {
+        return List.of("chasm", "forest", "grassland", "hill", "marsh", "mountain");
+    }
+
+    @Override
+    @Nullable
+    public Terrain forName(@NotNull String name) {
+        return switch (name.toLowerCase()) {
+            case "chasm" -> createChasm();
+            case "marsh" -> createMarsh();
+            case "grassland" -> createGrassland();
+            case "forest" -> createForest();
+            case "hill" -> createHill();
+            case "mountain" -> createMountain();
+            default -> null;
+        };
     }
 
     @Override

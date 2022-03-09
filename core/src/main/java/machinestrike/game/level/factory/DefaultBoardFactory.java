@@ -1,5 +1,6 @@
 package machinestrike.game.level.factory;
 
+import machinestrike.game.Point;
 import machinestrike.game.level.Board;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,8 +20,13 @@ public class DefaultBoardFactory implements BoardFactory{
 
     @Override
     @NotNull
-    public Board createStandardBoard(@NotNull TerrainFactory terrainFactory) {
-        return new Board(8, 8, terrainFactory.createGrassland());
+    public Board createStandardBoard(@NotNull Point size, @NotNull TerrainFactory terrainFactory) {
+        return new Board(size.x(), size.y(), terrainFactory.createGrassland());
+    }
+
+    @Override
+    public @NotNull Board createStandardBoard(@NotNull TerrainFactory terrainFactory) {
+        return createStandardBoard(new Point(8, 8), terrainFactory);
     }
 
 }

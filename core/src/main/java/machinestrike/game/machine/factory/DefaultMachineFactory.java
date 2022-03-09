@@ -9,8 +9,7 @@ import machinestrike.game.machine.Melee;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 
 public class DefaultMachineFactory implements MachineFactory {
 
@@ -29,7 +28,8 @@ public class DefaultMachineFactory implements MachineFactory {
 
     protected void addGenerator(Generator generator) {
         Machine generated = generator.generate(Player.BLUE, Orientation.NORTH);
-        gens.put(generated.name(), generator);
+        gens.put(generated.name().toLowerCase(), generator);
+        names.add(generated.name().toLowerCase());
     }
 
     private void addGenerators() {
@@ -39,20 +39,28 @@ public class DefaultMachineFactory implements MachineFactory {
 
     @NotNull
     private final HashMap<String, Generator> gens;
+    @NotNull
+    private final List<String> names;
 
     private DefaultMachineFactory() {
         gens = new HashMap<>();
+        names = new ArrayList<>();
         addGenerators();
     }
 
     @Override
     @Nullable
-    public Machine create(@NotNull String name, @NotNull Player player, @NotNull Orientation orientation) {
-        Generator gen = gens.get(name);
+    public Machine forName(@NotNull String name, @NotNull Player player, @NotNull Orientation orientation) {
+        Generator gen = gens.get(name.toLowerCase());
         if(gen == null) {
             return null;
         }
         return gen.generate(player, orientation);
+    }
+
+    @Override
+    public @NotNull List<String> names() {
+        return Collections.unmodifiableList(names);
     }
 
     @NotNull
