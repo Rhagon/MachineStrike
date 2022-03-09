@@ -37,7 +37,7 @@ public class ConsoleClient {
     @NotNull
     private final PrintStream output;
     @NotNull
-    private final InputHandler inputHandler;
+    private final InputHandler<ClientActionHandler> inputHandler;
     @NotNull
     private final BoardFactory boardFactory;
     @NotNull
@@ -68,10 +68,10 @@ public class ConsoleClient {
     }
 
     public ConsoleClient(@NotNull Point windowSize, @NotNull InputStream input, @NotNull PrintStream output,
-                         @NotNull CommandListFactory commandFactory, @NotNull BoardFactory bf, @NotNull MachineFactory mf,
+                         @NotNull CommandListFactory<ClientActionHandler> commandFactory, @NotNull BoardFactory bf, @NotNull MachineFactory mf,
                          @NotNull TerrainFactory tf, @NotNull RuleBookFactory rf, @NotNull FieldFormatter formatter) {
         this.output = output;
-        this.inputHandler = new InputHandler(input, commandFactory.createCommandList());
+        this.inputHandler = new InputHandler<>(input, commandFactory.createCommandList());
         this.boardFactory = bf;
         this.machineFactory = mf;
         this.terrainFactory = tf;

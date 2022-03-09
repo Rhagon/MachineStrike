@@ -1,32 +1,34 @@
 package machinestrike.client.console.input;
 
 import machinestrike.action.Action;
-import machinestrike.client.console.action.ClientActionHandler;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public final class InputHandler implements Iterable<Action<? super ClientActionHandler>> {
+public final class InputHandler<HandlerType> implements Iterable<Action<? super HandlerType>> {
 
     @NotNull
     private final BufferedReader reader;
     @NotNull
-    private final List<Command<?>> commands;
+    private final List<Command<HandlerType>> commands;
     private boolean active;
 
-    public InputHandler(@NotNull InputStream input, @NotNull List<Command<?>> commands) {
+    public InputHandler(@NotNull InputStream input, @NotNull List<Command<HandlerType>> commands) {
         reader = new BufferedReader(new InputStreamReader(input));
         this.commands = commands;
         this.active = true;
     }
 
     @Contract(pure = true)
-    public List<Command<?>> commands() {
+    public List<Command<HandlerType>> commands() {
         return Collections.unmodifiableList(commands);
     }
 
@@ -35,17 +37,15 @@ public final class InputHandler implements Iterable<Action<? super ClientActionH
         return active;
     }
 
-    @Contract("_ -> this")
-    public InputHandler active(boolean active) {
+    public void active(boolean active) {
         this.active = active;
-        return this;
     }
 
     @NotNull
     @Override
-    public Iterator<Action<? super ClientActionHandler>> iterator() {
+    public Iterator<Action<? super HandlerType>> iterator() {
         return new Iterator<>() {
-            Action<? super ClientActionHandler> buffer = null;
+            Action<? super HandlerType> buffer = null;
             @Override
             public boolean hasNext() {
                 if(!active) {
@@ -57,11 +57,11 @@ public final class InputHandler implements Iterable<Action<? super ClientActionH
                 return buffer != null;
             }
             @Override
-            public Action<? super ClientActionHandler> next() {
+            public Action<? super HandlerType> next() {
                 if(buffer == null) {
                     buffer = readAction();
                 }
-                Action<? super ClientActionHandler> a = buffer;
+                Action<? super HandlerType> a = buffer;
                 buffer = null;
                 return a;
             }
@@ -69,7 +69,7 @@ public final class InputHandler implements Iterable<Action<? super ClientActionH
     }
 
     @Nullable
-    private Action<? super ClientActionHandler> readAction() {
+    private Action<? super HandlerType> readAction() {
         while(true) {
             String line;
             try {
@@ -80,8 +80,8 @@ public final class InputHandler implements Iterable<Action<? super ClientActionH
             if(line == null) {
                 return null;
             }
-            for(Command<?> command : commands) {
-                Action<? super ClientActionHandler> action = command.parse(line);
+            for(Command<HandlerType> command : commands) {
+                Action<? super HandlerType> action = command.parse(line);
                 if(action != null) {
                     return action;
                 }

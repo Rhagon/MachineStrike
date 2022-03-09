@@ -4,8 +4,8 @@ import machinestrike.client.console.input.Command;
 
 import java.util.List;
 
-public interface CommandListFactory {
+public interface CommandListFactory<HandlerType> {
 
-    List<Command<?>> createCommandList();
+    List<Command<HandlerType>> createCommandList();
 
 }

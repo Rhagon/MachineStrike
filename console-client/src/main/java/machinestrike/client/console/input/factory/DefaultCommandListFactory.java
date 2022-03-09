@@ -10,7 +10,7 @@ import machinestrike.game.Point;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class DefaultCommandListFactory implements CommandListFactory {
+public class DefaultCommandListFactory implements CommandListFactory<ClientActionHandler> {
 
     private static DefaultCommandListFactory instance;
 
@@ -35,7 +35,7 @@ public class DefaultCommandListFactory implements CommandListFactory {
     }
 
     @Override
-    public List<Command<?>> createCommandList() {
+    public List<Command<ClientActionHandler>> createCommandList() {
         return List.of(
                 new Command<>("quit|q|exit|stop", m -> new QuitAction(), "quit"),
                 new Command<>("redraw", m -> new RedrawAction(), "redraw"),
