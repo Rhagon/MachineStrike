@@ -1,6 +1,6 @@
 package machinestrike.client.console.input.factory;
 
-import machinestrike.client.console.input.Command;
+import machinestrike.client.console.command.Command;
 
 import java.util.List;
 

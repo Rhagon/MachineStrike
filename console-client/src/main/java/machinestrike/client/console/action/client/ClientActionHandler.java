@@ -1,5 +1,9 @@
-package machinestrike.client.console.action;
+package machinestrike.client.console.action.client;
 
+import machinestrike.client.console.action.*;
+import machinestrike.client.console.action.setup.MirrorTerrainAction;
+import machinestrike.client.console.action.setup.PlaceMachineAction;
+import machinestrike.client.console.action.setup.SetTerrainAction;
 import machinestrike.game.action.GameActionHandler;
 import org.jetbrains.annotations.NotNull;
 

@@ -1,7 +1,8 @@
 package machinestrike.client.console.input.factory;
 
-import machinestrike.client.console.action.*;
-import machinestrike.client.console.input.Command;
+import machinestrike.client.console.action.client.*;
+import machinestrike.client.console.action.setup.MirrorTerrainAction;
+import machinestrike.client.console.command.Command;
 import machinestrike.client.console.input.parser.PlaceMachineActionParser;
 import machinestrike.client.console.input.parser.SetTerrainActionParser;
 import machinestrike.client.console.input.parser.SetWindowSizeActionParser;

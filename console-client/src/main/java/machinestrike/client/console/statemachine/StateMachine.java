@@ -1,68 +1,46 @@
 package machinestrike.client.console.statemachine;
 
-import machinestrike.action.Action;
-import machinestrike.client.console.ConsoleClient;
-import machinestrike.client.console.action.ClientActionHandler;
-import machinestrike.game.rule.RuleViolation;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
+public abstract class StateMachine {
 
-public class StateMachine {
-
-    @NotNull
+    @Nullable
     private State currentState;
-    @NotNull
-    private final ConsoleClient client;
+    @Nullable
+    private State nextState;
+    private boolean finish;
 
-    public StateMachine(@NotNull ConsoleClient client) {
-        currentState = new State(this);
-        this.client = client;
+    public StateMachine() {
+        currentState = createStartState();
+        nextState = null;
     }
 
-    @NotNull
-    public ConsoleClient client() {
-        return client;
-    }
-
-    @NotNull
-    public State currentState() {
-        return currentState;
-    }
-
-    public void handle(@NotNull Action<? super ClientActionHandler> action) throws RuleViolation {
-        action.execute(currentState);
-    }
-
-    public void enter(@NotNull State newState) {
-        currentState.onExit();
-        newState.beforeEnter();
-        currentState = newState;
-        currentState.onEnter();
-    }
-
-    public void info(@NotNull String message) {
-        client.info(message);
-    }
-
-    public void info(@NotNull List<String> message) {
-        StringBuilder builder = new StringBuilder();
-        for(String line : message) {
-            builder.append(line).append("\n");
+    public void run() {
+        currentState = createStartState();
+        nextState = null;
+        finish = false;
+        while(!finish) {
+            currentState.exec();
+            transition();
         }
-        info(builder.toString());
     }
 
-    public void info(@NotNull String header, @NotNull List<String> message) {
-        ArrayList<String> info = new ArrayList<>();
-        info.add(header);
-        info.addAll(message);
-        info(info);
+    public void finish() {
+        this.finish = true;
     }
 
-    public void clearInfo() {
-        client.info("");
+    public void nextState(@NotNull State nextState) {
+        this.nextState = nextState;
+    }
+
+    protected abstract State createStartState();
+
+    private void transition() {
+        if(nextState != null) {
+            currentState = nextState;
+            nextState = null;
+        }
     }
 
 }

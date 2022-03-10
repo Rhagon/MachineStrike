@@ -1,6 +1,6 @@
 package machinestrike.client.console.input.parser;
 
-import machinestrike.client.console.action.SetTerrainAction;
+import machinestrike.client.console.action.setup.SetTerrainAction;
 import machinestrike.game.Point;
 import org.jetbrains.annotations.NotNull;
 

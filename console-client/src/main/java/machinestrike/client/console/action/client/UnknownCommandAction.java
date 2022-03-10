@@ -1,4 +1,4 @@
-package machinestrike.client.console.action;
+package machinestrike.client.console.action.client;
 
 import machinestrike.action.Action;
 import machinestrike.game.rule.RuleViolation;

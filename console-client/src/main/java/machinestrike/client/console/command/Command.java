@@ -1,4 +1,4 @@
-package machinestrike.client.console.input;
+package machinestrike.client.console.command;
 
 import machinestrike.action.Action;
 import machinestrike.client.console.input.parser.Parser;

@@ -1,6 +1,7 @@
-package machinestrike.client.console.action;
+package machinestrike.client.console.action.setup;
 
 import machinestrike.action.Action;
+import machinestrike.client.console.action.client.ClientActionHandler;
 import machinestrike.game.Orientation;
 import machinestrike.game.Player;
 import machinestrike.game.Point;

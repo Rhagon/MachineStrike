@@ -1,6 +1,6 @@
 package machinestrike.client.console.input.parser;
 
-import machinestrike.client.console.action.SetWindowSizeAction;
+import machinestrike.client.console.action.client.SetWindowSizeAction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Matcher;

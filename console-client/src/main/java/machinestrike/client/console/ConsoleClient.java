@@ -1,15 +1,12 @@
 package machinestrike.client.console;
 
-import machinestrike.action.Action;
-import machinestrike.client.console.action.ClientActionHandler;
-import machinestrike.client.console.input.InputHandler;
+import machinestrike.client.console.action.client.ClientActionHandler;
 import machinestrike.client.console.input.factory.CommandListFactory;
 import machinestrike.client.console.input.factory.DefaultCommandListFactory;
 import machinestrike.client.console.renderer.DefaultFieldFormatter;
 import machinestrike.client.console.renderer.FieldFormatter;
 import machinestrike.client.console.renderer.component.*;
-import machinestrike.client.console.statemachine.SetupMode;
-import machinestrike.client.console.statemachine.StateMachine;
+import machinestrike.client.console.statemachine.client.ClientStateMachine;
 import machinestrike.game.Game;
 import machinestrike.game.Player;
 import machinestrike.game.Point;
@@ -19,7 +16,6 @@ import machinestrike.game.level.factory.DefaultTerrainFactory;
 import machinestrike.game.level.factory.TerrainFactory;
 import machinestrike.game.machine.factory.DefaultMachineFactory;
 import machinestrike.game.machine.factory.MachineFactory;
-import machinestrike.game.rule.RuleViolation;
 import machinestrike.game.rule.factory.DefaultRuleBookFactory;
 import machinestrike.game.rule.factory.RuleBookFactory;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +33,7 @@ public class ConsoleClient {
     @NotNull
     private final PrintStream output;
     @NotNull
-    private final InputHandler<ClientActionHandler> inputHandler;
+    private final InputStream input;
     @NotNull
     private final BoardFactory boardFactory;
     @NotNull
@@ -49,7 +45,7 @@ public class ConsoleClient {
     @NotNull
     private Game game;
     @NotNull
-    private final StateMachine stateMachine;
+    private final ClientStateMachine stateMachine;
     @NotNull
     private final Canvas canvas;
     @NotNull
@@ -71,14 +67,13 @@ public class ConsoleClient {
                          @NotNull CommandListFactory<ClientActionHandler> commandFactory, @NotNull BoardFactory bf, @NotNull MachineFactory mf,
                          @NotNull TerrainFactory tf, @NotNull RuleBookFactory rf, @NotNull FieldFormatter formatter) {
         this.output = output;
-        this.inputHandler = new InputHandler<>(input, commandFactory.createCommandList());
+        this.input = input;
         this.boardFactory = bf;
         this.machineFactory = mf;
         this.terrainFactory = tf;
         this.ruleBookFactory = rf;
         this.game = createNewGame();
-        this.stateMachine = new StateMachine(this);
-
+        this.stateMachine = new ClientStateMachine(this);
         this.canvas = new Canvas(windowSize);
         this.boardBox = new BoardBox(game.board(), 2.4f);
         this.infoText = new Label();
@@ -112,22 +107,16 @@ public class ConsoleClient {
         return machineFactory;
     }
 
+    @NotNull
+    public InputStream input() {
+        return input;
+    }
+
     public void run() {
-        this.stateMachine.enter(new SetupMode(stateMachine));
         updateUI();
         render();
-        output.print("> ");
-        for(Action<? super ClientActionHandler> action : inputHandler) {
-            try {
-                stateMachine.handle(action);
-            } catch (RuleViolation e) {
-                info(e.getMessage());
-            }
-            if(inputHandler.active()) {
-                render();
-                output.print("> ");
-            }
-        }
+
+        stateMachine.run();
     }
 
     public void updateUI() {
@@ -156,10 +145,6 @@ public class ConsoleClient {
 
     public void newGame(@Nullable Point boardSize) {
         game(boardSize == null ? createNewGame() : createNewGame(boardSize));
-    }
-
-    public void quit() {
-        inputHandler.active(false);
     }
 
     public void info(@NotNull String message) {

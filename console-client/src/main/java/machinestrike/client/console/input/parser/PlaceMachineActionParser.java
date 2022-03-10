@@ -1,6 +1,6 @@
 package machinestrike.client.console.input.parser;
 
-import machinestrike.client.console.action.PlaceMachineAction;
+import machinestrike.client.console.action.setup.PlaceMachineAction;
 import machinestrike.game.Orientation;
 import machinestrike.game.Player;
 import machinestrike.game.Point;
