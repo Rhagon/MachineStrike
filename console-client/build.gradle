@@ -1,0 +1,53 @@
+plugins {
+    id 'application'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'machinestrike.client.console.ConsoleClient'
+    }
+}
+
+application {
+    mainClass = 'machinestrike.client.console.ConsoleClient'
+}
+
+run {
+    standardInput = System.in
+}
+
+group 'machine-strike'
+version '0.1-SNAPSHOT'
+buildDir = '../build'
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+dependencies {
+    implementation project(path: ':core', configuration: 'default')
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+
+}
+
+task createRunScript(type: Copy) {
+    group('build')
+    dependsOn(jar)
+    from 'src/main/other/Machine-Strike.bat'
+    into new File(buildDir, 'bin')
+    expand([
+            artifact_name: jar.archiveFileName.get()
+    ])
+    outputs.upToDateWhen { false }
+}
+
+test {
+    useJUnitPlatform()
+}
