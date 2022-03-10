@@ -1,5 +1,7 @@
 # MachineStrike
-An implementation of the Machine Strike Mini game from Horizon: Forbidden West
+An implementation of the Machine Strike Mini game from Horizon: Forbidden West.
+
+For information on how to build and play the game, please consider the [User Guide](https://github.com/Rhagon/MachineStrike/wiki/User-Guide) in the Wiki
 
 # Concepts
 - [Actions](#actions)
