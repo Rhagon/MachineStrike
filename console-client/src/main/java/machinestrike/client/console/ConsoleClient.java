@@ -1,8 +1,5 @@
 package machinestrike.client.console;
 
-import machinestrike.client.console.action.client.ClientActionHandler;
-import machinestrike.client.console.input.factory.CommandListFactory;
-import machinestrike.client.console.input.factory.DefaultCommandListFactory;
 import machinestrike.client.console.renderer.DefaultFieldFormatter;
 import machinestrike.client.console.renderer.FieldFormatter;
 import machinestrike.client.console.renderer.component.*;
@@ -58,14 +55,13 @@ public class ConsoleClient {
     }
 
     public ConsoleClient(@NotNull Point windowSize, @NotNull InputStream input, @NotNull PrintStream output) {
-        this(windowSize, input, output, DefaultCommandListFactory.instance(),
-                DefaultBoardFactory.instance(), DefaultMachineFactory.instance(), DefaultTerrainFactory.instance(),
-                DefaultRuleBookFactory.instance(), DefaultFieldFormatter.instance());
+        this(windowSize, input, output, DefaultBoardFactory.instance(), DefaultMachineFactory.instance(),
+                DefaultTerrainFactory.instance(), DefaultRuleBookFactory.instance(), DefaultFieldFormatter.instance());
     }
 
     public ConsoleClient(@NotNull Point windowSize, @NotNull InputStream input, @NotNull PrintStream output,
-                         @NotNull CommandListFactory<ClientActionHandler> commandFactory, @NotNull BoardFactory bf, @NotNull MachineFactory mf,
-                         @NotNull TerrainFactory tf, @NotNull RuleBookFactory rf, @NotNull FieldFormatter formatter) {
+                         @NotNull BoardFactory bf, @NotNull MachineFactory mf, @NotNull TerrainFactory tf,
+                         @NotNull RuleBookFactory rf, @NotNull FieldFormatter formatter) {
         this.output = output;
         this.input = input;
         this.boardFactory = bf;
@@ -77,7 +73,6 @@ public class ConsoleClient {
         this.canvas = new Canvas(windowSize);
         this.boardBox = new BoardBox(game.board(), 2.4f);
         this.infoText = new Label();
-
         setupUI();
     }
 
@@ -115,7 +110,6 @@ public class ConsoleClient {
     public void run() {
         updateUI();
         render();
-
         stateMachine.run();
     }
 

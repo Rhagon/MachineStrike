@@ -1,14 +1,13 @@
 package machinestrike.client.console.action.setup;
 
 import machinestrike.action.Action;
-import machinestrike.client.console.action.client.ClientActionHandler;
 import machinestrike.game.rule.RuleViolation;
 import org.jetbrains.annotations.NotNull;
 
-public class MirrorTerrainAction implements Action<ClientActionHandler> {
+public class MirrorTerrainAction implements Action<SetupActionHandler> {
 
     @Override
-    public void execute(@NotNull ClientActionHandler handler) throws RuleViolation {
+    public void execute(@NotNull SetupActionHandler handler) throws RuleViolation {
         handler.handle(this);
     }
 

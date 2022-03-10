@@ -1,7 +1,6 @@
 package machinestrike.client.console.input;
 
 import machinestrike.action.Action;
-import machinestrike.client.console.command.Command;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,14 +17,14 @@ public final class InputHandler<HandlerType> implements Iterable<Action<? super 
     @Nullable
     private final PrintStream interaction;
     @NotNull
-    private final List<Command<HandlerType>> commands;
+    private final List<Command<? super HandlerType>> commands;
     private boolean active;
 
-    public InputHandler(@NotNull InputStream input, @NotNull List<Command<HandlerType>> commands) {
+    public InputHandler(@NotNull InputStream input, @NotNull List<Command<? super HandlerType>> commands) {
         this(input, null, commands);
     }
 
-    public InputHandler(@NotNull InputStream input, @Nullable PrintStream interaction, @NotNull List<Command<HandlerType>> commands) {
+    public InputHandler(@NotNull InputStream input, @Nullable PrintStream interaction, @NotNull List<Command<? super HandlerType>> commands) {
         this.reader = new BufferedReader(new InputStreamReader(input));
         this.interaction = interaction;
         this.commands = commands;
@@ -33,7 +32,7 @@ public final class InputHandler<HandlerType> implements Iterable<Action<? super 
     }
 
     @Contract(pure = true)
-    public List<Command<HandlerType>> commands() {
+    public List<Command<? super HandlerType>> commands() {
         return Collections.unmodifiableList(commands);
     }
 
@@ -88,7 +87,7 @@ public final class InputHandler<HandlerType> implements Iterable<Action<? super 
             if(line == null) {
                 return null;
             }
-            for(Command<HandlerType> command : commands) {
+            for(Command<? super HandlerType> command : commands) {
                 Action<? super HandlerType> action = command.parse(line);
                 if(action != null) {
                     return action;
