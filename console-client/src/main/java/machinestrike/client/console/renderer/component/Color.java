@@ -5,6 +5,8 @@ import org.jetbrains.annotations.NotNull;
 public enum Color {
 
     WHITE(200, 200, 200),
+    BLUE(0, 102, 255),
+    RED(200, 30, 30),
     CHASM(102, 51, 0),
     MARSH(51, 204, 204),
     GRASSLAND(51, 204, 51),
@@ -21,6 +23,8 @@ public enum Color {
             case "forest" -> FOREST;
             case "hill" -> HILL;
             case "mountain" -> MOUNTAIN;
+            case "blue" -> BLUE;
+            case "red" -> RED;
             default -> WHITE;
         };
     }
