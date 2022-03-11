@@ -1,5 +1,7 @@
 package machinestrike.client.console.renderer.component;
 
+import machinestrike.debug.Assert;
+import machinestrike.game.Game;
 import machinestrike.game.level.Field;
 import machinestrike.game.machine.Machine;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +47,9 @@ public class FieldBox extends BoxPanel {
         Machine m = field.machine();
         if(m != null) {
             machine.text(m.name());
-            strength.text("\u2694" + m.strength());
+            Game game = field().board().game();
+            Assert.requireNotNull(game);
+            strength.text("\u2694" + game.ruleBook().calculateStrength(m, m.orientation(), false));
             move.text("\uD83D\uDC5E" + m.moveRange() + m.orientation().descriptor());
             health.text("\u2665" + m.health());
         } else {

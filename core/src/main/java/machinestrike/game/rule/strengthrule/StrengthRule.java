@@ -6,6 +6,6 @@ import org.jetbrains.annotations.NotNull;
 
 public interface StrengthRule {
 
-    int getModifier(@NotNull Machine machine, @NotNull Orientation direction);
+    int getModifier(@NotNull Machine machine, @NotNull Orientation direction, boolean includeArmor);
 
 }

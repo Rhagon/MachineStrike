@@ -327,8 +327,8 @@ public abstract class Machine {
         Assert.requireNotNull(attackedField);
         Machine attackedMachine = attackedField.machine();
         Assert.requireNotNull(attackedMachine);
-        int attackerPower = game.ruleBook().calculateStrength(machine, machine.orientation());
-        int defenderPower = game.ruleBook().calculateStrength(attackedMachine, machine.orientation.add(Orientation.SOUTH));
+        int attackerPower = game.ruleBook().calculateStrength(machine, machine.orientation(), true);
+        int defenderPower = game.ruleBook().calculateStrength(attackedMachine, machine.orientation.add(Orientation.SOUTH), true);
         int rawDamage = attackerPower - defenderPower;
         int damage = Math.max(1, attackerPower - defenderPower);
         boolean defenseBreak = rawDamage < 1;

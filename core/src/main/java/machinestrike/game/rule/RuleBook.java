@@ -62,10 +62,10 @@ public record RuleBook(int machinesPerTurn, int requiredVictoryPoints, List<Move
      *                    typically be the orientation of the attacker itself. For a defender it is the direction that,
      *                    the attack is coming from, so it is the opposite of the orientation of the attacker.
      */
-    public int calculateStrength(@NotNull Machine machine, @NotNull Orientation direction) {
+    public int calculateStrength(@NotNull Machine machine, @NotNull Orientation direction, boolean includeArmor) {
         int strength = 0;
         for(StrengthRule rule : strengthRules) {
-            strength += rule.getModifier(machine, direction);
+            strength += rule.getModifier(machine, direction, includeArmor);
         }
         return Math.max(0, strength);
     }

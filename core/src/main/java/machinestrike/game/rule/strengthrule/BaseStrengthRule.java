@@ -22,7 +22,7 @@ public class BaseStrengthRule implements StrengthRule{
     }
 
     @Override
-    public int getModifier(@NotNull Machine machine, @NotNull Orientation direction) {
+    public int getModifier(@NotNull Machine machine, @NotNull Orientation direction, boolean includeArmor) {
         Field field = machine.field();
         Assert.requireNotNull(field);
         Game game = field.board().game();

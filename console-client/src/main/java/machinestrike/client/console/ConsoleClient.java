@@ -24,7 +24,7 @@ import java.io.PrintStream;
 public class ConsoleClient {
 
     public static void main(String[] args) {
-        new ConsoleClient(new Point(160, 42)).run();
+        new ConsoleClient(new Point(175, 45)).run();
     }
 
     @NotNull
@@ -150,7 +150,7 @@ public class ConsoleClient {
         scene.anchor(Anchor.AREA);
         boardBox.anchor(Anchor.AREA.pad(0, 0, 60, 0));
         BoxPanel infoPanel = new BoxPanel(new BoxPanel.Outline('-', '|', '+', 1, 1));
-        infoPanel.anchor(Anchor.TOP_RIGHT.size(60, 15));
+        infoPanel.anchor(Anchor.BOTTOM_RIGHT.size(60, 15));
         infoText.anchor(Anchor.AREA.pad(1, 1, 1, 1));
         infoPanel.add(infoText);
         scene.add(boardBox);

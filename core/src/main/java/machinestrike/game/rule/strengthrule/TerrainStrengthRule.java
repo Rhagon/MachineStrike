@@ -20,7 +20,7 @@ public class TerrainStrengthRule implements StrengthRule {
     }
 
     @Override
-    public int getModifier(@NotNull Machine machine, @NotNull Orientation direction) {
+    public int getModifier(@NotNull Machine machine, @NotNull Orientation direction, boolean includeArmor) {
         if(machine.is(Machine.IGNORE_TERRAIN_MODIFIER)) {
             return 0;
         }
