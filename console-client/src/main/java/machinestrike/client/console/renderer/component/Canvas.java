@@ -75,6 +75,7 @@ public class Canvas extends Decorator {
         }
         int length = Math.min(size.x() - position.x(), string.length());
         System.arraycopy(string.toCharArray(), 0, symbols[position.y()], position.x(), length);
+        Arrays.fill(colors[position.y()], position.x(), position.x() + string.length(), color);
     }
 
     @Override
