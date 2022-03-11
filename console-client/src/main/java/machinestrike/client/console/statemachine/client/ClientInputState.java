@@ -41,10 +41,11 @@ public abstract class ClientInputState<HandlerType extends ClientActionHandler> 
         InputHandler<HandlerType> input = new InputHandler<>(stateMachine().client().input(), commands());
         active = true;
         for(Action<? super HandlerType> action : input) {
+            stateMachine().clearInfo();
             try {
                 execute(action);
             } catch (RuleViolation e) {
-                stateMachine().client().info(e.getMessage());
+                stateMachine().info(e.getMessage());
             }
             stateMachine().client().render();
             if(!active) {
