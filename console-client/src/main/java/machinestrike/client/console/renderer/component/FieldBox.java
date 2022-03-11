@@ -17,11 +17,11 @@ public class FieldBox extends BoxPanel {
         this.field = field;
         terrain = new Label();
         terrain.alignment(Label.Alignment.TOP_CENTER);
-        terrain.anchor(Anchor.TOP_EDGE.size(0, 1).position(0, 1).pad(0, 1, 1, 0));
+        terrain.anchor(Anchor.TOP_EDGE.size(0, 1).position(0, 0).pad(0, 1, 1, 0));
         add(terrain);
         machine = new Label();
         machine.alignment(Label.Alignment.TOP_CENTER);
-        machine.anchor(Anchor.TOP_EDGE.size(0, 1).position(0, 2).pad(0, 1, 1, 0));
+        machine.anchor(Anchor.TOP_EDGE.size(0, 2).position(0, 1).pad(0, 1, 1, 0));
         add(machine);
         strength = new Label();
         strength.alignment(Label.Alignment.BOTTOM_LEFT);
@@ -46,7 +46,7 @@ public class FieldBox extends BoxPanel {
         terrain.text(field.terrain().name());
         Machine m = field.machine();
         if(m != null) {
-            machine.text(m.name());
+            machine.text(m.name() + "\n" + m.player().name());
             Game game = field().board().game();
             Assert.requireNotNull(game);
             strength.text("\u2694" + game.ruleBook().calculateStrength(m, m.orientation(), false));
