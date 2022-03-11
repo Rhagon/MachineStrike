@@ -69,24 +69,37 @@ public class Label extends Component {
     private Alignment alignment;
     @NotNull
     private OverflowPolicy policy;
+    @NotNull
+    private Color color;
 
     public Label() {
-        this("");
+        this("", Color.WHITE);
     }
 
-    public Label(@NotNull String text) {
-        this(text, Alignment.TOP_LEFT);
+    public Label(@NotNull String text, @NotNull Color color) {
+        this(text, Alignment.TOP_LEFT, color);
     }
 
-    public Label(@NotNull String text, @NotNull Alignment alignment) {
-        this(text, alignment, OverflowPolicy.WRAP);
+    public Label(@NotNull String text, @NotNull Alignment alignment, @NotNull Color color) {
+        this(text, alignment, OverflowPolicy.WRAP, color);
     }
 
-    public Label(@NotNull String text, @NotNull Alignment alignment, @NotNull OverflowPolicy policy) {
+    public Label(@NotNull String text, @NotNull Alignment alignment, @NotNull OverflowPolicy policy, @NotNull Color color) {
         this.text = text;
         this.alignment = alignment;
         this.policy = policy;
+        this.color = color;
         update();
+    }
+
+    @NotNull
+    public Color color() {
+        return color;
+    }
+
+    public void color(@NotNull Color color) {
+        this.color = color;
+        repaint();
     }
 
     @Contract(pure = true)
@@ -196,7 +209,7 @@ public class Label extends Component {
             if(alignment.horizontalCenter()) {
                 lineStart = (size().x() - lines[i].length()) / 2;
             }
-            g.printString(new Point(lineStart, startLine + i), lines[i]);
+            g.printString(new Point(lineStart, startLine + i), lines[i], color);
         }
     }
 

@@ -27,16 +27,16 @@ public class Graphics {
         return new Graphics(device, area, this.translation.add(translation));
     }
 
-    public void fillRect(@NotNull Rect rect, char symbol) {
-        device.fillRect(rect.translate(translation), symbol);
+    public void fillRect(@NotNull Rect rect, char symbol, @NotNull Color color) {
+        device.fillRect(rect.translate(translation), symbol, color);
     }
 
-    public void printString(@NotNull Point position, @NotNull String string) {
-        device.printString(position.add(translation), string);
+    public void printString(@NotNull Point position, @NotNull String string, @NotNull Color color) {
+        device.printString(position.add(translation), string, color);
     }
 
-    public void printChar(@NotNull Point position, char c) {
-        device.drawChar(position.add(translation), c);
+    public void printChar(@NotNull Point position, char symbol, Color color) {
+        device.drawChar(position.add(translation), symbol, color);
     }
 
     /**

@@ -36,7 +36,7 @@ public class Panel extends HeapContainer {
     protected void renderPanel(Graphics g) {
         Rect r = g.intersection(size());
         if(!r.noArea()) {
-            g.fillRect(r, c);
+            g.fillRect(r, c, Color.WHITE);
         }
     }
 

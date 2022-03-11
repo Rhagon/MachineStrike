@@ -74,12 +74,12 @@ public class BoardBox extends Decorator {
             }
         }
         for(int i = 0; i < board.sizeX(); ++i) {
-            Label columnLabel = new Label("" + (char) ('A' + i), Label.Alignment.CENTER, Label.OverflowPolicy.TRUNC_LEFT);
+            Label columnLabel = new Label("" + (char) ('A' + i), Label.Alignment.CENTER, Label.OverflowPolicy.TRUNC_LEFT, Color.WHITE);
             columnLabels.add(columnLabel);
             outlinePanel.add(columnLabel);
         }
         for(int i = 0; i < board.sizeY(); ++i) {
-            Label rowLabel = new Label("" + (char) ('1' + i), Label.Alignment.CENTER, Label.OverflowPolicy.TRUNC_LEFT);
+            Label rowLabel = new Label("" + (char) ('1' + i), Label.Alignment.CENTER, Label.OverflowPolicy.TRUNC_LEFT, Color.WHITE);
             rowLabels.add(rowLabel);
             outlinePanel.add(rowLabel);
         }

@@ -12,6 +12,9 @@ public class Canvas extends Decorator {
 
     private char[][] symbols;
     @NotNull
+    private Color[][] colors;
+
+    @NotNull
     private Point size;
     private boolean ignoreRepaint;
 
@@ -22,14 +25,17 @@ public class Canvas extends Decorator {
     public Canvas(@NotNull Point size) {
         this.size = size;
         symbols = new char[size.y()][size.x()];
+        colors = new Color[size.y()][size.x()];
         ignoreRepaint = false;
+        fill(' ', Color.WHITE);
     }
 
     @Contract("_ -> this")
     public Canvas size(@NotNull Point size) {
         this.size = size;
         symbols = new char[size.y()][size.x()];
-        fill(' ');
+        colors = new Color[size.y()][size.x()];
+        fill(' ', Color.WHITE);
         ignoreRepaint(this::updateLayout);
         repaint();
         return this;
@@ -41,27 +47,29 @@ public class Canvas extends Decorator {
         return new Rect(Point.ZERO, size);
     }
 
-    public void drawChar(@NotNull Point position, char c) {
+    public void drawChar(@NotNull Point position, char symbol, @NotNull Color color) {
         Assert.range(0, position.x(), size.x());
         Assert.range(0, position.y(), size.y());
-        symbols[position.y()][position.x()] = c;
+        symbols[position.y()][position.x()] = symbol;
+        colors[position.y()][position().x()] = color;
     }
 
-    public void fill(char c) {
-        fillRect(0, 0, size.x() - 1, size.y() - 1, c);
+    public void fill(char symbol, @NotNull Color color) {
+        fillRect(0, 0, size.x() - 1, size.y() - 1, symbol, color);
     }
 
-    public void fillRect(int x, int y, int width, int height, char c) {
+    public void fillRect(int x, int y, int width, int height, char symbol, @NotNull Color color) {
         for(int i = 0; i < height; ++i) {
-            Arrays.fill(symbols[y + i], x, x + width, c);
+            Arrays.fill(symbols[y + i], x, x + width, symbol);
+            Arrays.fill(colors[y + i], x, x + width, color);
         }
     }
 
-    public void fillRect(@NotNull Rect rect, char c) {
-        fillRect(rect.x(), rect.y(), rect.width(), rect.height(), c);
+    public void fillRect(@NotNull Rect rect, char symbol, @NotNull Color color) {
+        fillRect(rect.x(), rect.y(), rect.width(), rect.height(), symbol, color);
     }
 
-    public void printString(@NotNull Point position, @NotNull String string) {
+    public void printString(@NotNull Point position, @NotNull String string, @NotNull Color color) {
         if(position.y() >= size.y()) {
             return;
         }
@@ -78,9 +86,18 @@ public class Canvas extends Decorator {
     @Contract(pure = true)
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for(char[] line : symbols) {
-            builder.append(line).append("\n");
+        for(int r = 0; r < size.y(); ++r) {
+            Color current = null;
+            for(int c = 0; c < size.x(); ++c) {
+                if(colors[r][c] != current) {
+                    current = colors[r][c];
+                    builder.append(current);
+                }
+                builder.append(symbols[r][c]);
+            }
+            builder.append("\n");
         }
+        builder.append("\033[39m");
         return builder.toString();
     }
 
@@ -88,7 +105,7 @@ public class Canvas extends Decorator {
     public void repaint(@NotNull Rect rect) {
         if(!ignoreRepaint && child() != null) {
             Rect canvasIntersection = rect.intersection(rect());
-            fillRect(canvasIntersection, ' ');
+            fillRect(canvasIntersection, ' ', Color.WHITE);
             paint(new Graphics(this, canvasIntersection, Point.ZERO));
         }
     }
