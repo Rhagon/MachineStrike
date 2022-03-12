@@ -20,7 +20,7 @@ public class ArmorStrengthRule implements StrengthRule{
 
     @Override
     public int getModifier(@NotNull Machine machine, @NotNull Orientation direction, boolean includeArmor) {
-        return includeArmor ? machine.armor().inDirection(direction).damageModifier() : 0;
+        return includeArmor ? machine.armor().inDirection(machine.orientation().add(direction)).damageModifier() : 0;
     }
 
 }
