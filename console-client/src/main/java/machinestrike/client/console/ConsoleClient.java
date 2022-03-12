@@ -1,7 +1,5 @@
 package machinestrike.client.console;
 
-import machinestrike.client.console.renderer.DefaultFieldFormatter;
-import machinestrike.client.console.renderer.FieldFormatter;
 import machinestrike.client.console.renderer.component.*;
 import machinestrike.client.console.statemachine.client.ClientStateMachine;
 import machinestrike.game.Game;
@@ -56,12 +54,12 @@ public class ConsoleClient {
 
     public ConsoleClient(@NotNull Point windowSize, @NotNull InputStream input, @NotNull PrintStream output) {
         this(windowSize, input, output, DefaultBoardFactory.instance(), DefaultMachineFactory.instance(),
-                DefaultTerrainFactory.instance(), DefaultRuleBookFactory.instance(), DefaultFieldFormatter.instance());
+                DefaultTerrainFactory.instance(), DefaultRuleBookFactory.instance());
     }
 
     public ConsoleClient(@NotNull Point windowSize, @NotNull InputStream input, @NotNull PrintStream output,
                          @NotNull BoardFactory bf, @NotNull MachineFactory mf, @NotNull TerrainFactory tf,
-                         @NotNull RuleBookFactory rf, @NotNull FieldFormatter formatter) {
+                         @NotNull RuleBookFactory rf) {
         this.output = output;
         this.input = input;
         this.boardFactory = bf;
