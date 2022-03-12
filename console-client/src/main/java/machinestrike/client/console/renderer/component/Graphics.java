@@ -1,5 +1,6 @@
 package machinestrike.client.console.renderer.component;
 
+import machinestrike.client.console.renderer.color.ColorKey;
 import machinestrike.client.console.renderer.shape.Rect;
 import machinestrike.game.Point;
 import org.jetbrains.annotations.Contract;
@@ -27,16 +28,16 @@ public class Graphics {
         return new Graphics(device, area, this.translation.add(translation));
     }
 
-    public void fillRect(@NotNull Rect rect, char symbol) {
-        device.fillRect(rect.translate(translation), symbol);
+    public void fillRect(@NotNull Rect rect, char symbol, @NotNull ColorKey color) {
+        device.fillRect(rect.translate(translation), symbol, color);
     }
 
-    public void printString(@NotNull Point position, @NotNull String string) {
-        device.printString(position.add(translation), string);
+    public void printString(@NotNull Point position, @NotNull String string, @NotNull ColorKey color) {
+        device.printString(position.add(translation), string, color);
     }
 
-    public void printChar(@NotNull Point position, char c) {
-        device.drawChar(position.add(translation), c);
+    public void printChar(@NotNull Point position, char symbol, ColorKey color) {
+        device.drawChar(position.add(translation), symbol, color);
     }
 
     /**

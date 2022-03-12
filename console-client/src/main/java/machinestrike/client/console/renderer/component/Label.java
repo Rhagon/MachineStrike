@@ -1,5 +1,7 @@
 package machinestrike.client.console.renderer.component;
 
+import machinestrike.client.console.renderer.color.ColorKey;
+import machinestrike.client.console.renderer.color.Colors;
 import machinestrike.client.console.renderer.shape.Rect;
 import machinestrike.game.Point;
 import org.jetbrains.annotations.Contract;
@@ -69,24 +71,37 @@ public class Label extends Component {
     private Alignment alignment;
     @NotNull
     private OverflowPolicy policy;
+    @NotNull
+    private ColorKey color;
 
     public Label() {
-        this("");
+        this("", Colors.LABEL);
     }
 
-    public Label(@NotNull String text) {
-        this(text, Alignment.TOP_LEFT);
+    public Label(@NotNull String text, @NotNull ColorKey color) {
+        this(text, Alignment.TOP_LEFT, color);
     }
 
-    public Label(@NotNull String text, @NotNull Alignment alignment) {
-        this(text, alignment, OverflowPolicy.WRAP);
+    public Label(@NotNull String text, @NotNull Alignment alignment, @NotNull ColorKey color) {
+        this(text, alignment, OverflowPolicy.WRAP, color);
     }
 
-    public Label(@NotNull String text, @NotNull Alignment alignment, @NotNull OverflowPolicy policy) {
+    public Label(@NotNull String text, @NotNull Alignment alignment, @NotNull OverflowPolicy policy, @NotNull ColorKey color) {
         this.text = text;
         this.alignment = alignment;
         this.policy = policy;
+        this.color = color;
         update();
+    }
+
+    @NotNull
+    public ColorKey color() {
+        return color;
+    }
+
+    public void color(@NotNull ColorKey color) {
+        this.color = color;
+        repaint();
     }
 
     @Contract(pure = true)
@@ -196,7 +211,7 @@ public class Label extends Component {
             if(alignment.horizontalCenter()) {
                 lineStart = (size().x() - lines[i].length()) / 2;
             }
-            g.printString(new Point(lineStart, startLine + i), lines[i]);
+            g.printString(new Point(lineStart, startLine + i), lines[i], color);
         }
     }
 

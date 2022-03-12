@@ -1,5 +1,6 @@
 package machinestrike.client.console.renderer.component;
 
+import machinestrike.client.console.renderer.color.ColorKey;
 import machinestrike.debug.Assert;
 import machinestrike.game.Game;
 import machinestrike.game.level.Field;
@@ -10,18 +11,14 @@ public class FieldBox extends BoxPanel {
 
     @NotNull
     private final Field field;
-    private final Label terrain, machine, strength, move, health;
+    private final Label machine, strength, move, health;
 
     public FieldBox(@NotNull Field field) {
         super(new Outline('-', '|', '+', 1, 1));
         this.field = field;
-        terrain = new Label();
-        terrain.alignment(Label.Alignment.TOP_CENTER);
-        terrain.anchor(Anchor.TOP_EDGE.size(0, 1).position(0, 0).pad(0, 1, 1, 0));
-        add(terrain);
         machine = new Label();
         machine.alignment(Label.Alignment.TOP_CENTER);
-        machine.anchor(Anchor.TOP_EDGE.size(0, 2).position(0, 1).pad(0, 1, 1, 0));
+        machine.anchor(Anchor.TOP_EDGE.size(0, 1).position(0, 1).pad(0, 1, 1, 0));
         add(machine);
         strength = new Label();
         strength.alignment(Label.Alignment.BOTTOM_LEFT);
@@ -43,10 +40,11 @@ public class FieldBox extends BoxPanel {
     }
 
     public void update() {
-        terrain.text(field.terrain().name());
         Machine m = field.machine();
+        outline(new Outline('-', '|', '+', 1, 1, ColorKey.get("terrain." + field().terrain().name().toLowerCase())));
         if(m != null) {
-            machine.text(m.name() + "\n" + m.player().name());
+            machine.text(m.name());
+            machine.color(ColorKey.get("player." + m.player().toString().toLowerCase()));
             Game game = field().board().game();
             Assert.requireNotNull(game);
             strength.text("\u2694" + game.ruleBook().calculateStrength(m, m.orientation(), false));

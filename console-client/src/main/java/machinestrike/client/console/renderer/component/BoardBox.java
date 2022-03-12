@@ -1,5 +1,6 @@
 package machinestrike.client.console.renderer.component;
 
+import machinestrike.client.console.renderer.color.Colors;
 import machinestrike.game.Point;
 import machinestrike.game.level.Board;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +19,6 @@ public class BoardBox extends Decorator {
     private final List<FieldBox> fields;
     @NotNull
     private final List<Label> rowLabels, columnLabels;
-
 
     private float fieldSizeRatio;
     private int fieldWidth, fieldHeight;
@@ -74,12 +74,12 @@ public class BoardBox extends Decorator {
             }
         }
         for(int i = 0; i < board.sizeX(); ++i) {
-            Label columnLabel = new Label("" + (char) ('A' + i), Label.Alignment.CENTER, Label.OverflowPolicy.TRUNC_LEFT);
+            Label columnLabel = new Label("" + (char) ('A' + i), Label.Alignment.CENTER, Label.OverflowPolicy.TRUNC_LEFT, Colors.LABEL);
             columnLabels.add(columnLabel);
             outlinePanel.add(columnLabel);
         }
         for(int i = 0; i < board.sizeY(); ++i) {
-            Label rowLabel = new Label("" + (char) ('1' + i), Label.Alignment.CENTER, Label.OverflowPolicy.TRUNC_LEFT);
+            Label rowLabel = new Label("" + (char) ('1' + i), Label.Alignment.CENTER, Label.OverflowPolicy.TRUNC_LEFT, Colors.LABEL);
             rowLabels.add(rowLabel);
             outlinePanel.add(rowLabel);
         }
