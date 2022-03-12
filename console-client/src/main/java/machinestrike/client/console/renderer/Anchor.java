@@ -1,6 +1,5 @@
-package machinestrike.client.console.renderer.component;
+package machinestrike.client.console.renderer;
 
-import machinestrike.client.console.renderer.shape.Rect;
 import machinestrike.game.Point;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

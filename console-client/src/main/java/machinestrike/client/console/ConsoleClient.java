@@ -1,5 +1,7 @@
 package machinestrike.client.console;
 
+import machinestrike.client.console.renderer.Anchor;
+import machinestrike.client.console.renderer.Canvas;
 import machinestrike.client.console.renderer.component.*;
 import machinestrike.client.console.statemachine.client.ClientStateMachine;
 import machinestrike.game.Game;

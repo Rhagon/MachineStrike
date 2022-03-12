@@ -1,4 +1,4 @@
-package machinestrike.client.console.renderer.shape;
+package machinestrike.client.console.renderer;
 
 import machinestrike.game.Point;
 import org.jetbrains.annotations.Contract;

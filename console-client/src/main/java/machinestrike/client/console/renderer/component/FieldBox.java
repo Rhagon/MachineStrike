@@ -1,5 +1,6 @@
 package machinestrike.client.console.renderer.component;
 
+import machinestrike.client.console.renderer.Anchor;
 import machinestrike.client.console.renderer.color.ColorKey;
 import machinestrike.debug.Assert;
 import machinestrike.game.Game;

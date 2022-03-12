@@ -1,8 +1,9 @@
 package machinestrike.client.console.renderer.component;
 
+import machinestrike.client.console.renderer.Graphics;
 import machinestrike.client.console.renderer.color.ColorKey;
 import machinestrike.client.console.renderer.color.Colors;
-import machinestrike.client.console.renderer.shape.Rect;
+import machinestrike.client.console.renderer.Rect;
 import machinestrike.game.Point;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

@@ -1,5 +1,6 @@
 package machinestrike.client.console.renderer.component;
 
+import machinestrike.client.console.renderer.Graphics;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 

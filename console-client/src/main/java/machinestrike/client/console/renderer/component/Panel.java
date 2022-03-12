@@ -1,7 +1,8 @@
 package machinestrike.client.console.renderer.component;
 
+import machinestrike.client.console.renderer.Graphics;
 import machinestrike.client.console.renderer.color.Colors;
-import machinestrike.client.console.renderer.shape.Rect;
+import machinestrike.client.console.renderer.Rect;
 import org.jetbrains.annotations.Contract;
 
 public class Panel extends HeapContainer {
