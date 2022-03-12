@@ -1,5 +1,6 @@
 package machinestrike.client.console.renderer.component;
 
+import machinestrike.client.console.renderer.color.Colors;
 import machinestrike.client.console.renderer.shape.Rect;
 import org.jetbrains.annotations.Contract;
 
@@ -36,7 +37,7 @@ public class Panel extends HeapContainer {
     protected void renderPanel(Graphics g) {
         Rect r = g.intersection(size());
         if(!r.noArea()) {
-            g.fillRect(r, c, Color.WHITE);
+            g.fillRect(r, c, Colors.PANEL);
         }
     }
 

@@ -1,5 +1,7 @@
 package machinestrike.client.console.renderer.component;
 
+import machinestrike.client.console.renderer.color.ColorKey;
+import machinestrike.client.console.renderer.color.Colors;
 import machinestrike.client.console.renderer.shape.Rect;
 import machinestrike.game.Point;
 import org.jetbrains.annotations.Contract;
@@ -7,10 +9,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class BoxPanel extends Panel {
 
-    public record Outline(char horizontal, char vertical, char corner, int width, int height, @NotNull Color color) {
+    public record Outline(char horizontal, char vertical, char corner, int width, int height, @NotNull ColorKey color) {
 
         public Outline(char horizontal, char vertical, char corner, int width, int height) {
-            this(horizontal, vertical, corner, width, height, Color.WHITE);
+            this(horizontal, vertical, corner, width, height, Colors.BOX);
         }
 
     }

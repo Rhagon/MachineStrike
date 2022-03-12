@@ -1,5 +1,6 @@
 package machinestrike.client.console.renderer.component;
 
+import machinestrike.client.console.renderer.color.ColorKey;
 import machinestrike.debug.Assert;
 import machinestrike.game.Game;
 import machinestrike.game.level.Field;
@@ -40,10 +41,10 @@ public class FieldBox extends BoxPanel {
 
     public void update() {
         Machine m = field.machine();
-        outline(new Outline('-', '|', '+', 1, 1, Color.forName(field().terrain().name())));
+        outline(new Outline('-', '|', '+', 1, 1, ColorKey.get("terrain." + field().terrain().name().toLowerCase())));
         if(m != null) {
             machine.text(m.name());
-            machine.color(Color.forName(m.player().toString()));
+            machine.color(ColorKey.get("player." + m.player().toString().toLowerCase()));
             Game game = field().board().game();
             Assert.requireNotNull(game);
             strength.text("\u2694" + game.ruleBook().calculateStrength(m, m.orientation(), false));

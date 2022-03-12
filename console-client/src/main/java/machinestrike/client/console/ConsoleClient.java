@@ -70,7 +70,7 @@ public class ConsoleClient {
         this.ruleBookFactory = rf;
         this.game = createNewGame();
         this.stateMachine = new ClientStateMachine(this);
-        this.canvas = new Canvas(windowSize);
+        this.canvas = new Canvas(windowSize, DefaultColorSchemeFactory.instance().create());
         this.boardBox = new BoardBox(game.board(), 2.4f);
         this.infoText = new Label();
         setupUI();

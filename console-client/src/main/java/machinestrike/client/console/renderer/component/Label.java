@@ -1,5 +1,7 @@
 package machinestrike.client.console.renderer.component;
 
+import machinestrike.client.console.renderer.color.ColorKey;
+import machinestrike.client.console.renderer.color.Colors;
 import machinestrike.client.console.renderer.shape.Rect;
 import machinestrike.game.Point;
 import org.jetbrains.annotations.Contract;
@@ -70,21 +72,21 @@ public class Label extends Component {
     @NotNull
     private OverflowPolicy policy;
     @NotNull
-    private Color color;
+    private ColorKey color;
 
     public Label() {
-        this("", Color.WHITE);
+        this("", Colors.LABEL);
     }
 
-    public Label(@NotNull String text, @NotNull Color color) {
+    public Label(@NotNull String text, @NotNull ColorKey color) {
         this(text, Alignment.TOP_LEFT, color);
     }
 
-    public Label(@NotNull String text, @NotNull Alignment alignment, @NotNull Color color) {
+    public Label(@NotNull String text, @NotNull Alignment alignment, @NotNull ColorKey color) {
         this(text, alignment, OverflowPolicy.WRAP, color);
     }
 
-    public Label(@NotNull String text, @NotNull Alignment alignment, @NotNull OverflowPolicy policy, @NotNull Color color) {
+    public Label(@NotNull String text, @NotNull Alignment alignment, @NotNull OverflowPolicy policy, @NotNull ColorKey color) {
         this.text = text;
         this.alignment = alignment;
         this.policy = policy;
@@ -93,11 +95,11 @@ public class Label extends Component {
     }
 
     @NotNull
-    public Color color() {
+    public ColorKey color() {
         return color;
     }
 
-    public void color(@NotNull Color color) {
+    public void color(@NotNull ColorKey color) {
         this.color = color;
         repaint();
     }
