@@ -29,6 +29,10 @@ public enum Orientation {
         };
     }
 
+    public int index() {
+        return value;
+    }
+
     public char descriptor() {
         return descriptor;
     }

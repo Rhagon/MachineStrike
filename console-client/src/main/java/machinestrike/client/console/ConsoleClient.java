@@ -48,6 +48,8 @@ public class ConsoleClient {
     @NotNull
     private final BoardBox boardBox;
     @NotNull
+    private final GameBox gameBox;
+    @NotNull
     private final Label infoText;
 
     public ConsoleClient(@NotNull Point windowSize) {
@@ -72,6 +74,7 @@ public class ConsoleClient {
         this.stateMachine = new ClientStateMachine(this);
         this.canvas = new Canvas(windowSize, DefaultColorSchemeFactory.instance().create());
         this.boardBox = new BoardBox(game.board(), 2.4f);
+        this.gameBox = new GameBox(game);
         this.infoText = new Label();
         setupUI();
     }
@@ -84,6 +87,7 @@ public class ConsoleClient {
     public void game(@NotNull Game game) {
         this.game = game;
         canvas.ignoreRepaint(() -> boardBox.board(game.board()));
+        canvas.ignoreRepaint(() -> gameBox.game(game));
         updateUI();
     }
 
@@ -115,6 +119,7 @@ public class ConsoleClient {
 
     public void updateUI() {
         canvas.ignoreRepaint(boardBox::update);
+        canvas.ignoreRepaint(gameBox::update);
         canvas.repaint();
     }
 
@@ -153,8 +158,10 @@ public class ConsoleClient {
         infoPanel.anchor(Anchor.BOTTOM_RIGHT.size(60, 15));
         infoText.anchor(Anchor.AREA.pad(1, 1, 1, 1));
         infoPanel.add(infoText);
+        gameBox.anchor(Anchor.TOP_RIGHT.size(60, 10));
         scene.add(boardBox);
         scene.add(infoPanel);
+        scene.add(gameBox);
         canvas.child(scene);
     }
 

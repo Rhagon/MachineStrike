@@ -98,6 +98,10 @@ public class Game implements GameActionHandler {
         playerOnTurn = playerOnTurn.opponent();
     }
 
+    public int victoryPoints(@NotNull Player player) {
+        return victoryPoints.get(player);
+    }
+
     public void addVictoryPoints(@NotNull Player player, int points) {
         victoryPoints.put(player, victoryPoints.get(player) + points);
         checkWinCondition(player);

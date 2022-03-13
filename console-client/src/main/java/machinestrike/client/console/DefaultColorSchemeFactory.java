@@ -36,6 +36,9 @@ public class DefaultColorSchemeFactory {
         scheme.color(FOREST, 0, 102, 0);
         scheme.color(HILL, 115, 115, 115);
         scheme.color(MOUNTAIN, 179, 179, 179);
+        scheme.color(ARMORED, 0, 102, 255);
+        scheme.color(EXPOSED, 200, 30, 30);
+        scheme.color(NORMAL_ARMOR, white);
         return scheme;
     }
 
