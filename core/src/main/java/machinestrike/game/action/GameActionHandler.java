@@ -9,4 +9,6 @@ public interface GameActionHandler {
 
     void handle(@NotNull MoveAction action) throws RuleViolation;
 
+    void handle(@NotNull EndTurnAction action) throws RuleViolation;
+
 }

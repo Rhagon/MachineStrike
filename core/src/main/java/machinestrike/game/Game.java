@@ -1,8 +1,9 @@
 package machinestrike.game;
 
-import machinestrike.debug.Assert;
 import machinestrike.action.Action;
+import machinestrike.debug.Assert;
 import machinestrike.game.action.AttackAction;
+import machinestrike.game.action.EndTurnAction;
 import machinestrike.game.action.GameActionHandler;
 import machinestrike.game.action.MoveAction;
 import machinestrike.game.level.Board;
@@ -123,6 +124,13 @@ public class Game implements GameActionHandler {
         Machine machine = board.field(action.origin()).machine();
         Assert.requireNotNull(machine);
         machine.attack(action);
+    }
+
+    public void handle(@NotNull EndTurnAction action) throws RuleViolation {
+        if(winner != null) {
+            throw new RuleViolation("The game is already over");
+        }
+        endTurn();
     }
 
 }

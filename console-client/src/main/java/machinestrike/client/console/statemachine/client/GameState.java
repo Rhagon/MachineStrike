@@ -7,6 +7,7 @@ import machinestrike.client.console.action.game.ClientGameActionHandler;
 import machinestrike.client.console.input.Command;
 import machinestrike.client.console.input.game.ClientGameCommandFactory;
 import machinestrike.game.action.AttackAction;
+import machinestrike.game.action.EndTurnAction;
 import machinestrike.game.action.MoveAction;
 import machinestrike.game.rule.RuleViolation;
 import org.jetbrains.annotations.NotNull;
@@ -54,6 +55,12 @@ public class GameState extends ClientInputState<ClientGameActionHandler> impleme
 
     @Override
     public void handle(@NotNull MoveAction action) throws RuleViolation {
+        stateMachine().client().game().handle(action);
+        stateMachine().client().updateUI();
+    }
+
+    @Override
+    public void handle(@NotNull EndTurnAction action) throws RuleViolation {
         stateMachine().client().game().handle(action);
         stateMachine().client().updateUI();
     }

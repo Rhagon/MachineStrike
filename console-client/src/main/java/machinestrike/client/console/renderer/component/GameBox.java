@@ -13,7 +13,7 @@ public class GameBox extends BoxPanel {
     @NotNull
     private Game game;
     @NotNull
-    private final Label redPointsLabel, bluePointsLabel;
+    private final Label redPointsLabel, bluePointsLabel, currentPlayerLabel;
 
     public GameBox(@NotNull Game game) {
         super(new Outline('-', '|', '+', 1, 1));
@@ -24,6 +24,9 @@ public class GameBox extends BoxPanel {
         redPointsLabel.anchor(Anchor.TOP_EDGE.size(0, 1).pad(0, 1, 1, 0).position(0, 1));
         add(bluePointsLabel);
         add(redPointsLabel);
+        currentPlayerLabel = new Label();
+        currentPlayerLabel.anchor(Anchor.TOP_EDGE.size(0, 1).pad(0, 1, 1, 0).position(0, 2));
+        add(currentPlayerLabel);
     }
 
     public void game(@NotNull Game game) {
@@ -38,6 +41,11 @@ public class GameBox extends BoxPanel {
         int redFull = Math.min(game.victoryPoints(Player.RED), game.ruleBook().requiredVictoryPoints());
         int redEmpty = game.ruleBook().requiredVictoryPoints() - redFull;
         redPointsLabel.text(emptyPoint.repeat(redEmpty) + fullPoint.repeat(redFull));
+        if(game.winner() == null) {
+            currentPlayerLabel.text("Player on turn: " + game.playerOnTurn());
+        } else {
+            currentPlayerLabel.text(game.winner() + " won!");
+        }
     }
 
 }
