@@ -4,7 +4,7 @@ import machinestrike.action.Action;
 import machinestrike.client.console.action.client.*;
 import machinestrike.client.console.input.Command;
 import machinestrike.client.console.input.InputHandler;
-import machinestrike.game.rule.RuleViolation;
+import machinestrike.action.ActionExecutionFailure;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public abstract class ClientInputState<HandlerType extends ClientActionHandler> 
 
     protected abstract List<Command<? super HandlerType>> commands();
 
-    protected abstract void execute(@NotNull Action<? super HandlerType> action) throws RuleViolation;
+    protected abstract void execute(@NotNull Action<? super HandlerType> action) throws ActionExecutionFailure;
 
     public void stop(@NotNull ClientState nextState) {
         active = false;
@@ -44,7 +44,7 @@ public abstract class ClientInputState<HandlerType extends ClientActionHandler> 
             stateMachine().clearInfo();
             try {
                 execute(action);
-            } catch (RuleViolation e) {
+            } catch (ActionExecutionFailure e) {
                 stateMachine().info(e.getMessage());
             }
             stateMachine().client().render();

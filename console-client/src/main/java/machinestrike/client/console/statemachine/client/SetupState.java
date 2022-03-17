@@ -1,6 +1,7 @@
 package machinestrike.client.console.statemachine.client;
 
 import machinestrike.action.Action;
+import machinestrike.action.ActionExecutionFailure;
 import machinestrike.client.console.action.client.NewGameAction;
 import machinestrike.client.console.action.client.QuitAction;
 import machinestrike.client.console.action.setup.*;
@@ -10,7 +11,7 @@ import machinestrike.game.Point;
 import machinestrike.game.level.Board;
 import machinestrike.game.level.Terrain;
 import machinestrike.game.machine.Machine;
-import machinestrike.game.rule.RuleViolation;
+import machinestrike.game.machine.factory.MachineFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
@@ -34,7 +35,7 @@ public class SetupState extends ClientInputState<ClientSetupActionHandler> imple
     }
 
     @Override
-    protected void execute(@NotNull Action<? super ClientSetupActionHandler> action) throws RuleViolation {
+    protected void execute(@NotNull Action<? super ClientSetupActionHandler> action) throws ActionExecutionFailure {
         action.execute(this);
     }
 
@@ -64,13 +65,13 @@ public class SetupState extends ClientInputState<ClientSetupActionHandler> imple
     @Override
     public void handle(@NotNull PlaceMachineAction action) {
         Board board = stateMachine().client().game().board();
-        Machine machine = null;
-        if(action.machineName() != null) {
-            machine = stateMachine().client().machineFactory().forName(action.machineName(), action.player(), action.orientation());
-            if(machine == null) {
-                stateMachine().info("Available machines: ", stateMachine().client().machineFactory().names());
-                return;
-            }
+        MachineFactory factory = stateMachine().client().machineFactory();
+        Machine machine = factory.create(action.machineKey(), action.player(), action.orientation());
+        if(machine == null) {
+            List<String> names = new ArrayList<>();
+            factory.keys().forEach(key -> names.add(key.name()));
+            stateMachine().info("Available machines:", names);
+            return;
         }
         if(!board.hasField(action.position())) {
             stateMachine().info("Invalid position");

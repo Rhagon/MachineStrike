@@ -64,7 +64,7 @@ public class FieldBox extends BoxPanel {
         Machine m = field.machine();
         outline(new Outline('-', '|', '+', 1, 1, ColorKey.get("terrain." + field().terrain().name().toLowerCase())));
         if(m != null) {
-            machine.text(m.name());
+            machine.text(m.key().name());
             machine.color(ColorKey.get("player." + m.player().toString().toLowerCase()));
             Game game = field().board().game();
             Assert.requireNotNull(game);

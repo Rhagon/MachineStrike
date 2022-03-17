@@ -9,7 +9,7 @@ import machinestrike.client.console.input.game.ClientGameCommandFactory;
 import machinestrike.game.action.AttackAction;
 import machinestrike.game.action.EndTurnAction;
 import machinestrike.game.action.MoveAction;
-import machinestrike.game.rule.RuleViolation;
+import machinestrike.action.ActionExecutionFailure;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -32,7 +32,7 @@ public class GameState extends ClientInputState<ClientGameActionHandler> impleme
     }
 
     @Override
-    protected void execute(@NotNull Action<? super ClientGameActionHandler> action) throws RuleViolation {
+    protected void execute(@NotNull Action<? super ClientGameActionHandler> action) throws ActionExecutionFailure {
         action.execute(this);
     }
 
@@ -48,19 +48,19 @@ public class GameState extends ClientInputState<ClientGameActionHandler> impleme
     }
 
     @Override
-    public void handle(@NotNull AttackAction action) throws RuleViolation {
+    public void handle(@NotNull AttackAction action) throws ActionExecutionFailure {
         stateMachine().client().game().handle(action);
         stateMachine().client().updateUI();
     }
 
     @Override
-    public void handle(@NotNull MoveAction action) throws RuleViolation {
+    public void handle(@NotNull MoveAction action) throws ActionExecutionFailure {
         stateMachine().client().game().handle(action);
         stateMachine().client().updateUI();
     }
 
     @Override
-    public void handle(@NotNull EndTurnAction action) throws RuleViolation {
+    public void handle(@NotNull EndTurnAction action) throws ActionExecutionFailure {
         stateMachine().client().game().handle(action);
         stateMachine().client().updateUI();
     }

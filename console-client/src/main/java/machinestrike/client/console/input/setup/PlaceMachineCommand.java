@@ -8,6 +8,7 @@ import machinestrike.debug.Assert;
 import machinestrike.game.Orientation;
 import machinestrike.game.Player;
 import machinestrike.game.Point;
+import machinestrike.game.machine.MachineKey;
 import org.intellij.lang.annotations.RegExp;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -47,6 +48,6 @@ public class PlaceMachineCommand extends Command<SetupActionHandler> {
         if(orientation == null) {
             orientation = player == Player.BLUE ? Orientation.NORTH : Orientation.SOUTH;
         }
-        return new PlaceMachineAction(type, player, orientation, field);
+        return new PlaceMachineAction(MachineKey.get(type), player, orientation, field);
     }
 }

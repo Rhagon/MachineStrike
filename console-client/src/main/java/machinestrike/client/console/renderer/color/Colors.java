@@ -1,6 +1,6 @@
 package machinestrike.client.console.renderer.color;
 
-public class Colors {
+public final class Colors {
 
     public static final ColorKey
     CANVAS = ColorKey.get("ui.canvas"),
@@ -18,5 +18,8 @@ public class Colors {
     FOREST = ColorKey.get("terrain.forest"),
     HILL = ColorKey.get("terrain.hill"),
     MOUNTAIN = ColorKey.get("terrain.mountain");
+
+    private Colors() {
+    }
 
 }

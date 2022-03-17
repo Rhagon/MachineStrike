@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
-public class ColorKey {
+public final class ColorKey {
 
     private static HashMap<String, ColorKey> keys;
 
@@ -28,11 +28,6 @@ public class ColorKey {
     @NotNull
     public String name() {
         return name;
-    }
-
-    @Override
-    public boolean equals(Object second) {
-        return this == second;
     }
 
     @Override
