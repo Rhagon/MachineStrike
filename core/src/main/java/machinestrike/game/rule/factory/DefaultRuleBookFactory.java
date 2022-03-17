@@ -1,5 +1,9 @@
 package machinestrike.game.rule.factory;
 
+import machinestrike.game.Game;
+import machinestrike.game.Player;
+import machinestrike.game.level.Field;
+import machinestrike.game.machine.Machine;
 import machinestrike.game.rule.RuleBook;
 import machinestrike.game.rule.attackrule.AttackRule;
 import machinestrike.game.rule.attackrule.MachineCanAttackRule;
@@ -31,14 +35,12 @@ public class DefaultRuleBookFactory implements RuleBookFactory {
     public RuleBook createRuleBook() {
 
         List<MoveRule> moveRules = List.of(
-                GameNotOverRule.moveInstance(),
                 ValidMoveRule.instance(),
                 MachineCanMoveRule.instance(),
                 ChasmNoGroundedRule.instance(),
                 CanReachDestinationRule.instance());
 
         List<AttackRule> attackRules = List.of(
-                GameNotOverRule.attackInstance(),
                 ValidAttackRule.instance(),
                 MachineCanAttackRule.instance());
 
@@ -47,7 +49,22 @@ public class DefaultRuleBookFactory implements RuleBookFactory {
                 ArmorStrengthRule.instance(),
                 TerrainStrengthRule.instance());
 
-        return new RuleBook(2, 7, moveRules, attackRules, strengthRules);
+        return new RuleBook(2, 7, 2, moveRules, attackRules, strengthRules, this::defaultWinCondition);
+    }
+
+    public boolean defaultWinCondition(@NotNull RuleBook ruleBook, @NotNull Game game, @NotNull Player player) {
+        if(game.victoryPoints(player) >= ruleBook.requiredVictoryPoints()) {
+            return true; //Player has the required amount of victory points.
+        }
+        for(Field field : game.board()) {
+            Machine m = field.machine();
+            if(m != null) {
+                if (m.player() == player.opponent()) {
+                    return false; //Opponent still has at least one machine.
+                }
+            }
+        }
+        return true; //Opponent does not have any machines left.
     }
 
 }

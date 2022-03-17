@@ -4,6 +4,7 @@ import machinestrike.debug.Assert;
 import machinestrike.game.Game;
 import machinestrike.game.action.MoveAction;
 import machinestrike.game.machine.Machine;
+import machinestrike.game.machine.MachineState;
 import org.jetbrains.annotations.NotNull;
 
 public class MachineCanMoveRule implements MoveRule{
@@ -29,6 +30,11 @@ public class MachineCanMoveRule implements MoveRule{
     public boolean test(Game game, MoveAction action) {
         Machine machine = game.board().field(action.origin()).machine();
         Assert.requireNotNull(machine);
-        return machine.canMove() || !machine.wasOvercharged() || action.virtualMove();
+        MachineState state = game.machineState(machine);
+        if(state == null || action.virtualMove()) {
+            return true;
+        }
+        return (state.canMove && (!action.sprint() || state.canAttack)) //If the machine has not moved nor attacked yet, it can sprint
+                || (!state.canMove && !state.wasOvercharged && !action.sprint()); //If the machine has moved yet and was not overcharged, it can move, but it cannot sprint.
     }
 }

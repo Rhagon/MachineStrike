@@ -1,7 +1,9 @@
 package machinestrike.game.rule;
 
+import machinestrike.action.ActionExecutionFailure;
 import machinestrike.game.Game;
 import machinestrike.game.Orientation;
+import machinestrike.game.Player;
 import machinestrike.game.action.AttackAction;
 import machinestrike.game.action.MoveAction;
 import machinestrike.game.machine.Machine;
@@ -13,16 +15,22 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
-public record RuleBook(int machinesPerTurn, int requiredVictoryPoints, List<MoveRule> moveRules,
-                       List<AttackRule> attackRules, List<StrengthRule> strengthRules) {
+public record RuleBook(int machinesPerTurn, int requiredVictoryPoints, int overchargeDamage, List<MoveRule> moveRules,
+                       List<AttackRule> attackRules, List<StrengthRule> strengthRules, WinCondition winCondition) {
 
-    public RuleBook(int machinesPerTurn, int requiredVictoryPoints, List<MoveRule> moveRules,
-                    List<AttackRule> attackRules, List<StrengthRule> strengthRules) {
+    public interface WinCondition {
+        boolean test(@NotNull RuleBook ruleBook, @NotNull Game game, @NotNull Player player);
+    }
+
+    public RuleBook(int machinesPerTurn, int requiredVictoryPoints, int overchargeDamage, List<MoveRule> moveRules,
+                    List<AttackRule> attackRules, List<StrengthRule> strengthRules, WinCondition winCondition) {
         this.machinesPerTurn = machinesPerTurn;
         this.requiredVictoryPoints = requiredVictoryPoints;
+        this.overchargeDamage = overchargeDamage;
         this.moveRules = Collections.unmodifiableList(moveRules);
         this.attackRules = Collections.unmodifiableList(attackRules);
         this.strengthRules = Collections.unmodifiableList(strengthRules);
+        this.winCondition = winCondition;
     }
 
     public boolean testMove(@NotNull Game game, @NotNull MoveAction action) {
@@ -34,7 +42,7 @@ public record RuleBook(int machinesPerTurn, int requiredVictoryPoints, List<Move
         return true;
     }
 
-    public void verifyMove(@NotNull Game game, @NotNull MoveAction action) throws RuleViolation {
+    public void verifyMove(@NotNull Game game, @NotNull MoveAction action) throws ActionExecutionFailure {
         for(MoveRule rule : moveRules) {
             rule.verify(game, action);
         }
@@ -49,7 +57,7 @@ public record RuleBook(int machinesPerTurn, int requiredVictoryPoints, List<Move
         return true;
     }
 
-    public void verifyAttack(@NotNull Game game, @NotNull AttackAction action) throws RuleViolation {
+    public void verifyAttack(@NotNull Game game, @NotNull AttackAction action) throws ActionExecutionFailure {
         for(AttackRule rule : attackRules) {
             rule.verify(game, action);
         }
@@ -68,6 +76,10 @@ public record RuleBook(int machinesPerTurn, int requiredVictoryPoints, List<Move
             strength += rule.getModifier(machine, direction, includeArmor);
         }
         return Math.max(0, strength);
+    }
+
+    public boolean checkWinCondition(@NotNull Game game, @NotNull Player player) {
+        return winCondition.test(this, game, player);
     }
 
 }

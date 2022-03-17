@@ -29,7 +29,7 @@ public class MachineCanAttackRule implements AttackRule {
     public boolean test(Game game, AttackAction action) {
         Machine machine = game.board().field(action.origin()).machine();
         Assert.requireNotNull(machine);
-        if(!machine.canAttack() && machine.wasOvercharged()) {
+        if(!game.canAttack(machine) && game.wasOvercharged(machine)) {
             return false;
         }
         return machine.canCurrentlyPerformAttack();

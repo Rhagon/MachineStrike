@@ -3,6 +3,7 @@ package machinestrike.game.rule.moverule;
 import machinestrike.game.Game;
 import machinestrike.game.action.MoveAction;
 import machinestrike.game.machine.Machine;
+import machinestrike.game.machine.MachineState;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -35,10 +36,18 @@ public class ValidMoveRule implements MoveRule{
             return false;
         }
         Machine machine = game.board().field(action.origin()).machine();
-        return machine != null
-                && (machine.player() == game.playerOnTurn() || action.virtualMove())
-                && (game.usedMachines().size() < game.ruleBook().machinesPerTurn() || game.usedMachines().contains(machine) || action.virtualMove())
-                && game.board().field(action.destination()).machine() == null
-                && (!action.sprint() || machine.canAttack() || action.virtualMove());
+        if(machine == null) {
+            return false;
+        }
+        if(game.board().field(action.destination()).machine() != null) {
+            return false;
+        }
+        if(action.virtualMove()) {
+            return true;
+        }
+        MachineState state = game.machineState(machine);
+        return machine.player() == game.playerOnTurn()
+                && game.canUseMachine(machine)
+                && (!action.sprint() || state == null || state.canAttack);
     }
 }
