@@ -1,6 +1,9 @@
 package machinestrike.game;
 
+import machinestrike.action.ActionExecutionFailure;
 import machinestrike.debug.Assert;
+import machinestrike.game.action.AttackAction;
+import machinestrike.game.action.EndTurnAction;
 import machinestrike.game.action.MoveAction;
 import machinestrike.game.level.Board;
 import machinestrike.game.level.factory.DefaultBoardFactory;
@@ -47,7 +50,21 @@ public class GameStateMachineTests {
 
     @Test
     public void testActionsInIdleState() {
-
+        placePieces();
+        MoveAction move = new MoveAction(blueMachine, new Point(1, 0), Orientation.EAST, false);
+        Assertions.assertThrows(ActionExecutionFailure.class, () -> game.execute(move));
+        AttackAction attack = new AttackAction(blueMachine);
+        Assertions.assertThrows(ActionExecutionFailure.class, () -> game.execute(attack));
+        EndTurnAction endTurn = new EndTurnAction();
+        Assertions.assertThrows(ActionExecutionFailure.class, () -> game.execute(endTurn));
+        Assertions.assertDoesNotThrow(() -> game.attack(attack));
+        Assertions.assertDoesNotThrow(() -> game.move(move));
+        Assertions.assertDoesNotThrow(() -> game.endTurn(endTurn));
+        Machine red = board.field(redMachine).machine();
+        Assertions.assertNotNull(red);
+        Assertions.assertEquals(3, red.health());
+        Assertions.assertNotNull(board.field(new Point(1, 0)).machine());
+        Assertions.assertSame(Player.RED, game.playerOnTurn());
     }
 
     @Test
@@ -68,5 +85,7 @@ public class GameStateMachineTests {
         Assertions.assertFalse(game.canMove(machine));
         Assertions.assertTrue(game.canAttack(machine));
     }
+
+
 
 }

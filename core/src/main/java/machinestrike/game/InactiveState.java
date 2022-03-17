@@ -13,7 +13,7 @@ public class InactiveState extends GameState {
     }
 
     private void defaultAction() throws ActionExecutionFailure {
-        throw new ActionExecutionFailure("The game was not started yet.");
+        throw new ActionExecutionFailure("The game is not running.");
     }
 
     @Override
