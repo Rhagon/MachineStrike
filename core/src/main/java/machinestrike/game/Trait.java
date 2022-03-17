@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
-public class Trait {
+public final class Trait {
 
     private static HashMap<String, Trait> traits;
 
@@ -29,11 +29,6 @@ public class Trait {
     @NotNull
     public String name() {
         return name;
-    }
-
-    @Override
-    public boolean equals(Object second) {
-        return this == second;
     }
 
     @Override
