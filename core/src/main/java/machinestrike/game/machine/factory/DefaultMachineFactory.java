@@ -2,14 +2,13 @@ package machinestrike.game.machine.factory;
 
 import machinestrike.game.Orientation;
 import machinestrike.game.Player;
-import machinestrike.game.machine.Armor;
-import machinestrike.game.machine.Gunner;
-import machinestrike.game.machine.Machine;
-import machinestrike.game.machine.Melee;
+import machinestrike.game.machine.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+
+import static machinestrike.game.machine.Machines.*;
 
 public class DefaultMachineFactory implements MachineFactory {
 
@@ -28,8 +27,8 @@ public class DefaultMachineFactory implements MachineFactory {
 
     protected void addGenerator(Generator generator) {
         Machine generated = generator.generate(Player.BLUE, Orientation.NORTH);
-        gens.put(generated.name().toLowerCase(), generator);
-        names.add(generated.name().toLowerCase());
+        gens.put(generated.key(), generator);
+        keys.add(generated.key());
     }
 
     private void addGenerators() {
@@ -38,20 +37,20 @@ public class DefaultMachineFactory implements MachineFactory {
     }
 
     @NotNull
-    private final HashMap<String, Generator> gens;
+    private final HashMap<MachineKey, Generator> gens;
     @NotNull
-    private final List<String> names;
+    private final List<MachineKey> keys;
 
     private DefaultMachineFactory() {
         gens = new HashMap<>();
-        names = new ArrayList<>();
+        keys = new ArrayList<>();
         addGenerators();
     }
 
     @Override
     @Nullable
-    public Machine forName(@NotNull String name, @NotNull Player player, @NotNull Orientation orientation) {
-        Generator gen = gens.get(name.toLowerCase());
+    public Machine create(@NotNull MachineKey key, @NotNull Player player, @NotNull Orientation orientation) {
+        Generator gen = gens.get(key);
         if(gen == null) {
             return null;
         }
@@ -59,18 +58,18 @@ public class DefaultMachineFactory implements MachineFactory {
     }
 
     @Override
-    public @NotNull List<String> names() {
-        return Collections.unmodifiableList(names);
+    public @NotNull List<MachineKey> keys() {
+        return Collections.unmodifiableList(keys);
     }
 
     @NotNull
     public Machine createBurrower(@NotNull Player player, @NotNull Orientation orientation) {
-        return new Melee("Burrower", player, 1, 4, 2, 2, 1, orientation, Armor.defaultArmor, Set.of(Machine.GROUNDED));
+        return new Melee(BURROWER, player, 1, 4, 2, 2, 1, orientation, Armor.defaultArmor, Set.of(Machine.GROUNDED));
     }
 
     @NotNull
     public Machine createScrapper(@NotNull Player player, @NotNull Orientation orientation) {
-        return new Gunner("Scrapper", player, 1, 4, 2, 2, 2, orientation, Armor.defaultArmor, Set.of(Machine.GROUNDED));
+        return new Gunner(SCRAPPER, player, 1, 4, 2, 2, 2, orientation, Armor.defaultArmor, Set.of(Machine.GROUNDED));
     }
 
     //TODO create factory methods for every missing machine
