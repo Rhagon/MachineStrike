@@ -32,7 +32,7 @@ public class Ram extends Melee {
         }
         MoveAction follow = new MoveAction(field.position(), attackedField.position(), orientation(), false, true);
         if(game.ruleBook().testMove(game, follow)) {
-            Assert.requireNoThrow(() -> game.handle(follow));
+            Assert.requireNoThrow(() -> game.move(follow));
         }
     }
 

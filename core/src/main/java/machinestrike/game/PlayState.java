@@ -14,17 +14,17 @@ public class PlayState extends GameState {
 
     @Override
     public void handle(@NotNull AttackAction action) throws ActionExecutionFailure {
-        game().handle(action);
+        game().attack(action);
     }
 
     @Override
     public void handle(@NotNull MoveAction action) throws ActionExecutionFailure {
-        game().handle(action);
+        game().move(action);
     }
 
     @Override
     public void handle(@NotNull EndTurnAction action) throws ActionExecutionFailure {
-        game().handle(action);
+        game().endTurn(action);
     }
 
 }

@@ -32,7 +32,7 @@ public class Swoop extends Melee {
 
         Point targetPosition = attackedField.position().add(orientation().add(Orientation.SOUTH).asPoint());
         MoveAction swoop = new MoveAction(field().position(), targetPosition, orientation(), false, true);
-        Assert.requireNoThrow(() -> game.handle(swoop));
+        Assert.requireNoThrow(() -> game.move(swoop));
         game.performStandardAttack(this, targetPosition);
     }
 

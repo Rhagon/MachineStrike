@@ -1,5 +1,6 @@
 package machinestrike.game;
 
+import machinestrike.action.Action;
 import machinestrike.action.ActionExecutionFailure;
 import machinestrike.debug.Assert;
 import machinestrike.game.action.AttackAction;
@@ -17,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 
-public class Game implements GameActionHandler {
+public class Game {
 
     @NotNull
     private final Board board;
@@ -78,6 +79,11 @@ public class Game implements GameActionHandler {
         checkWinCondition(player);
     }
 
+    @NotNull
+    GameState state() {
+        return state;
+    }
+
     @Nullable
     @Contract(pure = true)
     public Player winner() {
@@ -90,12 +96,20 @@ public class Game implements GameActionHandler {
         }
     }
 
+    public void start() {
+        state = new PlayState(this);
+    }
+
+    public void execute(@NotNull Action<? super GameActionHandler> action) throws ActionExecutionFailure {
+        action.execute(state);
+    }
+
     /**
      * Executes a move after verifying it. Also updates the machine's state, if it is not a virtual move.
      * @param action The move to execute
      * @throws ActionExecutionFailure  If the move is invalid or violates game rules
      */
-    public void handle(@NotNull MoveAction action) throws ActionExecutionFailure {
+    public void move(@NotNull MoveAction action) throws ActionExecutionFailure {
         ruleBook.verifyMove(this, action);
         Machine machine = board.field(action.origin()).machine();
         Assert.requireNotNull(machine);
@@ -112,13 +126,12 @@ public class Game implements GameActionHandler {
         }
     }
 
-    @Override
-    public void handle(@NotNull EndTurnAction action) throws ActionExecutionFailure {
+    public void endTurn(@NotNull EndTurnAction action) {
         usedMachines.clear();
         playerOnTurn = playerOnTurn.opponent();
     }
 
-    public void handle(@NotNull AttackAction action) throws ActionExecutionFailure {
+    public void attack(@NotNull AttackAction action) throws ActionExecutionFailure {
         ruleBook.verifyAttack(this, action);
         Machine machine = board.field(action.origin()).machine();
         Assert.requireNotNull(machine);
@@ -177,7 +190,7 @@ public class Game implements GameActionHandler {
         }
         MoveAction knockBackMove = new MoveAction(machine.field().position(), destination.position(), machine.orientation(), false, true);
         if(ruleBook.testMove(this, knockBackMove)) {
-            Assert.requireNoThrow(() -> handle(knockBackMove));
+            Assert.requireNoThrow(() -> move(knockBackMove));
         } else {
             damage(machine, 1);
         }
