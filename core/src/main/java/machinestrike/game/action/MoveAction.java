@@ -3,7 +3,7 @@ package machinestrike.game.action;
 import machinestrike.action.Action;
 import machinestrike.game.Orientation;
 import machinestrike.game.Point;
-import machinestrike.game.rule.RuleViolation;
+import machinestrike.action.ActionExecutionFailure;
 import org.jetbrains.annotations.NotNull;
 
 public record MoveAction(@NotNull Point origin,
@@ -17,7 +17,7 @@ public record MoveAction(@NotNull Point origin,
     }
 
     @Override
-    public void execute(@NotNull GameActionHandler handler) throws RuleViolation {
+    public void execute(@NotNull GameActionHandler handler) throws ActionExecutionFailure {
         handler.handle(this);
     }
 

@@ -105,11 +105,12 @@ public class Assert {
         }
     }
 
-    @Contract("null -> fail")
-    public static <T> void requireNotNull(T t) {
+    @Contract("null -> fail; !null -> !null")
+    public static <T> T requireNotNull(T t) {
         if(t == null) {
             Level.SEVERE.handle("Requirement not met: <object> ≠ null");
         }
+        return t;
     }
 
     @Contract("!null -> fail")
