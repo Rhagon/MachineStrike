@@ -2,7 +2,6 @@ package machinestrike.game.machine;
 
 import machinestrike.debug.Assert;
 import machinestrike.game.*;
-import machinestrike.game.action.AttackAction;
 import machinestrike.game.level.Board;
 import machinestrike.game.level.Field;
 import org.jetbrains.annotations.Contract;
@@ -14,26 +13,16 @@ import java.util.Set;
 
 public class Melee extends Machine {
 
-    public Melee(@NotNull String name, @NotNull Player player, int victoryPoints, int health, int strength,
+    public Melee(@NotNull MachineKey key, @NotNull Player player, int victoryPoints, int health, int strength,
                  int moveRange, int attackRange, @NotNull Orientation orientation, @NotNull Armor armor, Set<Trait> traits) {
-        super(name, player, victoryPoints, health, strength, moveRange, attackRange, orientation, armor, traits);
+        super(key, player, victoryPoints, health, strength, moveRange, attackRange, orientation, armor, traits);
     }
 
     @Override
-    @Contract(pure = true)
-    public char descriptor() {
-        return player() == Player.BLUE ? 'M' : 'm';
-    }
-
-    @Override
-    @Contract(pure = true)
-    public @NotNull String typeName() {
-        return "Melee";
-    }
-
-    @Override
-    public void attack(@NotNull AttackAction action) {
-        performStandardAttack(this, action.origin());
+    public void attack() {
+        Field field = Assert.requireNotNull(field());
+        Game game = Assert.requireNotNull(field.board().game());
+        game.performStandardAttack(this, field.position());
     }
 
     @Override

@@ -2,7 +2,6 @@ package machinestrike.game.machine;
 
 import machinestrike.debug.Assert;
 import machinestrike.game.*;
-import machinestrike.game.action.AttackAction;
 import machinestrike.game.action.MoveAction;
 import machinestrike.game.level.Field;
 import org.jetbrains.annotations.NotNull;
@@ -18,23 +17,13 @@ public class Swoop extends Melee {
         return modified;
     }
 
-    public Swoop(@NotNull String name, @NotNull Player player, int victoryPoints, int health, int strength,
+    public Swoop(@NotNull MachineKey key, @NotNull Player player, int victoryPoints, int health, int strength,
                  int moveRange, int attackRange, @NotNull Orientation orientation, @NotNull Armor armor, @NotNull Set<Trait> traits) {
-        super(name, player, victoryPoints, health, strength, moveRange, attackRange, orientation, armor, traits);
+        super(key, player, victoryPoints, health, strength, moveRange, attackRange, orientation, armor, addSwoopTraits(traits));
     }
 
     @Override
-    public char descriptor() {
-        return player() == Player.BLUE ? 'S' : 's';
-    }
-
-    @Override
-    public @NotNull String typeName() {
-        return "Swoop";
-    }
-
-    @Override
-    public void attack(@NotNull AttackAction action) {
+    public void attack() {
         Assert.requireNotNull(field());
         Game game = field().board().game();
         Assert.requireNotNull(game);
@@ -42,9 +31,9 @@ public class Swoop extends Melee {
         Assert.requireNotNull(attackedField);
 
         Point targetPosition = attackedField.position().add(orientation().add(Orientation.SOUTH).asPoint());
-        MoveAction swoop = new MoveAction(action.origin(), targetPosition, orientation(), false, true);
+        MoveAction swoop = new MoveAction(field().position(), targetPosition, orientation(), false, true);
         Assert.requireNoThrow(() -> game.handle(swoop));
-        performStandardAttack(this, targetPosition);
+        game.performStandardAttack(this, targetPosition);
     }
 
 }

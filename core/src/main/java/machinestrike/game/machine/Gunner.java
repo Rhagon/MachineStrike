@@ -1,11 +1,7 @@
 package machinestrike.game.machine;
 
 import machinestrike.debug.Assert;
-import machinestrike.game.Orientation;
-import machinestrike.game.Player;
-import machinestrike.game.Point;
-import machinestrike.game.Trait;
-import machinestrike.game.action.AttackAction;
+import machinestrike.game.*;
 import machinestrike.game.level.Field;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,24 +10,16 @@ import java.util.Set;
 
 public class Gunner extends Machine{
 
-    public Gunner(@NotNull String name, @NotNull Player player, int victoryPoints, int health, int strength,
+    public Gunner(@NotNull MachineKey key, @NotNull Player player, int victoryPoints, int health, int strength,
                   int moveRange, int attackRange, @NotNull Orientation orientation, @NotNull Armor armor, @NotNull Set<Trait> traits) {
-        super(name, player, victoryPoints, health, strength, moveRange, attackRange, orientation, armor, traits);
+        super(key, player, victoryPoints, health, strength, moveRange, attackRange, orientation, armor, traits);
     }
 
     @Override
-    public char descriptor() {
-        return player() == Player.BLUE ? 'G' : 'g';
-    }
-
-    @Override
-    public @NotNull String typeName() {
-        return "Gunner";
-    }
-
-    @Override
-    public void attack(@NotNull AttackAction action) {
-        performStandardAttack(this, action.origin());
+    public void attack() {
+        Field field = Assert.requireNotNull(field());
+        Game game = Assert.requireNotNull(field.board().game());
+        game.performStandardAttack(this, field.position());
     }
 
     @Override

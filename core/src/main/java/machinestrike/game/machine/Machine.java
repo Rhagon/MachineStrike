@@ -1,9 +1,10 @@
 package machinestrike.game.machine;
 
 import machinestrike.debug.Assert;
-import machinestrike.game.*;
-import machinestrike.game.action.AttackAction;
-import machinestrike.game.action.MoveAction;
+import machinestrike.game.Orientation;
+import machinestrike.game.Player;
+import machinestrike.game.Point;
+import machinestrike.game.Trait;
 import machinestrike.game.level.Field;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -24,7 +25,7 @@ public abstract class Machine {
     ;
 
     @NotNull
-    private final String name;
+    private final MachineKey key;
     @NotNull
     private final Player player;
     @Nullable
@@ -39,13 +40,9 @@ public abstract class Machine {
     @NotNull
     private final HashSet<Trait> traits;
 
-    private boolean canMove;
-    private boolean canAttack;
-    private boolean overcharged;
-
-    public Machine(@NotNull String name, @NotNull Player player, int victoryPoints, int health, int strength, int moveRange,
+    public Machine(@NotNull MachineKey key, @NotNull Player player, int victoryPoints, int health, int strength, int moveRange,
                    int attackRange, @NotNull Orientation orientation, @NotNull Armor armor, @NotNull Set<Trait> traits) {
-        this.name = name;
+        this.key = key;
         this.player = player;
         this.field = null;
         this.victoryPoints = victoryPoints;
@@ -59,13 +56,12 @@ public abstract class Machine {
         Assert.lessOrEqual(0, victoryPoints);
         Assert.less(0, health);
         Assert.less(0, strength);
-        resetActions();
     }
 
     @NotNull
     @Contract(pure = true)
-    public String name() {
-        return name;
+    public MachineKey key() {
+        return key;
     }
 
     @NotNull
@@ -80,6 +76,12 @@ public abstract class Machine {
         return field;
     }
 
+    /**
+     * Moves the machine to a different field. Destination can be a field on a different board.
+     * Should there already be a machine at the destination, it will be removed from that field.
+     * @param field The destination for the machine.
+     * @return self
+     */
     @Contract(value = "_ -> this")
     public Machine field(@Nullable Field field) {
         if(this.field == field) {
@@ -135,9 +137,6 @@ public abstract class Machine {
         return attackRange;
     }
 
-    @Contract(pure = true)
-    public abstract char descriptor();
-
     @NotNull
     @Contract(pure = true)
     public Orientation orientation() {
@@ -183,82 +182,9 @@ public abstract class Machine {
         return Collections.unmodifiableSet(traits);
     }
 
-    @NotNull
-    @Contract(pure = true)
-    public abstract String typeName();
-
-    public void resetActions() {
-        canMove = true;
-        canAttack = true;
-        overcharged = false;
-    }
-
-    @Contract(pure = true)
-    public boolean canMove() {
-        return canMove;
-    }
-
-    @Contract("_ -> this")
-    protected Machine canMove(boolean canMove) {
-        this.canMove = canMove;
-        return this;
-    }
-
-    @Contract(pure = true)
-    public boolean canAttack() {
-        return canAttack;
-    }
-
-    @Contract("_ -> this")
-    protected Machine canAttack(boolean canAttack) {
-        this.canAttack = canAttack;
-        return this;
-    }
-
-    @Contract(pure = true)
-    public boolean wasOvercharged() {
-        return overcharged;
-    }
-
-    @Contract("_ -> this")
-    protected Machine wasOvercharged(boolean overcharged) {
-        this.overcharged = overcharged;
-        return this;
-    }
-
-    public void overcharge() {
-        wasOvercharged(true);
-        damage(2);
-    }
-
     /**
-     * Executes a move without verifying it. That has to be done by the caller.
+     *
      */
-    public void move(@NotNull MoveAction action) {
-        Assert.requireNotNull(field);
-        Game game = field.board().game();
-        Assert.requireNotNull(game);
-        Assert.equal(field.position(), action.origin());
-        field(game.board().field(action.destination()));
-        orientation(action.orientation());
-        if(action.virtualMove()) {
-            return;
-        }
-        game.usedMachine(this);
-        if(!canMove) {
-            overcharge();
-        }
-        canMove = false;
-        if(action.sprint()) {
-            canAttack = false;
-        }
-    }
-
-    /**
-     * Executes an attack without verifying it. That has to be done by the caller.
-     */
-    public abstract void attack(@NotNull AttackAction action);
-
     @Contract(pure = true)
     @Nullable
     public Field firstAssailableFieldWithMachine() {
@@ -273,6 +199,11 @@ public abstract class Machine {
     }
 
     /**
+     * Executes an attack without verifying it. That has to be done by the caller.
+     */
+    public abstract void attack();
+
+    /**
      * Creates a list of all possible positions that the machine can attack on relative to the passed point and orientation
      * @param from Relative point
      * @param orientation Relative position
@@ -281,67 +212,11 @@ public abstract class Machine {
     @NotNull
     public abstract List<Point> assailableFields(@NotNull Point from, @NotNull Orientation orientation);
 
+    /**
+     *
+     */
     public abstract boolean canCurrentlyPerformAttack();
 
-    public void damage(int amount) {
-        Assert.requireNotNull(field);
-        Game game = field.board().game();
-        Assert.requireNotNull(game);
-        health -= amount;
-        if(health <= 0) {
-            field(null);
-            game.addVictoryPoints(player.opponent(), victoryPoints);
-        }
-    }
 
-    protected void knockBack(@NotNull Orientation knockBackDirection) {
-        Assert.requireNotNull(field);
-        Field destination = field.board().field(field.position().add(knockBackDirection.asPoint()));
-        Machine machineOnDestination = destination.machine();
-        if(machineOnDestination != null) {
-            damage(1);
-            machineOnDestination.damage(1);
-            return;
-        }
-        MoveAction knockBackMove = new MoveAction(field.position(), destination.position(), orientation, false, true);
-        Game game = field.board().game();
-        Assert.requireNotNull(game);
-        if(game.ruleBook().testMove(game, knockBackMove)) {
-            Assert.requireNoThrow(() -> game.handle(knockBackMove));
-        } else {
-            damage(1);
-        }
-    }
-
-    @Override
-    public String toString() {
-        return "[" + descriptor() + orientation.descriptor() + ']';
-    }
-
-    protected static void performStandardAttack(@NotNull Machine machine, @NotNull Point origin) {
-        Assert.requireNotNull(machine.field());
-        Game game = machine.field().board().game();
-        Assert.requireNotNull(game);
-        Assert.equal(machine.field().position(), origin);
-        Field attackedField = machine.firstAssailableFieldWithMachine();
-        Assert.requireNotNull(attackedField);
-        Machine attackedMachine = attackedField.machine();
-        Assert.requireNotNull(attackedMachine);
-        int attackerPower = game.ruleBook().calculateStrength(machine, machine.orientation(), false);
-        int defenderPower = game.ruleBook().calculateStrength(attackedMachine, machine.orientation.add(Orientation.SOUTH), true);
-        int rawDamage = attackerPower - defenderPower;
-        int damage = Math.max(1, attackerPower - defenderPower);
-        boolean defenseBreak = rawDamage < 1;
-        attackedMachine.damage(damage);
-        if(defenseBreak) {
-            attackedMachine.knockBack(machine.orientation());
-            machine.damage(1);
-        }
-        game.usedMachine(machine);
-        if(!machine.canAttack()) {
-            machine.overcharge();
-        }
-        machine.canAttack(false);
-    }
 
 }
