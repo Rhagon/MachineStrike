@@ -52,4 +52,10 @@ public enum Orientation {
         return point;
     }
 
+    @Override
+    @NotNull
+    public String toString() {
+        return "" + descriptor;
+    }
+
 }
