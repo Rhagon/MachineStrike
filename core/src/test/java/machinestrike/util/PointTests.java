@@ -3,6 +3,8 @@ package machinestrike.util;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 public class PointTests {
 
     @Test
@@ -11,6 +13,7 @@ public class PointTests {
         Assertions.assertEquals(Point.ZERO, p);
         Assertions.assertNotSame(Point.ZERO, p);
         Assertions.assertNotEquals(new Point(1, 2), new Point(2, 1));
+        Assertions.assertNotEquals(p, null);
     }
 
     @Test
@@ -76,6 +79,40 @@ public class PointTests {
         Assertions.assertNotEquals(p.hashCode(), new Point(-1, -2).hashCode());
         Assertions.assertNotEquals(p.hashCode(), new Point(-2, -1).hashCode());
         Assertions.assertNotEquals(p.hashCode(), new Point(2, 2).hashCode());
+    }
+
+    @Test
+    public void testNeighbours() {
+        Point p = new Point(3, 2);
+        List<Point> neighbours = p.neighbours();
+        Assertions.assertEquals(Orientation.values().length, neighbours.size());
+        for(Orientation orientation : Orientation.values()) {
+            Assertions.assertTrue(neighbours.contains(p.inDirection(orientation)));
+        }
+    }
+
+    @Test
+    public void testNeighboursWithFilter() {
+        Point p = Point.ZERO;
+        List<Point> neighbours = p.neighbours(x -> x.x() < 0 || x.y() < 0);
+        Assertions.assertEquals(2, neighbours.size());
+        Assertions.assertTrue(neighbours.contains(p.inDirection(Orientation.NORTH)));
+        Assertions.assertTrue(neighbours.contains(p.inDirection(Orientation.EAST)));
+    }
+
+    @Test
+    public void testInRange() {
+        Point p = new Point(3, 2);
+        Assertions.assertTrue(p.inRange(new Point(2, 1), new Point(4, 3)));
+        Assertions.assertTrue(p.inRange(new Point(3, 2), new Point(3, 2)));
+        Assertions.assertTrue(p.inRange(new Point(3, 2), new Point(-1, -1)));
+        Assertions.assertFalse(p.inRange(new Point(4, 4), new Point(4, 1)));
+    }
+
+    @Test
+    public void testToString() {
+        Assertions.assertEquals("(2, 3)", new Point(2, 3).toString());
+        Assertions.assertEquals("(-1, -2)", new Point(-1, -2).toString());
     }
 
 }
