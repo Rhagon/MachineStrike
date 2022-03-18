@@ -71,6 +71,11 @@ public record Point(int x, int y) {
     }
 
     @Override
+    public int hashCode() {
+        return Integer.hashCode(Integer.hashCode(x) ^ y);
+    }
+
+    @Override
     public boolean equals(Object second) {
         if(second instanceof Point p) {
             return x == p.x && y == p.y;
