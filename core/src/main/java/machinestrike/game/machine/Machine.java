@@ -1,9 +1,9 @@
 package machinestrike.game.machine;
 
 import machinestrike.debug.Assert;
-import machinestrike.game.Orientation;
+import machinestrike.util.Orientation;
 import machinestrike.game.Player;
-import machinestrike.game.Point;
+import machinestrike.util.Point;
 import machinestrike.game.Trait;
 import machinestrike.game.level.Field;
 import org.jetbrains.annotations.Contract;

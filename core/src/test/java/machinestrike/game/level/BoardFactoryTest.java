@@ -1,6 +1,6 @@
 package machinestrike.game.level;
 
-import machinestrike.game.Orientation;
+import machinestrike.util.Orientation;
 import machinestrike.game.Player;
 import machinestrike.game.level.factory.BoardFactory;
 import machinestrike.game.level.factory.DefaultBoardFactory;

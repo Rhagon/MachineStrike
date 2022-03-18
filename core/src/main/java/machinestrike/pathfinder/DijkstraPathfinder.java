@@ -1,7 +1,7 @@
 package machinestrike.pathfinder;
 
 import machinestrike.game.Game;
-import machinestrike.game.Point;
+import machinestrike.util.Point;
 import machinestrike.game.level.Field;
 import machinestrike.game.level.Terrain;
 import org.jetbrains.annotations.NotNull;

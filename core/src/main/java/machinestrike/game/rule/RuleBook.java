@@ -2,7 +2,7 @@ package machinestrike.game.rule;
 
 import machinestrike.action.ActionExecutionFailure;
 import machinestrike.game.Game;
-import machinestrike.game.Orientation;
+import machinestrike.util.Orientation;
 import machinestrike.game.Player;
 import machinestrike.game.action.AttackAction;
 import machinestrike.game.action.MoveAction;

@@ -5,7 +5,7 @@ import machinestrike.client.console.action.client.ClientActionHandler;
 import machinestrike.client.console.action.client.NewGameAction;
 import machinestrike.client.console.input.Command;
 import machinestrike.client.console.input.Patterns;
-import machinestrike.game.Point;
+import machinestrike.util.Point;
 import org.intellij.lang.annotations.RegExp;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

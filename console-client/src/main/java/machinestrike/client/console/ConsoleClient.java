@@ -6,7 +6,7 @@ import machinestrike.client.console.renderer.component.*;
 import machinestrike.client.console.statemachine.client.ClientStateMachine;
 import machinestrike.game.Game;
 import machinestrike.game.Player;
-import machinestrike.game.Point;
+import machinestrike.util.Point;
 import machinestrike.game.level.factory.BoardFactory;
 import machinestrike.game.level.factory.DefaultBoardFactory;
 import machinestrike.game.level.factory.DefaultTerrainFactory;

@@ -5,7 +5,7 @@ import machinestrike.client.console.renderer.color.ColorKey;
 import machinestrike.client.console.renderer.color.Colors;
 import machinestrike.debug.Assert;
 import machinestrike.game.Game;
-import machinestrike.game.Orientation;
+import machinestrike.util.Orientation;
 import machinestrike.game.level.Field;
 import machinestrike.game.machine.Armor;
 import machinestrike.game.machine.Machine;

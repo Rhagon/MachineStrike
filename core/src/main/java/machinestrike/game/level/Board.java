@@ -2,7 +2,7 @@ package machinestrike.game.level;
 
 import machinestrike.debug.Assert;
 import machinestrike.game.Game;
-import machinestrike.game.Point;
+import machinestrike.util.Point;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

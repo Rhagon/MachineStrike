@@ -1,8 +1,8 @@
 package machinestrike.game.action;
 
 import machinestrike.action.Action;
-import machinestrike.game.Orientation;
-import machinestrike.game.Point;
+import machinestrike.util.Orientation;
+import machinestrike.util.Point;
 import machinestrike.action.ActionExecutionFailure;
 import org.jetbrains.annotations.NotNull;
 

@@ -5,7 +5,7 @@ import machinestrike.client.console.action.setup.SetupActionHandler;
 import machinestrike.client.console.input.Command;
 import machinestrike.client.console.input.Patterns;
 import machinestrike.debug.Assert;
-import machinestrike.game.Point;
+import machinestrike.util.Point;
 import org.intellij.lang.annotations.RegExp;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

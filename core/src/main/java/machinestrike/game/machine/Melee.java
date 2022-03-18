@@ -4,6 +4,8 @@ import machinestrike.debug.Assert;
 import machinestrike.game.*;
 import machinestrike.game.level.Board;
 import machinestrike.game.level.Field;
+import machinestrike.util.Orientation;
+import machinestrike.util.Point;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

@@ -12,6 +12,8 @@ import machinestrike.game.level.Field;
 import machinestrike.game.machine.Machine;
 import machinestrike.game.machine.MachineState;
 import machinestrike.game.rule.RuleBook;
+import machinestrike.util.Orientation;
+import machinestrike.util.Point;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

@@ -3,6 +3,8 @@ package machinestrike.game.machine;
 import machinestrike.debug.Assert;
 import machinestrike.game.*;
 import machinestrike.game.level.Field;
+import machinestrike.util.Orientation;
+import machinestrike.util.Point;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

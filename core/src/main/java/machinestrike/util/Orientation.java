@@ -1,4 +1,4 @@
-package machinestrike.game;
+package machinestrike.util;
 
 import org.jetbrains.annotations.NotNull;
 

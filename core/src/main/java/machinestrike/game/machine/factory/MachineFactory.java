@@ -1,6 +1,6 @@
 package machinestrike.game.machine.factory;
 
-import machinestrike.game.Orientation;
+import machinestrike.util.Orientation;
 import machinestrike.game.Player;
 import machinestrike.game.machine.Machine;
 import machinestrike.game.machine.MachineKey;

@@ -1,8 +1,8 @@
 package machinestrike.game.machine;
 
-import machinestrike.game.Orientation;
+import machinestrike.util.Orientation;
 import machinestrike.game.Player;
-import machinestrike.game.Point;
+import machinestrike.util.Point;
 import machinestrike.game.Trait;
 import org.jetbrains.annotations.NotNull;
 

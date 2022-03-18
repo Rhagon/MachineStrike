@@ -1,7 +1,7 @@
 package machinestrike.game.rule.strengthrule;
 
 import machinestrike.debug.Assert;
-import machinestrike.game.Orientation;
+import machinestrike.util.Orientation;
 import machinestrike.game.machine.Machine;
 import org.jetbrains.annotations.NotNull;
 

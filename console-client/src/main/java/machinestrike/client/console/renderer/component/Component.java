@@ -3,7 +3,7 @@ package machinestrike.client.console.renderer.component;
 import machinestrike.client.console.renderer.Anchor;
 import machinestrike.client.console.renderer.Graphics;
 import machinestrike.client.console.renderer.Rect;
-import machinestrike.game.Point;
+import machinestrike.util.Point;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

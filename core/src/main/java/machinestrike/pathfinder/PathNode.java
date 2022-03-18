@@ -1,6 +1,6 @@
 package machinestrike.pathfinder;
 
-import machinestrike.game.Point;
+import machinestrike.util.Point;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

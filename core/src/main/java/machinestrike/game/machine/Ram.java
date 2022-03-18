@@ -2,7 +2,7 @@ package machinestrike.game.machine;
 
 import machinestrike.debug.Assert;
 import machinestrike.game.Game;
-import machinestrike.game.Orientation;
+import machinestrike.util.Orientation;
 import machinestrike.game.Player;
 import machinestrike.game.Trait;
 import machinestrike.game.action.MoveAction;

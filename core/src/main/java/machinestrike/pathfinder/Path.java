@@ -1,6 +1,6 @@
 package machinestrike.pathfinder;
 
-import machinestrike.game.Point;
+import machinestrike.util.Point;
 
 import java.util.Collections;
 import java.util.Iterator;

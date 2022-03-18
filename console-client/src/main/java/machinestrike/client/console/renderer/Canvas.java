@@ -6,7 +6,7 @@ import machinestrike.client.console.renderer.color.Colors;
 import machinestrike.client.console.renderer.color.Color;
 import machinestrike.client.console.renderer.component.Decorator;
 import machinestrike.debug.Assert;
-import machinestrike.game.Point;
+import machinestrike.util.Point;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

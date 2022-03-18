@@ -1,6 +1,6 @@
 package machinestrike.client.console.renderer;
 
-import machinestrike.game.Point;
+import machinestrike.util.Point;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

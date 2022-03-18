@@ -1,6 +1,6 @@
 package machinestrike.game.level.factory;
 
-import machinestrike.game.Point;
+import machinestrike.util.Point;
 import machinestrike.game.level.Board;
 import org.jetbrains.annotations.NotNull;
 

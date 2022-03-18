@@ -7,7 +7,7 @@ import machinestrike.client.console.action.client.QuitAction;
 import machinestrike.client.console.action.setup.*;
 import machinestrike.client.console.input.Command;
 import machinestrike.client.console.input.setup.ClientSetupCommandFactory;
-import machinestrike.game.Point;
+import machinestrike.util.Point;
 import machinestrike.game.level.Board;
 import machinestrike.game.level.Terrain;
 import machinestrike.game.machine.Machine;

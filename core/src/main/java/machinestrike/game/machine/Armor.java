@@ -1,6 +1,6 @@
 package machinestrike.game.machine;
 
-import machinestrike.game.Orientation;
+import machinestrike.util.Orientation;
 import org.jetbrains.annotations.NotNull;
 
 public record Armor(@NotNull Type front, @NotNull Type left, @NotNull Type right, @NotNull Type back) {

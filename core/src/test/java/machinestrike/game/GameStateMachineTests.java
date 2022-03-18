@@ -11,6 +11,8 @@ import machinestrike.game.level.factory.DefaultTerrainFactory;
 import machinestrike.game.machine.Machine;
 import machinestrike.game.machine.factory.DefaultMachineFactory;
 import machinestrike.game.rule.factory.DefaultRuleBookFactory;
+import machinestrike.util.Orientation;
+import machinestrike.util.Point;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

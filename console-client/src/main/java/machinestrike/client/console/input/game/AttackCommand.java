@@ -4,7 +4,7 @@ import machinestrike.action.Action;
 import machinestrike.client.console.input.Command;
 import machinestrike.client.console.input.Patterns;
 import machinestrike.debug.Assert;
-import machinestrike.game.Point;
+import machinestrike.util.Point;
 import machinestrike.game.action.AttackAction;
 import machinestrike.game.action.GameActionHandler;
 import org.intellij.lang.annotations.RegExp;

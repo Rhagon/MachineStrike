@@ -1,8 +1,8 @@
 package machinestrike.client.console.input;
 
-import machinestrike.game.Orientation;
+import machinestrike.util.Orientation;
 import machinestrike.game.Player;
-import machinestrike.game.Point;
+import machinestrike.util.Point;
 import org.intellij.lang.annotations.RegExp;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;

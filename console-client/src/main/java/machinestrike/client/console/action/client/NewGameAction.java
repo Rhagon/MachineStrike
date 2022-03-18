@@ -1,7 +1,7 @@
 package machinestrike.client.console.action.client;
 
 import machinestrike.action.Action;
-import machinestrike.game.Point;
+import machinestrike.util.Point;
 import machinestrike.action.ActionExecutionFailure;
 import org.jetbrains.annotations.NotNull;
 
